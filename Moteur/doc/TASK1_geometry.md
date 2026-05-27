@@ -108,11 +108,11 @@ Répondez aux questions _avant de_ commencer à compléter le squelette de code.
 
 #### To Do
 * __QUESTIONS__
-  * Dans quel _package_ mettre `Axis` ?
-  * Pour créer un object qui représent un Tore 2D, combien faut-il définir d'instances d'`Axis` ?
-  * Doit-on créer des instances de `Axis` _ou bien_ `Axis` est-elle une collection de fonctions ?
-  * Quelle contrainte (sous forme d'assertion) faut-il imposer sur `perimeter` ? 
-    * où placer cette assertion ? 
+  * Dans quel _package_ mettre `Axis` ? engine
+  * Pour créer un object qui représent un Tore 2D, combien faut-il définir d'instances d'`Axis` ? 2 (1 pour x et un pour y)
+  * Doit-on créer des instances de `Axis` _ou bien_ `Axis` est-elle une collection de fonctions ? on doit creer une instance  
+  * Quelle contrainte (sous forme d'assertion) faut-il imposer sur `perimeter` ? positif 
+    * où placer cette assertion ? dans le constructeur
 * Commencez à compléter `Axis`.
 * Demandez-vous systématiquement quelle visibilité donner à chaque champs et chaque méthode : `private` , `protected`, _package visibility_ ou `public` ? 
 

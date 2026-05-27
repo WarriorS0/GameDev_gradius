@@ -6,159 +6,232 @@ import game.Game;
 
 public class Grid {
 
-  // FIELDS
+	// FIELDS
 
-   ISU isu;
-   Axis xAxis, yAxis;
+	ISU isu;
+	Axis xAxis, yAxis;
 
-   int width_ncell, height_ncell;
+	int width_ncell, height_ncell;
 
-   Cell[][] grid;
+	Cell[][] grid;
 
-  // CONSTRUCTOR
+	// CONSTRUCTOR
 
-   public Grid(Game game) { throw new UnsupportedOperationException("Unimplemented method"); }
+	public Grid(Game game) {
+		
+		this.width_ncell =game.width_ncell;
+		this.height_ncell= game.height_ncell;
 
-  // INIT
+		this.xAxis = new Axis(game.torusOnXaxis, this.width_ncell );
+		this.yAxis = new Axis(game.torusOnYaxis, this.height_ncell);
+		
+		this.grid = new Cell[this.height_ncell][this.width_ncell];
+		
+	}
 
-  void init() { throw new UnsupportedOperationException("Unimplemented method"); }
+	// INIT
 
-  // GETTER
+	void init() {
+		throw new UnsupportedOperationException("Unimplemented method");
+	}
 
-   int width() { return 0; }
+	// GETTER
 
-   int height() { return 0; }
+	int width() {
+		return this.width_ncell;
+	}
 
-   Grid.Cell cellAt(Grid.Position p) { return null; }
+	int height() {
+		return this.height_ncell;
+	}
 
-  // SHOW
+	Grid.Cell cellAt(Grid.Position p) {
+		
+	}
 
-   void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+	// SHOW
 
+	void show(PrintStream ps) {
+		throw new UnsupportedOperationException("Unimplemented method");
+	}
 
+	// == DIMENSION (nb cell) ==
 
-  // == DIMENSION (nb cell) ==
+	class Dimension {
+		int x_ncell, y_ncell;
 
-   class Dimension {
-     int x_ncell, y_ncell;
+		// CONSTRUCTOR
 
-    // CONSTRUCTOR
+		Dimension(int x_ncell, int y_ncell) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     Dimension(int x_ncell, int y_ncell) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// GETTER
 
-    // GETTER
+		int x() {
+			return 0;
+		}
 
-     int x() { return 0; }
+		int y() {
+			return 0;
+		}
 
-     int y() { return 0; }
+		// GEOMETRY
 
-    // GEOMETRY
+		void normalize() {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void normalize() { throw new UnsupportedOperationException("Unimplemented method"); }
+		// EQUALS / EQUIV
+		@Override
+		boolean equals(Object o) {
+			return false;
+		}
 
-    // EQUALS / EQUIV
-     boolean equals(Object o) { return false; }
+		boolean equiv(Dimension d) {
+			return false;
+		}
 
-     boolean equiv(Dimension d) { return false; }
+		// CONVERSION
 
-    // CONVERSION
+		ISU.Dimension toISUDimension() {
+			return null;
+		}
 
-     ISU.Dimension toISUDimension() { return null; }
+		// SHOW
 
-    // SHOW
+		void show(PrintStream ps) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-    void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+	}
 
-  }
+	// == VECTOR ==
 
-  // == VECTOR ==
+	class Vector {
 
-   class Vector  {
+		// CONSTRUCTOR
 
-    // CONSTRUCTOR
+		Vector(int x_ncell, int y_ncell) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     Vector(int x_ncell, int y_ncell) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// OPERATION
 
-    // OPERATION
+		void add(Vector v) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void add(Vector v) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// SHOW
 
-    // SHOW
+		void show(PrintStream ps) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-    void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+	}
 
-  }
+	// == POINT ==
 
-  // == POINT ==
+	class Position {
 
-   class Position  {
+		// CONSTRUCTOR
 
-    // CONSTRUCTOR
+		Position(int x_ncell, int y_ncell) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     Position(int x_ncell, int y_ncell) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// COPY ? if needed
 
-    // COPY ? if needed
+		Grid.Position copy() {
+			return null;
+		}
 
-     Grid.Position copy() { return null; }
+		// EQUALS
+		boolean equals(Object o) {
+			return false;
+		}
 
-    // EQUALS
-     boolean equals(Object o) { return false; }
+		// TRANSLATION
 
-    // TRANSLATION
+		void translate(Vector v) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void translate(Vector v) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void moveNorth(int n_ncell) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void moveNorth(int n_ncell) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// ROTATION ? if needed
 
-    // ROTATION ? if needed
+		void rotateAround(Grid.Position position, int angle_degree) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void rotateAround(Grid.Position position, int angle_degree) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// DISTANCE
 
-    // DISTANCE
+		double distanceTo(Position p) {
+			return 0.0;
+		}
 
-     double distanceTo(Position p) { return 0.0;   }
+		// CONVERSION
 
-    // CONVERSION
+		ISU.Coord toISUCoord() {
+			return null;
+		}
 
-     ISU.Coord toISUCoord() { return null; }
+		ISU.Coord toISUCoordCentered() {
+			return null;
+		}
 
-     ISU.Coord toISUCoordCentered() { return null; }
+		Picture.Pixel toPicturePixel() {
+			return null;
+		}
 
-     Picture.Pixel toPicturePixel() { return null; }
+		// SHOW
 
-    // SHOW
+		void show(PrintStream ps) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-    void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+	}
 
-  }
+	// === CELL ===
 
-  // === CELL ===
+	class Cell {
 
-   class Cell {
+		Grid.Dimension size;
+		Grid.Position position;
+		List<Entity> entities;
 
-     Grid.Dimension size;
-    Grid.Position position;
-     List<Entity> entities;
+		// CONSTRUCTOR
 
-    // CONSTRUCTOR
+		Cell(Position p) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-    Cell(Position p) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// ADD
 
-    // ADD
+		void add(Entity e) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void add(Entity e) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// REMOVE
 
-    // REMOVE
+		void remove(Entity e) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-     void remove(Entity e) { throw new UnsupportedOperationException("Unimplemented method"); }
+		// PREDICATE
 
-    // PREDICATE
+		boolean contains(Entity e) {
+			return false;
+		}
 
-     boolean contains(Entity e) { return false; }
+		// SHOW
 
-    // SHOW
+		void show(PrintStream ps) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-    void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
-
-  }
+	}
 }

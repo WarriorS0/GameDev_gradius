@@ -2,77 +2,84 @@ package game;
 
 import engine.Grid;
 import engine.ISU;
+import engine.Picture;
 
 import java.io.PrintStream;
 
 public class Game {
 
-  // CONSTANT
+	// CONSTANT
 
-   boolean torusOnXaxis = true; // vrai si l'axe X est une boucle fermée
-   boolean torusOnYaxis = true; // vrai si l'axe Y est une boucle fermée
+	public final boolean torusOnXaxis = true; // vrai si l'axe X est une boucle fermée
+	public final boolean torusOnYaxis = true; // vrai si l'axe Y est une boucle fermée
 
-   double cmPerCell = 3.7; // échelle qui relie l'unité ncell à cm
-   int pixelPerCm = 2; // échelle qui relie l'unité pixel à cm
+	public final double cmPerCell = 3.7; // échelle qui relie l'unité ncell à cm
+	public final int pixelPerCm = 2; // échelle qui relie l'unité pixel à cm
 
-  // FIELDS
+	// FIELDS
 
-   int width_ncell; // largeur du monde en nombre de cellules
-   int height_ncell; // hauteur du monde en nombre de celluls
+	public final int width_ncell; // largeur du monde en nombre de cellules
+	public final int height_ncell; // hauteur du monde en nombre de celluls
 
-   double width_cm; // largeur du monde en cm
-   double height_cm; // hauteur du monde en cm
+	public final double width_cm; // largeur du monde en cm
+	public final double height_cm; // hauteur du monde en cm
 
-   private Grid grid; // permet la création de coordonnées en unités ncell
-   private ISU isu; // permet la création de coordonnées en unités cm
-   //Picture pict; // permet la création de coordonnées en unités pixel, ne sera utilisé qu'à
-                             // partir de Task2
+	public final Grid grid; // permet la création de coordonnées en unités ncell
+	public final ISU isu; // permet la création de coordonnées en unités cm
+	public final Picture pict; // permet la création de coordonnées en unités pixel, ne sera
+	// utilisé qu'à
+	// partir de Task2
 
-  // CONSTRUCTORS
+	// CONSTRUCTORS
 
-   public Game(int w_ncell, int h_ncell) { 
-	   this.width_ncell = w_ncell;
-	   this.height_ncell = h_ncell;
-	   
-	   this.width_cm = this.cmPerCell * this.width_ncell;
-	   this.height_cm = this.cmPerCell * this.height_ncell;
-	   
-	   assert( width_ncell * cmPerCell == width_cm );
-	   assert( height_ncell * cmPerCell == height_cm );
-	   
-	   this.grid = new Grid(this);
-	   this.isu = new ISU(this);
-	   //this.pict = new Picture();
-	   this.game = this;
+	public Game(int w_ncell, int h_ncell) {
+		this.width_ncell = w_ncell;
+		this.height_ncell = h_ncell;
 
-   }
+		this.width_cm = this.cmPerCell * this.width_ncell;
+		this.height_cm = this.cmPerCell * this.height_ncell;
 
-   public Game(double w_cm, double h_cm) {
-	   
-	   this.height_cm = h_cm;
-	   this.width_cm = w_cm;
-	   
-	   this.width_ncell = (int) (w_cm % cmPerCell) + 1 ;
-	   this.height_ncell = (int) (h_cm % cmPerCell) + 1 ;
-	   
-	   assert( width_ncell * cmPerCell == width_cm );
-	   assert( height_ncell * cmPerCell == height_cm );
-	   
-	   this.grid = new Grid(this);
-	   this.isu = new ISU(this);
-	   //this.pict = new Picture();
-	   this.game = this;
+		assert (width_ncell * cmPerCell == width_cm);
+		assert (height_ncell * cmPerCell == height_cm);
 
-   }
-   
+		this.grid = new Grid(this);
+		this.isu = new ISU(this);
+		this.pict = new Picture();
+		Game.game = this;
 
-  // GETTER
+	}
 
-   Game game;
+	public Game(double w_cm, double h_cm) {
 
-   Game game() { return game; }
+		this.height_cm = h_cm;
+		this.width_cm = w_cm;
 
-  // SHOW
+		this.width_ncell = (int) (w_cm % cmPerCell) + 1;
+		this.height_ncell = (int) (h_cm % cmPerCell) + 1;
 
-   void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+		assert (width_ncell * cmPerCell == width_cm);
+		assert (height_ncell * cmPerCell == height_cm);
+
+		this.grid = new Grid(this);
+		this.isu = new ISU(this);
+		this.pict = new Picture();
+		Game.game = this;
+
+	}
+
+	// GETTER
+
+	private static Game game;
+
+	static Game game() {
+		return game;
+	}
+
+	// SHOW
+
+	public void show(PrintStream ps) {
+		ps.printf(this.toString());
+		ps.printf("\n width in cm = %f \n height in cm = %f\n width in cell = %d \n height in cell = %d", this.width_cm,
+				this.height_cm, this.width_ncell, this.height_ncell);
+	}
 }

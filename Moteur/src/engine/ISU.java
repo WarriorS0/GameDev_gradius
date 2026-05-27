@@ -6,96 +6,139 @@ public class ISU {
 
 	// FIELDS
 
-	 Axis xAxis, yAxis;
-	 ISU isu;
-	 Grid grid;
+	Axis xAxis, yAxis;
+	ISU isu;
+	Grid grid;
 
 	// CONSTRUCTOR
 
-	 public ISU(Game game) { throw new UnsupportedOperationException("Unimplemented method"); }
+	public ISU(Game game) {
+	}
 
 	// SETTER
 
-	 void set(Grid grid) { throw new UnsupportedOperationException("Unimplemented method"); }
+	void set(Grid grid) {
+		throw new UnsupportedOperationException("Unimplemented method");
+	}
 
 	// == DIMENSION (cm) ==
 
-	 class Dimension {
-		 double x_cm, y_cm;
+	class Dimension {
+		double x_cm, y_cm;
 
 		// CONSTRUCTOR
 
-		 Dimension(double x_cm, double y_cm) { throw new UnsupportedOperationException("Unimplemented method"); }
+		Dimension(double x_cm, double y_cm) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// GEOMETRY
 
-		 void normalize() { throw new UnsupportedOperationException("Unimplemented method"); }
+		void normalize() {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// SETTER
 
-		 void setxy(double x_cm, double y_cm) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void setxy(double x_cm, double y_cm) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// GETTER
 
-		 ISU isu() { return null; }
+		ISU isu() {
+			return null;
+		}
 
 		// EQUALS / EQUIV
-		 boolean equals(Object o) { return false; }
+		boolean equals(Object o) {
+			return false;
+		}
 
-		 boolean equiv(Dimension d) { return false; }
+		boolean equiv(Dimension d) {
+			return false;
+		}
 
 		// GETTER
 
-		 double x() { return 0.0;   }
+		double x() {
+			return 0.0;
+		}
 
-		 double y() { return 0.0;   }
+		double y() {
+			return 0.0;
+		}
 
 		// FACTORY
 
-		 ISU.Vector mkScaledVector(double factor) { return null; }
+		ISU.Vector mkScaledVector(double factor) {
+			return null;
+		}
 
-		 ISU.Vector mkScaledVector(double xFactor, double yFactor) { return null; }
+		ISU.Vector mkScaledVector(double xFactor, double yFactor) {
+			return null;
+		}
 
-		 ISU.Vector mkVector() { return null; }
+		ISU.Vector mkVector() {
+			return null;
+		}
 
 		// SHOW
 
-		void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void show(PrintStream ps) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 	}
 
 	// == POINT ==
 
-	 class Coord  {
+	class Coord {
 
 		// CONSTRUCTOR
 
-		 Coord(double x_cm, double y_cm) { throw new UnsupportedOperationException("Unimplemented method"); }
+		Coord(double x_cm, double y_cm) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// SHOW
 
-		void show(PrintStream ps) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void show(PrintStream ps) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// EQUALS
-		 boolean equals(Object o) { return false; }
+		boolean equals(Object o) {
+			return false;
+		}
 
 		// FACTORY
 
-		 ISU.Vector mkVectorToward(Coord target) { return null; }
+		ISU.Vector mkVectorToward(Coord target) {
+			return null;
+		}
 
 		// CONVERSION
 
-		 Grid.Position toGridPosition() { return null; }
+		Grid.Position toGridPosition() {
+			return null;
+		}
 
 		// TRANSLATION
 
-		 void translate(ISU.Vector v) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void translate(ISU.Vector v) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-		 ISU.Coord mkTranslated(ISU.Vector v) { return null; }
+		ISU.Coord mkTranslated(ISU.Vector v) {
+			return null;
+		}
 
 		// COPY
 
-		 ISU.Coord mkCopy() { return null; }
+		ISU.Coord mkCopy() {
+			return null;
+		}
 
 		// ROTATION
 
@@ -103,18 +146,24 @@ public class ISU {
 		 * @apiNote rotation around the origin (0,0)
 		 * @param angle_degree
 		 */
-		 void rotation(int angle_degree) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void rotation(int angle_degree) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		/**
 		 * @apiNote rotation around the given center
 		 * @param center
 		 * @param angle_degree
 		 */
-		 void rotateAround(Coord center, int angle_degree) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void rotateAround(Coord center, int angle_degree) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// DISTANCE
 
-		 double distanceTo(Coord pt) { return 0.0;   }
+		double distanceTo(Coord pt) {
+			return 0.0;
+		}
 
 	}
 
@@ -125,33 +174,47 @@ public class ISU {
 	 *          poiting at a target coordinate.
 	 * @apiNote Canonocal vectors are defined by their target Coord.
 	 */
-	 class Vector  {
+	class Vector {
 
 		// CONSTRUCTOR
 
-		 Vector(double targetX_cm, double targetY_cm) { throw new UnsupportedOperationException("Unimplemented method"); }
+		Vector(double targetX_cm, double targetY_cm) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// OPERATOR
 
-		 void add(Vector v) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void add(Vector v) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-		 void scale(double factor) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void scale(double factor) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
-		 void scale(double xFactor, double yFactor) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void scale(double xFactor, double yFactor) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		/**
 		 * @apiNote produit scalaire
 		 * @param v
 		 * @return le produit scalaire de `this` et du vecteur v
 		 */
-		 double dot(ISU.Vector v) { return 0.0;   }
+		double dot(ISU.Vector v) {
+			return 0.0;
+		}
 
-		 double norm() { return 0.0;   }
+		double norm() {
+			return 0.0;
+		}
 
 		/**
 		 * @apiNote rend le vecteur unitaire, ie. de norme = 1
 		 */
-		 void unity() { throw new UnsupportedOperationException("Unimplemented method"); }
+		void unity() {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 		// TURN
 
@@ -160,7 +223,9 @@ public class ISU {
 		 * @implNote the center of the rotation is the origin of the vector
 		 * @param angle_degree
 		 */
-		 void turn(int angle_degree) { throw new UnsupportedOperationException("Unimplemented method"); }
+		void turn(int angle_degree) {
+			throw new UnsupportedOperationException("Unimplemented method");
+		}
 
 	}
 
