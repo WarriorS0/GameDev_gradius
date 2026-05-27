@@ -1,6 +1,7 @@
 package engine;
 
 import java.io.PrintStream;
+import java.util.List;
 
 import game.Game;
 
@@ -25,6 +26,7 @@ public class Grid {
 		this.xAxis = new Axis(game.torusOnXaxis, this.width_ncell );
 		this.yAxis = new Axis(game.torusOnYaxis, this.height_ncell);
 		
+		this.isu = new ISU(game);
 		this.grid = new Cell[this.height_ncell][this.width_ncell];
 		
 	}
@@ -84,7 +86,7 @@ public class Grid {
 
 		// EQUALS / EQUIV
 		@Override
-		boolean equals(Object o) {
+		public boolean equals(Object o) {
 			return false;
 		}
 
@@ -133,6 +135,8 @@ public class Grid {
 	// == POINT ==
 
 	class Position {
+		
+		
 
 		// CONSTRUCTOR
 
@@ -147,7 +151,7 @@ public class Grid {
 		}
 
 		// EQUALS
-		boolean equals(Object o) {
+		public boolean equals(Object o) {
 			return false;
 		}
 

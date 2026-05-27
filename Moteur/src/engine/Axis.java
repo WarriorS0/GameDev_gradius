@@ -18,8 +18,8 @@ package engine;
 
 	Axis(boolean onTorus, double perimeter) {
 		this.onTorus = onTorus;
-		if(perimeter <0 )
-			throw new IllegalArgumentException("perimeter need to be positif");
+		if(perimeter <=0 )
+			throw new IllegalArgumentException("perimeter must be positif");
 		this.perimeter = perimeter;
 		this.halfPerimeter = perimeter /2;
 		
@@ -50,17 +50,23 @@ package engine;
 	 * @return length % perimeter __&in; [0, perimeter-1]__
 	 */
 	private int modp(int length, int perimeter) {
-		return length % perimeter;
+		//modulo negatif reste negatif
+		int r = length % perimeter;
+
+	    if (r < 0) {
+	        r += perimeter;
+	    }
+
+	    return r;
 	}
 
 	// NORMALIZE REAL LENGTH
 
 	/**
 	 * @apiNote normalize _real length_ according to the geometry
-	 * @implNote can return negative values
 	 * @return
 	 *         <UL>
-	 *         <LI>length module perimeter <I>&in; [-perimeter/2 , perimeter/2[</I>
+	 *         <LI>length module perimeter <I>&in;[0 ; perimeter[</I>
 	 *         if onTorus</LI>
 	 *         <LI>length if !onTorus</LI>
 	 *         </UL>
@@ -76,7 +82,12 @@ package engine;
 	 * @return length % perimeter __&in; [0, perimeter[__
 	 */
 	private double modp(double length, double perimeter) {
-		return length % perimeter;
+		double r = length % perimeter;
+
+	    if (r < 0) {
+	        r += perimeter;
+	    }
+	    return r;
 	}
 
 	// DISTANCE
@@ -87,7 +98,11 @@ package engine;
 	 * @implNote Look for the detail on internet.
 	 */
 	double distance(double position1, double position2) {
-		double d = Math.abs(position1 - position2);
-		return Math.min(d, perimeter-d);
+		if(this.onTorus) {
+			double d = Math.abs(position1 - position2);
+			return Math.min(d, perimeter-d);
+		}else {
+			return Math.abs(position1 - position2);
+		}
 	}
 }
