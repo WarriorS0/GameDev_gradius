@@ -1,6 +1,10 @@
-// = GRID =
+package engine;
 
- class Grid {
+import java.io.PrintStream;
+
+import game.Game;
+
+public class Grid {
 
   // FIELDS
 
@@ -13,7 +17,7 @@
 
   // CONSTRUCTOR
 
-   Grid(Game game) { throw new UnsupportedOperationException("Unimplemented method"); }
+   public Grid(Game game) { throw new UnsupportedOperationException("Unimplemented method"); }
 
   // INIT
 

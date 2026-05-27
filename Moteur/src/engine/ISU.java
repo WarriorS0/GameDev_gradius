@@ -1,6 +1,8 @@
-// = ISU =
+package engine;
 
- class ISU {
+import game.Game;
+
+public class ISU {
 
 	// FIELDS
 
@@ -10,7 +12,7 @@
 
 	// CONSTRUCTOR
 
-	 ISU(Game game) { throw new UnsupportedOperationException("Unimplemented method"); }
+	 public ISU(Game game) { throw new UnsupportedOperationException("Unimplemented method"); }
 
 	// SETTER
 

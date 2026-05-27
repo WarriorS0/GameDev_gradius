@@ -30,8 +30,8 @@ Dans un premier temps, on considère deux _packages_
 Répondez aux questions _avant de_ commencer à compléter le squelette de code.
 
 * __QUESTIONS__
-  - Dans quel _package_ mettre `Game` ?
-  - La classe `Game` est-elle _abstraite_ ou _concrète_ ?
+  - Dans quel _package_ mettre `Game` ? game
+  - La classe `Game` est-elle _abstraite_ ou _concrète_ ? concrete
   - Comment s'assurer que les dimensions en «cm» et en «nombre de cellules» sont cohérentes ?
   - Quelle contrainte (sous forme d'assertion) faut-il mettre ? Où placer les assertions ? 
 

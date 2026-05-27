@@ -1,12 +1,11 @@
-// = AXIS =
-
+package engine;
 /**
  * @apiNote Axis of a Torus with origin at 0
  * @implNote Coordinate ranges in [ -perimeter/2 ; perimeter/2 [
  * @implNote Negative coordinate are allowed
  */
 
- class Axis {
+public class Axis {
 
 	// FIELDS
 
