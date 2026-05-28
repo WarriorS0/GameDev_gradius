@@ -43,11 +43,12 @@ public class Game {
 
 		assert (width_ncell * cmPerCell == width_cm);
 		assert (height_ncell * cmPerCell == height_cm);
-
-		this.grid = new Grid(this);
-		this.isu = new ISU(this);
-		this.pict = new Picture();
+		
 		Game.game = this;
+		this.isu = new ISU(this);
+		this.grid = new Grid(this);
+		this.pict = new Picture();
+		
 
 	}
 
@@ -73,11 +74,12 @@ public class Game {
 
 		assert (width_ncell * cmPerCell == width_cm);
 		assert (height_ncell * cmPerCell == height_cm);
-
+		
+		Game.game = this;
 		this.grid = new Grid(this);
 		this.isu = new ISU(this);
 		this.pict = new Picture();
-		Game.game = this;
+		
 
 	}
 
@@ -85,7 +87,7 @@ public class Game {
 
 	private static Game game;
 
-	static Game game() {
+	public static Game game() {
 		return game;
 	}
 

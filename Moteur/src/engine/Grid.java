@@ -1,6 +1,7 @@
 package engine;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import game.Game;
@@ -19,22 +20,27 @@ public class Grid {
 	// CONSTRUCTOR
 
 	public Grid(Game game) {
-		
-		this.width_ncell =game.width_ncell;
-		this.height_ncell= game.height_ncell;
 
-		this.xAxis = new Axis(game.torusOnXaxis, this.width_ncell );
+		this.width_ncell = game.width_ncell;
+		this.height_ncell = game.height_ncell;
+
+		this.xAxis = new Axis(game.torusOnXaxis, this.width_ncell);
 		this.yAxis = new Axis(game.torusOnYaxis, this.height_ncell);
-		
-		this.isu = new ISU(game);
+
+		this.isu = game.isu;
 		this.grid = new Cell[this.height_ncell][this.width_ncell];
-		
+		init();
+
 	}
 
 	// INIT
 
 	void init() {
-		throw new UnsupportedOperationException("Unimplemented method");
+		for (int i = 0; i < this.width_ncell; i++) {
+			for (int j = 0; j < this.height_ncell; j++) {
+				grid[j][i] = new Cell(new Position(i, j));
+			}
+		}
 	}
 
 	// GETTER
@@ -48,13 +54,14 @@ public class Grid {
 	}
 
 	Grid.Cell cellAt(Grid.Position p) {
-		
+		return grid[p.y_ncell][p.x_ncell];
 	}
 
 	// SHOW
 
 	void show(PrintStream ps) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		ps.printf(this.toString());
+		ps.printf(" w = %d \n h = %d", this.width_ncell, this.height_ncell);
 	}
 
 	// == DIMENSION (nb cell) ==
@@ -65,119 +72,148 @@ public class Grid {
 		// CONSTRUCTOR
 
 		Dimension(int x_ncell, int y_ncell) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_ncell = x_ncell;
+			this.y_ncell = y_ncell;
+			this.normalize();
 		}
 
 		// GETTER
 
 		int x() {
-			return 0;
+			return this.x_ncell;
 		}
 
 		int y() {
-			return 0;
+			return this.y_ncell;
 		}
 
 		// GEOMETRY
 
 		void normalize() {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_ncell = Grid.this.xAxis.normalize(x_ncell);
+			this.y_ncell = Grid.this.yAxis.normalize(y_ncell);
 		}
 
 		// EQUALS / EQUIV
 		@Override
 		public boolean equals(Object o) {
+			if (o instanceof Grid.Dimension) {
+				return this.equiv((Grid.Dimension) o);
+			}
 			return false;
 		}
-
+		
 		boolean equiv(Dimension d) {
-			return false;
+			return ((this.x_ncell == d.x_ncell) && (this.y_ncell == d.y_ncell));
 		}
 
 		// CONVERSION
 
 		ISU.Dimension toISUDimension() {
+			// TODO
 			return null;
 		}
 
 		// SHOW
 
 		void show(PrintStream ps) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			ps.printf(" x = %d \n y = %d", this.x_ncell, this.y_ncell);
 		}
 
 	}
 
 	// == VECTOR ==
 
-	class Vector {
+	class Vector extends Dimension {
 
 		// CONSTRUCTOR
 
 		Vector(int x_ncell, int y_ncell) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			super(x_ncell, y_ncell);
 		}
 
 		// OPERATION
 
 		void add(Vector v) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_ncell += v.x_ncell;
+			this.y_ncell += v.y_ncell;
+
+			super.normalize();
+
 		}
 
 		// SHOW
 
 		void show(PrintStream ps) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			ps.printf("Le vecteur " + this.toString() + " vaut :");
+			super.show(ps);
 		}
 
 	}
 
 	// == POINT ==
 
-	class Position {
-		
-		
+	class Position extends Dimension {
 
 		// CONSTRUCTOR
 
 		Position(int x_ncell, int y_ncell) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			super(x_ncell, y_ncell);
 		}
-
 		// COPY ? if needed
 
 		Grid.Position copy() {
-			return null;
+			return new Position(this.x_ncell, this.y_ncell);
 		}
 
 		// EQUALS
+		@Override
 		public boolean equals(Object o) {
+			if (o instanceof Grid.Position) {
+				return super.equiv((Grid.Dimension) o);
+			}
 			return false;
 		}
 
 		// TRANSLATION
 
 		void translate(Vector v) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_ncell += v.x_ncell;
+			this.y_ncell += v.y_ncell;
+			super.normalize();
 		}
 
 		void moveNorth(int n_ncell) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.y_ncell -= n_ncell;
+			this.y_ncell = Grid.this.yAxis.normalize(this.y_ncell);
 		}
 
 		// ROTATION ? if needed
 
 		void rotateAround(Grid.Position position, int angle_degree) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			int tempX = this.x_ncell;
+			int tempY = this.y_ncell;
+			double angle_radian = Math.toRadians(angle_degree);
+			this.x_ncell = (int) (position.x_ncell + (tempX - position.x_ncell) * Math.cos(angle_radian)
+					- (tempY - position.y_ncell) * Math.sin(angle_radian));
+			this.y_ncell = (int) (position.y_ncell + (tempX - position.x_ncell) * Math.sin(angle_radian)
+					+ (tempY - position.y_ncell) * Math.cos(angle_radian));
+			super.normalize();
+
 		}
 
 		// DISTANCE
 
 		double distanceTo(Position p) {
-			return 0.0;
+
+			double distX = Grid.this.xAxis.distance(this.x_ncell, p.x_ncell);
+			double distY = Grid.this.yAxis.distance(this.y_ncell, p.y_ncell);
+			return Math.sqrt(distX * distX + distY * distY);
 		}
 
 		// CONVERSION
+
+		// TODO
 
 		ISU.Coord toISUCoord() {
 			return null;
@@ -194,7 +230,8 @@ public class Grid {
 		// SHOW
 
 		void show(PrintStream ps) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			ps.printf("LA position " + this.toString() + " est :");
+			super.show(ps);
 		}
 
 	}
@@ -210,31 +247,35 @@ public class Grid {
 		// CONSTRUCTOR
 
 		Cell(Position p) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.position = p;
+			this.size = new Grid.Dimension(1, 1);
+			this.entities = new ArrayList<Entity>();
+
 		}
 
 		// ADD
 
 		void add(Entity e) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.entities.add(e);
 		}
 
 		// REMOVE
 
 		void remove(Entity e) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.entities.remove(e);
 		}
 
 		// PREDICATE
 
 		boolean contains(Entity e) {
-			return false;
+			return this.entities.contains(e);
 		}
 
 		// SHOW
 
 		void show(PrintStream ps) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			ps.printf("La cellule " + this.toString() + " est à la position : (%d,%d) et contient %d entitées",
+					this.position.x_ncell, this.position.y_ncell, this.entities.size());
 		}
 
 	}
