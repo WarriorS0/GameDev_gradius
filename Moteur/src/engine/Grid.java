@@ -10,12 +10,12 @@ public class Grid {
 
 	// FIELDS
 
-	ISU isu;
-	Axis xAxis, yAxis;
+	private ISU isu;
+	private Axis xAxis, yAxis;
 
-	int width_ncell, height_ncell;
+	private int width_ncell, height_ncell;
 
-	Cell[][] grid;
+	private Cell[][] grid;
 
 	// CONSTRUCTOR
 
@@ -35,7 +35,7 @@ public class Grid {
 
 	// INIT
 
-	void init() {
+	private void init() {
 		for (int i = 0; i < this.width_ncell; i++) {
 			for (int j = 0; j < this.height_ncell; j++) {
 				grid[j][i] = new Cell(new Position(i, j));
@@ -45,11 +45,11 @@ public class Grid {
 
 	// GETTER
 
-	int width() {
+	public int width() {
 		return this.width_ncell;
 	}
 
-	int height() {
+	public int height() {
 		return this.height_ncell;
 	}
 

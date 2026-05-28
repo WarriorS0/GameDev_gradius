@@ -97,6 +97,15 @@ class GridTest {
 		assertEquals(3, d.x());
 		assertEquals(4, d.y());
 	}
+	
+	@Test
+	@DisplayName("Dimension equals")
+	void dimensionEquals() {
+		Grid.Dimension d = dim(4,4);
+		assertTrue(d.equals(((Object) d)));
+		assertTrue(d.equiv(d));
+		assertFalse(d.equals((Object) dim(4,5)));
+	}
 
 	@Test
 	@DisplayName("Dimension.normalize should wrap negative coordinates on torus")
