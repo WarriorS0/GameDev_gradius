@@ -11,11 +11,13 @@ public class ISU {
 	private Axis xAxis, yAxis;
 	private ISU isu;
 	private Grid grid;
-
+	
 	// CONSTRUCTOR
 
 	public ISU(Game game) {
 		this.isu = this;
+		this.xAxis = new Axis(game.torusOnXaxis, game.width_cm);
+		this.yAxis = new Axis(game.torusOnYaxis, game.height_cm);
 		// mettre à la fin du constructeur de grid set pour finir d init isu
 	}
 
@@ -23,13 +25,11 @@ public class ISU {
 
 	void set(Grid grid) {
 		this.grid = grid;
-		this.xAxis = grid.xAxis;
-		this.yAxis = grid.yAxis;
 	}
 
 	// == DIMENSION (cm) ==
 
-	class Dimension {
+	 class Dimension {
 		double x_cm, y_cm;
 
 		// CONSTRUCTOR
@@ -43,6 +43,9 @@ public class ISU {
 		// GEOMETRY
 
 		void normalize() {
+			if (xAxis == null || yAxis == null) {
+				throw new IllegalStateException("Axis not init");
+			}
 			this.x_cm = xAxis.normalize(x_cm);
 			this.y_cm = yAxis.normalize(y_cm);
 		}
@@ -50,8 +53,9 @@ public class ISU {
 		// SETTER
 
 		void setxy(double x_cm, double y_cm) {
-			this.x_cm = xAxis.normalize(x_cm);
-			this.y_cm = yAxis.normalize(y_cm);
+			this.x_cm = x_cm;
+			this.y_cm = y_cm;
+			this.normalize();
 		}
 
 		// GETTER
@@ -70,7 +74,13 @@ public class ISU {
 		}
 
 		protected boolean equiv(Dimension d) {
-			return (this.x_cm == d.x_cm) && (this.y_cm == d.y_cm);
+			if ((this instanceof Vector && d instanceof Vector) || (this instanceof Coord && d instanceof Coord)) {
+				double epsilon =1e-9;
+				double deltaX = Math.abs( this.x_cm - d.x_cm);
+				double deltaY = Math.abs(this.y_cm - d.y_cm);
+				return (deltaX < epsilon) && (deltaY < epsilon);
+			}
+			return false;
 		}
 
 		// GETTER
@@ -100,7 +110,7 @@ public class ISU {
 		// SHOW
 
 		void show(PrintStream ps) {
-			ps.printf(" x = %d cm \n y = %d cm\n", this.x_cm, this.y_cm);
+			ps.printf(" x = %f cm \n y = %f cm\n", this.x_cm, this.y_cm);
 		}
 
 	}
@@ -140,7 +150,13 @@ public class ISU {
 		// CONVERSION
 
 		Grid.Position toGridPosition() {
-			return null;
+			if (Game.game() == null || grid == null) {
+			    throw new IllegalStateException("ISU not linked to game/grid");
+			}
+			
+			int x_cell = (int) (this.x_cm / Game.game().cmPerCell);
+			int y_cell = (int) (this.y_cm / Game.game().cmPerCell);
+			return isu().grid.new Position(x_cell, y_cell);
 		}
 
 		// TRANSLATION
@@ -168,7 +184,7 @@ public class ISU {
 		 * @param angle_degree
 		 */
 		void rotation(int angle_degree) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.rotateAround(new Coord(0, 0), angle_degree);
 		}
 
 		/**
@@ -177,13 +193,21 @@ public class ISU {
 		 * @param angle_degree
 		 */
 		void rotateAround(Coord center, int angle_degree) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			double tempX = this.x_cm;
+			double tempY = this.y_cm;
+			this.x_cm = center.x_cm + (tempX - center.x_cm) * Math.cos(Math.toRadians(angle_degree))
+					- (tempY - center.y_cm) * Math.sin(Math.toRadians(angle_degree));
+			this.y_cm = center.y_cm + (tempX - center.x_cm) * Math.sin(Math.toRadians(angle_degree))
+					+ (tempY - center.y_cm) * Math.cos(Math.toRadians(angle_degree));
+			this.normalize();
 		}
 
 		// DISTANCE
 
 		double distanceTo(Coord pt) {
-			return 0.0;
+			double distX = xAxis.distance(this.x_cm, pt.x_cm);
+			double distY = yAxis.distance(this.y_cm, pt.y_cm);
+			return Math.sqrt(distX * distX + distY * distY);
 		}
 
 	}
@@ -206,15 +230,21 @@ public class ISU {
 		// OPERATOR
 
 		void add(Vector v) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_cm += v.x_cm;
+			this.y_cm += v.y_cm;
+			this.normalize();
 		}
 
 		void scale(double factor) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_cm *= factor;
+			this.y_cm *= factor;
+			this.normalize();
 		}
 
 		void scale(double xFactor, double yFactor) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_cm *= xFactor;
+			this.y_cm *= yFactor;
+			this.normalize();
 		}
 
 		/**
@@ -223,18 +253,24 @@ public class ISU {
 		 * @return le produit scalaire de `this` et du vecteur v
 		 */
 		double dot(ISU.Vector v) {
-			return 0.0;
+			return (this.x_cm * v.x_cm) + (this.y_cm * v.y_cm);
 		}
 
 		double norm() {
-			return 0.0;
+			return Math.sqrt(this.dot(this));
 		}
 
 		/**
 		 * @apiNote rend le vecteur unitaire, ie. de norme = 1
 		 */
 		void unity() {
-			throw new UnsupportedOperationException("Unimplemented method");
+			double norm = this.norm();
+			if (norm == 0) {
+				throw new IllegalStateException("Cannot normalize zero vector");
+			}
+			this.x_cm /= norm;
+			this.y_cm /= norm;
+			this.normalize();
 		}
 
 		// TURN
@@ -245,7 +281,11 @@ public class ISU {
 		 * @param angle_degree
 		 */
 		void turn(int angle_degree) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			double tempX = this.x_cm;
+			double tempY = this.y_cm;
+			this.x_cm = tempX * Math.cos(Math.toRadians(angle_degree)) - tempY * Math.sin(Math.toRadians(angle_degree));
+			this.y_cm = tempX * Math.sin(Math.toRadians(angle_degree)) + tempY * Math.cos(Math.toRadians(angle_degree));
+			this.normalize();
 		}
 
 	}

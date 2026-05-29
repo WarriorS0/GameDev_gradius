@@ -1,5 +1,7 @@
 package engine;
 
+import game.Game;
+
 /**
  * @apiNote Axis of a Torus with origin at 0
  * @implNote Coordinate ranges in [ -perimeter/2 ; perimeter/2 [
@@ -20,7 +22,7 @@ package engine;
 		this.onTorus = onTorus;
 		if(perimeter <=0 )
 			throw new IllegalArgumentException("perimeter must be positif");
-		this.perimeter = perimeter;
+		this.perimeter = perimeter ;
 		this.halfPerimeter = perimeter /2;
 		
 	}
@@ -40,7 +42,7 @@ package engine;
 	 */
 	protected int normalize(int length) {
 		if(onTorus) {
-			return modp(length, (int) perimeter);
+			return modp(length, (int) (perimeter));
 		}
 		return length;
 	}

@@ -76,8 +76,8 @@ public class Game {
 		assert (height_ncell * cmPerCell == height_cm);
 		
 		Game.game = this;
-		this.grid = new Grid(this);
 		this.isu = new ISU(this);
+		this.grid = new Grid(this);
 		this.pict = new Picture();
 		
 

@@ -1,70 +1,79 @@
 // == ENTITY ==
 
+package engine;
+
+import java.io.PrintStream;
+
 class Entity {
 
 	// FIELDS
 
-	Grid grid;
-	ISU isu;
-	String name;
+	private Grid grid;
+	private ISU isu;
+	private String name;
 
 	// FIELDS
 
-	ISU.Dimension size; // dimension de l'entité
-	ISU.Dimension step; // dimension d'un pas de déplacement
-	Grid.Position position; // position dans la grille
-	ISU.Coord center; // coordonnées en cm du centre de l'entité
+	private ISU.Dimension size; // dimension de l'entité
+	private ISU.Dimension step; // dimension d'un pas de déplacement
+	private Grid.Position position; // position dans la grille
+	private ISU.Coord center; // coordonnées en cm du centre de l'entité
 
 	// FIELDS
 
-	int orientation_degree; // orientation par rapport à l'axe des x
+	private int orientation_degree; // orientation par rapport à l'axe des x
 
 	// CONSTRUCTOR
 
 	Entity(String name) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.name = name;
+
 	}
 
 	// SETTER
 
 	void setPosition(Grid.Position position) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.position = position;
+		center = position.toISUCoord();
 	}
 
 	void setCoord(ISU.Coord center) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.center = center;
+		position = center.toGridPosition();
 	}
 
 	void setSize(Grid.Dimension dimension) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.size = dimension.toISUDimension();
 	}
 
 	void setSize(ISU.Dimension dimension) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.size = dimension;
 	}
 
 	// GETTER
 
 	ISU.Coord center() {
-		return null;
+		return this.center;
 	}
 
 	Grid.Position position() {
-		return null;
+		return position;
 	}
 
 	int orientation() {
-		return 0;
+		return this.orientation_degree;
 	}
 
 	// TRANSLATION
 
 	void translate(Grid.Vector v) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		position.translate(v);
+		this.setPosition(position);
 	}
 
 	void translate(ISU.Vector v) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		center.translate(v);
+		this.setCoord(center);
 	}
 
 	// TURN
@@ -74,13 +83,13 @@ class Entity {
 	 * @param angle_degree
 	 */
 	void turn(int angle_degree) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.orientation_degree = (((this.orientation_degree % 360) + 360) % 360);
 	}
 
 	// SHOW
 
 	void show(PrintStream ps) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		ps.printf("Entity = %s in (%d,%d) cell\n", this.name, this.position.x_ncell, this.position.y_ncell);
 	}
 
 	// === MOVE ===
@@ -90,7 +99,7 @@ class Entity {
 	 * @param nStep
 	 */
 	void moveNorth(int nStep) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		
 	}
 
 	void moveSouth(int nStep) {

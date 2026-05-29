@@ -11,7 +11,7 @@ public class Grid {
 	// FIELDS
 
 	private ISU isu;
-	protected Axis xAxis, yAxis; //getter ?
+	protected Axis xAxis, yAxis; // getter ?
 
 	private int width_ncell, height_ncell;
 
@@ -29,6 +29,7 @@ public class Grid {
 
 		this.isu = game.isu;
 		this.grid = new Cell[this.height_ncell][this.width_ncell];
+		isu.set(this);
 		init();
 
 	}
@@ -102,7 +103,7 @@ public class Grid {
 			}
 			return false;
 		}
-		
+
 		boolean equiv(Dimension d) {
 			return ((this.x_ncell == d.x_ncell) && (this.y_ncell == d.y_ncell));
 		}
@@ -110,8 +111,7 @@ public class Grid {
 		// CONVERSION
 
 		ISU.Dimension toISUDimension() {
-			// TODO
-			return null;
+			return isu.new Dimension(this.x_ncell * Game.game().cmPerCell, this.y_ncell * Game.game().cmPerCell);
 		}
 
 		// SHOW
@@ -213,20 +213,20 @@ public class Grid {
 
 		// CONVERSION
 
-		// TODO
+
 
 		ISU.Coord toISUCoord() {
-			return null;
+			return isu.new Coord(this.x_ncell * Game.game().cmPerCell - Game.game().cmPerCell/2, this.y_ncell * Game.game().cmPerCell - Game.game().cmPerCell/2);
 		}
 
 		ISU.Coord toISUCoordCentered() {
-			return null;
+			return isu.new Coord(this.x_ncell * Game.game().cmPerCell, this.y_ncell * Game.game().cmPerCell);
 		}
 
 		Picture.Pixel toPicturePixel() {
+			//TODO
 			return null;
 		}
-
 		// SHOW
 
 		void show(PrintStream ps) {
