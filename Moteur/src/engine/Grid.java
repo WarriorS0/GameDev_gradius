@@ -11,7 +11,7 @@ public class Grid {
 	// FIELDS
 
 	private ISU isu;
-	private Axis xAxis, yAxis;
+	protected Axis xAxis, yAxis; //getter ?
 
 	private int width_ncell, height_ncell;
 

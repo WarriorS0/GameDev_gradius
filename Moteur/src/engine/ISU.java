@@ -37,6 +37,7 @@ public class ISU {
 		Dimension(double x_cm, double y_cm) {
 			this.x_cm = x_cm;
 			this.y_cm = y_cm;
+			this.normalize();
 		}
 
 		// GEOMETRY
@@ -63,7 +64,7 @@ public class ISU {
 		@Override
 		public boolean equals(Object o) {
 			if (o instanceof Dimension) {
-				return this.equiv(d);
+				return this.equiv((Dimension) o);
 			}
 			return false;
 		}
@@ -75,25 +76,25 @@ public class ISU {
 		// GETTER
 
 		public double x() {
-			return 0.0;
+			return this.x_cm;
 		}
 
 		public double y() {
-			return 0.0;
+			return this.y_cm;
 		}
 
 		// FACTORY
 
 		ISU.Vector mkScaledVector(double factor) {
-			return null;
+			return new Vector(this.x_cm * factor, this.y_cm * factor);
 		}
 
 		ISU.Vector mkScaledVector(double xFactor, double yFactor) {
-			return null;
+			return new Vector(this.x_cm * xFactor, this.y_cm * yFactor);
 		}
 
 		ISU.Vector mkVector() {
-			return null;
+			return new Vector(this.x_cm, this.y_cm);
 		}
 
 		// SHOW
@@ -124,7 +125,7 @@ public class ISU {
 		// EQUALS
 		@Override
 		public boolean equals(Object o) {
-			if(o instanceof Coord) {
+			if (o instanceof Coord) {
 				return super.equals(o);
 			}
 			return false;
@@ -133,7 +134,7 @@ public class ISU {
 		// FACTORY
 
 		ISU.Vector mkVectorToward(Coord target) {
-			return null;
+			return new Vector(target.x_cm - this.x_cm, target.y_cm - this.y_cm);
 		}
 
 		// CONVERSION
@@ -145,17 +146,19 @@ public class ISU {
 		// TRANSLATION
 
 		void translate(ISU.Vector v) {
-			throw new UnsupportedOperationException("Unimplemented method");
+			this.x_cm += v.x_cm;
+			this.y_cm += v.y_cm;
+			this.normalize();
 		}
 
 		ISU.Coord mkTranslated(ISU.Vector v) {
-			return null;
+			return new Coord(this.x_cm + v.x_cm, this.y_cm + v.y_cm);
 		}
 
 		// COPY
 
 		ISU.Coord mkCopy() {
-			return null;
+			return new Coord(this.x_cm, this.y_cm);
 		}
 
 		// ROTATION
@@ -197,7 +200,7 @@ public class ISU {
 		// CONSTRUCTOR
 
 		Vector(double targetX_cm, double targetY_cm) {
-
+			super(targetX_cm, targetY_cm);
 		}
 
 		// OPERATOR
