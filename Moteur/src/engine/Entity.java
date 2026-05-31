@@ -99,7 +99,7 @@ class Entity {
 	 * @param nStep
 	 */
 	void moveNorth(int nStep) {
-		step.
+		Grid.Vector = ()
 		this.translate(grid.new Vector(0, -nStep));
 	}
 
