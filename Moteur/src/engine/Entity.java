@@ -99,11 +99,20 @@ class Entity {
 	 * @param nStep
 	 */
 	void moveNorth(int nStep) {
-		
+		step.
+		this.translate(grid.new Vector(0, -nStep));
 	}
 
 	void moveSouth(int nStep) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.translate(grid.new Vector(0, nStep));
+	}
+
+	void moveEast(int nStep) {
+		this.translate(grid.new Vector(nStep, 0));
+	}
+
+	void moveWest(int nStep) {
+		this.translate(grid.new Vector(-nStep, 0));
 	}
 
 	/**
@@ -111,11 +120,19 @@ class Entity {
 	 * @param length_cm
 	 */
 	void moveEast(double length_cm) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.translate(isu.new Vector(length_cm, 0));
 	}
 
 	void moveWest(double length_cm) {
-		throw new UnsupportedOperationException("Unimplemented method");
+		this.translate(isu.new Vector(-length_cm, 0));
+	}
+
+	void moveNorth(double length_cm) {
+		this.translate(isu.new Vector(0, -length_cm));
+	}
+
+	void moveSouth(double length_cm) {
+		this.translate(isu.new Vector(0, length_cm));
 	}
 
 }
