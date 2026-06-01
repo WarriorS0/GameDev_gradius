@@ -3,26 +3,32 @@ package engine.shape;
 
 import engine.geometry.ISU;
 
-class Circle {
+public class Circle extends Shape{
 
 	double radius;
 
 	// CONSTRUCTOR
 
 	Circle(ISU.Coord center, double radius) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Circle`");
+		super(center);
+		
 	}
 
 	// INTERSECTION
-	boolean intersects(Rect rect) {
+	@Override
+	public boolean intersects(Rect rect) {
 		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
 	}
-
-	boolean intersects(Circle circle) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+	
+	@Override
+	public boolean intersects(Circle circle) {
+		if(this.center.distanceTo(circle.center) < this.radius + circle.radius)
+			return true;
+		return false;
 	}
-
-	boolean intersects(iShape shape) {
+	
+	@Override
+	public boolean intersects(iShape shape) {
 		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
 	}
 

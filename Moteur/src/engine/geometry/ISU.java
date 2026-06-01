@@ -204,7 +204,7 @@ public class ISU {
 
 		// DISTANCE
 
-		double distanceTo(Coord pt) {
+		public double distanceTo(Coord pt) {
 			double distX = xAxis.distance(this.x_cm, pt.x_cm);
 			double distY = yAxis.distance(this.y_cm, pt.y_cm);
 			return Math.sqrt(distX * distX + distY * distY);

@@ -1,8 +1,9 @@
 package engine.shape;
 
 import engine.geometry.ISU;
+import game.Game;
 
-class Shape {
+abstract class Shape implements iShape {
 
 	// FIELD
 
@@ -12,7 +13,18 @@ class Shape {
 	// CONSTRUCTOR
 
 	Shape(ISU.Coord center) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Shape`");
+		this.isu = Game.game().isu;
+		this.center = center;
 	}
 
+	@Override
+	public boolean intersects(iShape shape) {
+		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+
+	}
+
+	@Override
+	abstract public boolean intersects(Circle circle);
+	@Override
+	abstract public boolean intersects(Rect rect);
 }

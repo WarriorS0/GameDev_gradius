@@ -3,7 +3,7 @@ package engine.shape;
 
 import engine.geometry.ISU;
 
-class Rect  {
+public class Rect  extends Shape{
 
   // FIELDS
 
@@ -12,7 +12,12 @@ class Rect  {
 
   // CONSTRUCTOR
 
-   Rect(ISU.Coord center, ISU.Dimension size, int angle_degree){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Rect`"); }
+   Rect(ISU.Coord center, ISU.Dimension size, int angle_degree){ 
+	   super(center);
+	   this.halfHeight = size.y()/2;
+	   this.halfWidth = size.x() /2;
+	   this.angle_degree = angle_degree;
+   }
 
   // TRANSLATION ?
 

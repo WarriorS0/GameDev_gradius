@@ -26,6 +26,8 @@ public class Entity {
 	// FIELDS
 
 	private int orientation_degree; // orientation par rapport à l'axe des x
+	
+	private Bounding hitbox;
 
 	// CONSTRUCTOR
 
@@ -34,6 +36,7 @@ public class Entity {
 		this.name = name;
 		this.grid = game.grid;
 		this.isu = game.isu;
+		this.hitbox = new Bounding();
 
 	}
 
@@ -161,6 +164,12 @@ public class Entity {
 		    throw new IllegalStateException("Entity step is not set");
 		}
 		this.translate(isu.new Vector(0, length_cm));
+	}
+	
+	// INTERSECTION
+	
+	public boolean intersects(Entity e) {
+		return this.hitbox.intersects(e.hitbox);
 	}
 
 }
