@@ -1,6 +1,9 @@
 // = Rect =
+package engine.shape;
 
- class Rect  {
+import engine.geometry.ISU;
+
+class Rect  {
 
   // FIELDS
 

@@ -1,4 +1,8 @@
-// = BOUNDING =
+package engine.entity;
+
+import java.util.Set;
+
+import engine.shape.iShape;
 
  class Bounding {
 
