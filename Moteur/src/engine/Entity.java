@@ -4,6 +4,8 @@ package engine;
 
 import java.io.PrintStream;
 
+import game.Game;
+
 class Entity {
 
 	// FIELDS
@@ -26,7 +28,10 @@ class Entity {
 	// CONSTRUCTOR
 
 	Entity(String name) {
+		Game game= Game.game();
 		this.name = name;
+		this.grid = game.grid;
+		this.isu = game.isu;
 
 	}
 
@@ -49,6 +54,10 @@ class Entity {
 	void setSize(ISU.Dimension dimension) {
 		this.size = dimension;
 	}
+	
+	void setStep(ISU.Dimension dimension) {
+		this.step = dimension;
+	}
 
 	// GETTER
 
@@ -67,11 +76,17 @@ class Entity {
 	// TRANSLATION
 
 	void translate(Grid.Vector v) {
+		if (position == null) {
+		    throw new IllegalStateException("Entity position is not set");
+		}
 		position.translate(v);
 		this.setPosition(position);
 	}
 
 	void translate(ISU.Vector v) {
+		if (center == null) {
+		    throw new IllegalStateException("Entity center is not set");
+		}
 		center.translate(v);
 		this.setCoord(center);
 	}
@@ -83,7 +98,7 @@ class Entity {
 	 * @param angle_degree
 	 */
 	void turn(int angle_degree) {
-		this.orientation_degree = (((this.orientation_degree % 360) + 360) % 360);
+		this.orientation_degree = ((((this.orientation_degree + angle_degree) % 360) + 360) % 360);
 	}
 
 	// SHOW
@@ -99,20 +114,19 @@ class Entity {
 	 * @param nStep
 	 */
 	void moveNorth(int nStep) {
-		Grid.Vector = ()
-		this.translate(grid.new Vector(0, -nStep));
+		this.moveNorth(nStep * step.y());
 	}
 
 	void moveSouth(int nStep) {
-		this.translate(grid.new Vector(0, nStep));
+		this.moveSouth(nStep * step.y());
 	}
 
 	void moveEast(int nStep) {
-		this.translate(grid.new Vector(nStep, 0));
+		this.moveEast(nStep * step.x());
 	}
 
 	void moveWest(int nStep) {
-		this.translate(grid.new Vector(-nStep, 0));
+		this.moveWest(nStep *  step.x());
 	}
 
 	/**
@@ -120,18 +134,30 @@ class Entity {
 	 * @param length_cm
 	 */
 	void moveEast(double length_cm) {
+		if (step == null) {
+		    throw new IllegalStateException("Entity step is not set");
+		}
 		this.translate(isu.new Vector(length_cm, 0));
 	}
 
 	void moveWest(double length_cm) {
+		if (step == null) {
+		    throw new IllegalStateException("Entity step is not set");
+		}
 		this.translate(isu.new Vector(-length_cm, 0));
 	}
 
 	void moveNorth(double length_cm) {
+		if (step == null) {
+		    throw new IllegalStateException("Entity step is not set");
+		}
 		this.translate(isu.new Vector(0, -length_cm));
 	}
 
 	void moveSouth(double length_cm) {
+		if (step == null) {
+		    throw new IllegalStateException("Entity step is not set");
+		}
 		this.translate(isu.new Vector(0, length_cm));
 	}
 
