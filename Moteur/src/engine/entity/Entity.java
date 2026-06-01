@@ -1,12 +1,14 @@
 // == ENTITY ==
 
-package engine;
+package engine.entity;
 
 import java.io.PrintStream;
 
+import engine.geometry.Grid;
+import engine.geometry.ISU;
 import game.Game;
 
-class Entity {
+public class Entity {
 
 	// FIELDS
 
@@ -104,7 +106,7 @@ class Entity {
 	// SHOW
 
 	void show(PrintStream ps) {
-		ps.printf("Entity = %s in (%d,%d) cell\n", this.name, this.position.x_ncell, this.position.y_ncell);
+		ps.printf("Entity = %s in (%d,%d) cell\n", this.name, this.position.x(), this.position.y());
 	}
 
 	// === MOVE ===

@@ -1,8 +1,8 @@
 package game;
 
-import engine.Grid;
-import engine.ISU;
-import engine.Picture;
+import engine.geometry.Grid;
+import engine.geometry.ISU;
+import engine.geometry.Picture;
 
 import java.io.PrintStream;
 

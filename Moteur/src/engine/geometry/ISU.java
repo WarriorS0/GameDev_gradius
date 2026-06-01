@@ -1,4 +1,4 @@
-package engine;
+package engine.geometry;
 
 import java.io.PrintStream;
 
@@ -29,12 +29,12 @@ public class ISU {
 
 	// == DIMENSION (cm) ==
 
-	 class Dimension {
+	 public class Dimension {
 		double x_cm, y_cm;
 
 		// CONSTRUCTOR
 
-		Dimension(double x_cm, double y_cm) {
+		public Dimension(double x_cm, double y_cm) {
 			this.x_cm = x_cm;
 			this.y_cm = y_cm;
 			this.normalize();
@@ -117,7 +117,7 @@ public class ISU {
 
 	// == POINT ==
 
-	class Coord extends Dimension {
+	public class Coord extends Dimension {
 
 		// CONSTRUCTOR
 
@@ -149,7 +149,7 @@ public class ISU {
 
 		// CONVERSION
 
-		Grid.Position toGridPosition() {
+		public Grid.Position toGridPosition() {
 			if (Game.game() == null || grid == null) {
 			    throw new IllegalStateException("ISU not linked to game/grid");
 			}
@@ -161,7 +161,7 @@ public class ISU {
 
 		// TRANSLATION
 
-		void translate(ISU.Vector v) {
+		public void translate(ISU.Vector v) {
 			this.x_cm += v.x_cm;
 			this.y_cm += v.y_cm;
 			this.normalize();
@@ -219,11 +219,11 @@ public class ISU {
 	 *          poiting at a target coordinate.
 	 * @apiNote Canonocal vectors are defined by their target Coord.
 	 */
-	class Vector extends Dimension {
+	public class Vector extends Dimension {
 
 		// CONSTRUCTOR
 
-		Vector(double targetX_cm, double targetY_cm) {
+		public Vector(double targetX_cm, double targetY_cm) {
 			super(targetX_cm, targetY_cm);
 		}
 

@@ -1,10 +1,13 @@
-package engine;
+package engine.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import engine.entity.Entity;
+import engine.geometry.Grid;
+import engine.geometry.ISU;
 import game.Game;
 
 class EntityTest {
@@ -37,14 +40,14 @@ class EntityTest {
 		entity.setPosition(position);
 
 		assertEquals(
-			position.x_ncell,
-			entity.position().x_ncell,
+			position.x(),
+			entity.position().x(),
 			"setPosition should update position.x."
 		);
 
 		assertEquals(
-			position.y_ncell,
-			entity.position().y_ncell,
+			position.y(),
+			entity.position().y(),
 			"setPosition should update position.y."
 		);
 
@@ -88,14 +91,14 @@ class EntityTest {
 		Grid.Position expectedPosition = center.toGridPosition();
 
 		assertEquals(
-			expectedPosition.x_ncell,
-			entity.position().x_ncell,
+			expectedPosition.x(),
+			entity.position().x(),
 			"setCoord should update position.x from center.toGridPosition()."
 		);
 
 		assertEquals(
-			expectedPosition.y_ncell,
-			entity.position().y_ncell,
+			expectedPosition.y(),
+			entity.position().y(),
 			"setCoord should update position.y from center.toGridPosition()."
 		);
 	}
@@ -147,8 +150,8 @@ class EntityTest {
 
 		Grid.Position expectedPosition = entity.center().toGridPosition();
 
-		assertEquals(expectedPosition.x_ncell, entity.position().x_ncell);
-		assertEquals(expectedPosition.y_ncell, entity.position().y_ncell);
+		assertEquals(expectedPosition.x(), entity.position().x());
+		assertEquals(expectedPosition.y(), entity.position().y());
 	}
 
 	@Test
@@ -165,8 +168,8 @@ class EntityTest {
 
 		Grid.Position expectedPosition = entity.center().toGridPosition();
 
-		assertEquals(expectedPosition.x_ncell, entity.position().x_ncell);
-		assertEquals(expectedPosition.y_ncell, entity.position().y_ncell);
+		assertEquals(expectedPosition.x(), entity.position().x());
+		assertEquals(expectedPosition.y(), entity.position().y());
 	}
 
 	@Test
@@ -183,8 +186,8 @@ class EntityTest {
 
 		Grid.Position expectedPosition = entity.center().toGridPosition();
 
-		assertEquals(expectedPosition.x_ncell, entity.position().x_ncell);
-		assertEquals(expectedPosition.y_ncell, entity.position().y_ncell);
+		assertEquals(expectedPosition.x(), entity.position().x());
+		assertEquals(expectedPosition.y(), entity.position().y());
 	}
 
 	@Test
@@ -201,8 +204,8 @@ class EntityTest {
 
 		Grid.Position expectedPosition = entity.center().toGridPosition();
 
-		assertEquals(expectedPosition.x_ncell, entity.position().x_ncell);
-		assertEquals(expectedPosition.y_ncell, entity.position().y_ncell);
+		assertEquals(expectedPosition.x(), entity.position().x());
+		assertEquals(expectedPosition.y(), entity.position().y());
 	}
 
 	@Test
@@ -249,8 +252,8 @@ class EntityTest {
 
 		entity.translate(grid.new Vector(4, -1));
 
-		assertEquals(6, entity.position().x_ncell, "Grid translation should update position.x.");
-		assertEquals(2, entity.position().y_ncell, "Grid translation should update position.y.");
+		assertEquals(6, entity.position().x(), "Grid translation should update position.x.");
+		assertEquals(2, entity.position().y(), "Grid translation should update position.y.");
 
 		ISU.Coord expectedCenter = entity.position().toISUCoord();
 

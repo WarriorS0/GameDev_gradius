@@ -1,4 +1,4 @@
-package engine;
+package engine.geometry;
 
 import game.Game;
 

@@ -1,4 +1,4 @@
-package engine;
+package engine.geometry;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import engine.geometry.Grid;
+import engine.geometry.ISU;
 import game.Game;
 
 class ISUTest {

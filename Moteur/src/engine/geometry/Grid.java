@@ -1,8 +1,10 @@
-package engine;
+package engine.geometry;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
+import engine.entity.Entity;
 
 import game.Game;
 
@@ -67,7 +69,7 @@ public class Grid {
 
 	// == DIMENSION (nb cell) ==
 
-	class Dimension {
+	public class Dimension {
 		int x_ncell, y_ncell;
 
 		// CONSTRUCTOR
@@ -80,11 +82,11 @@ public class Grid {
 
 		// GETTER
 
-		int x() {
+		public int x() {
 			return this.x_ncell;
 		}
 
-		int y() {
+		public int y() {
 			return this.y_ncell;
 		}
 
@@ -110,7 +112,7 @@ public class Grid {
 
 		// CONVERSION
 
-		ISU.Dimension toISUDimension() {
+		public ISU.Dimension toISUDimension() {
 			return isu.new Dimension(this.x_ncell * Game.game().cmPerCell, this.y_ncell * Game.game().cmPerCell);
 		}
 
@@ -124,11 +126,11 @@ public class Grid {
 
 	// == VECTOR ==
 
-	class Vector extends Dimension {
+	public class Vector extends Dimension {
 
 		// CONSTRUCTOR
 
-		Vector(int x_ncell, int y_ncell) {
+		public Vector(int x_ncell, int y_ncell) {
 			super(x_ncell, y_ncell);
 		}
 
@@ -153,11 +155,11 @@ public class Grid {
 
 	// == POINT ==
 
-	class Position extends Dimension {
+	public class Position extends Dimension {
 
 		// CONSTRUCTOR
 
-		Position(int x_ncell, int y_ncell) {
+		public Position(int x_ncell, int y_ncell) {
 			super(x_ncell, y_ncell);
 		}
 		// COPY ? if needed
@@ -177,7 +179,7 @@ public class Grid {
 
 		// TRANSLATION
 
-		void translate(Vector v) {
+		public void translate(Vector v) {
 			this.x_ncell += v.x_ncell;
 			this.y_ncell += v.y_ncell;
 			super.normalize();
@@ -215,7 +217,7 @@ public class Grid {
 
 
 
-		ISU.Coord toISUCoord() {
+		public ISU.Coord toISUCoord() {
 			return isu.new Coord(this.x_ncell * Game.game().cmPerCell - Game.game().cmPerCell/2, this.y_ncell * Game.game().cmPerCell - Game.game().cmPerCell/2);
 		}
 

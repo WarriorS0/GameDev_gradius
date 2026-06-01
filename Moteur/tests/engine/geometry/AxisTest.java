@@ -1,8 +1,10 @@
-package engine;
+package engine.geometry;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+
+import engine.geometry.Axis;
 
 class AxisTest {
 
