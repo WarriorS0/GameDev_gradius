@@ -183,7 +183,7 @@ public class ISU {
 		 * @apiNote rotation around the origin (0,0)
 		 * @param angle_degree
 		 */
-		void rotation(int angle_degree) {
+		public void rotation(int angle_degree) {
 			this.rotateAround(new Coord(0, 0), angle_degree);
 		}
 
@@ -192,7 +192,7 @@ public class ISU {
 		 * @param center
 		 * @param angle_degree
 		 */
-		void rotateAround(Coord center, int angle_degree) {
+		public void rotateAround(Coord center, int angle_degree) {
 			double tempX = this.x_cm;
 			double tempY = this.y_cm;
 			this.x_cm = center.x_cm + (tempX - center.x_cm) * Math.cos(Math.toRadians(angle_degree))
