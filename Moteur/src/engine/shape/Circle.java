@@ -17,7 +17,7 @@ public class Circle extends Shape{
 	// INTERSECTION
 	@Override
 	public boolean intersects(Rect rect) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+		return rect.intersects(this);
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class Circle extends Shape{
 	
 	@Override
 	public boolean intersects(iShape shape) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+		return shape.intersects(this);
 	}
 
 }

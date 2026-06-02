@@ -121,7 +121,7 @@ public class ISU {
 
 		// CONSTRUCTOR
 
-		Coord(double x_cm, double y_cm) {
+		public Coord(double x_cm, double y_cm) {
 			super(x_cm, y_cm);
 		}
 
@@ -167,13 +167,13 @@ public class ISU {
 			this.normalize();
 		}
 
-		ISU.Coord mkTranslated(ISU.Vector v) {
+		public ISU.Coord mkTranslated(ISU.Vector v) {
 			return new Coord(this.x_cm + v.x_cm, this.y_cm + v.y_cm);
 		}
 
 		// COPY
 
-		ISU.Coord mkCopy() {
+		public ISU.Coord mkCopy() {
 			return new Coord(this.x_cm, this.y_cm);
 		}
 

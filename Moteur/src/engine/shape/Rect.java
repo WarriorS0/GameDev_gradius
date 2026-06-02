@@ -34,7 +34,8 @@ public class Rect extends Shape {
 
 	// === Rect/Circle Intersection ===
 	public boolean intersects(Circle circle) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+		RectCircleIntersection inter = new RectCircleIntersection(this, circle);
+		return inter.intersects();
 	}
 
 	// === Helping inner class ===
@@ -53,18 +54,23 @@ public class Rect extends Shape {
 	 * @implNote Il y a intersection si distance(P,C) < rayon du cercle</LI>
 	 */
 
-	class RectCircleIntersection {
+	private class RectCircleIntersection {
 
 		// FIELDS
 
-		Rect outer;
-		Circle circle;
+		private Rect outer;
+		private Circle circle;
+		
+		private ISU.Coord localCircleCenter;
+		
+		
 
 		// CONSTRUCTOR
 
 		RectCircleIntersection(Rect outer, Circle circle) {
 			this.circle = circle;
 			this.outer = outer;
+			remedy();
 		}
 
 		// REMEDY means `set right an undesirable situation`
@@ -78,13 +84,25 @@ public class Rect extends Shape {
 		 * @implNote On déplace par rotation le centre du cercle de -Rect.angle.
 		 */
 		void remedy() {
-			 
+			ISU.Vector vec = isu.new Vector(-outer.center.x(), -outer.center.y());
+			ISU.Coord newCenter = circle.center.mkTranslated(vec);
+			newCenter.rotation(-outer.angle_degree);
+			this.localCircleCenter = newCenter;
+			
+			
 		}
 
 		// INTERSECTION in the easy case
 
 		boolean intersects() {
-			throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+			ISU.Coord closestP = this.closestRectpoint();
+			double px = closestP.x();
+			double py = closestP.y();
+			
+			double dx = this.localCircleCenter.x() - px;
+			double dy = this.localCircleCenter.y() - py;
+			
+			return dx*dx + dy*dy <= circle.radius*circle.radius;
 		}
 
 		/**
@@ -99,7 +117,10 @@ public class Rect extends Shape {
 		 */
 
 		ISU.Coord closestRectpoint() {
-			throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `closestRectpoint`");
+			double px = clamp(localCircleCenter.x(), -outer.halfWidth, outer.halfWidth);
+			double py = clamp(localCircleCenter.y(), -outer.halfHeight, outer.halfHeight);
+
+			return isu.new Coord(px, py);
 		}
 
 		/**
@@ -123,13 +144,38 @@ public class Rect extends Shape {
 	}
 
 	// === Rect/Rect Intersection ===
-	boolean intersects(Rect rect) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
+	public boolean intersects(Rect rect) {
+		RectRectIntersection inter = new RectRectIntersection(this, rect);
+		return inter.intersects();
 	}
 
 	// === Helping inner class ===
 
-	class RectRectIntersection {
+	private class RectRectIntersection {
+		
+		private Rect rect1;
+		private Rect rect2;
+		
+		RectRectIntersection(Rect rect1, Rect rect2){
+			this.rect1 = rect1;
+			this.rect2 = rect2;
+		}
+		
+		boolean intersects() {
+			ISU.Coord[] corners1 = corners(rect1);
+			ISU.Coord[] corners2 = corners(rect2);
+			
+			return true;
+		}
+		
+		ISU.Coord[] corners(Rect rect){
+			ISU.Coord[] corners = new ISU.Coord[4];
+			corners[0] = isu.new Coord(-rect.halfWidth, -rect.halfHeight);
+			corners[1] = isu.new Coord(-rect.halfWidth, rect.halfHeight);
+			corners[2] = isu.new Coord(rect.halfWidth, rect.halfHeight);
+			corners[3] = isu.new Coord(rect.halfWidth, -rect.halfHeight);
+			return corners;
+		}
 
 	}
 }
