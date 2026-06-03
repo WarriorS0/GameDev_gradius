@@ -26,6 +26,14 @@ public class ISU {
 	void set(Grid grid) {
 		this.grid = grid;
 	}
+	
+	public double euclideanX(double originX, double x) {
+	    return xAxis.euclideanFrom(originX, x);
+	}
+
+	public double euclideanY(double originY, double y) {
+	    return yAxis.euclideanFrom(originY, y);
+	}
 
 	// == DIMENSION (cm) ==
 
@@ -52,7 +60,7 @@ public class ISU {
 
 		// SETTER
 
-		void setxy(double x_cm, double y_cm) {
+		public void setxy(double x_cm, double y_cm) {
 			this.x_cm = x_cm;
 			this.y_cm = y_cm;
 			this.normalize();

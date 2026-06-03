@@ -2,14 +2,13 @@
 package engine.shape;
 
 import engine.geometry.ISU;
-import engine.geometry.ISU.Coord;
 
 public class Rect extends Shape {
 
 	// FIELDS
 
-	double halfWidth, halfHeight;
-	int angle_degree;
+	private double halfWidth, halfHeight;
+	private int angle_degree;
 
 	// CONSTRUCTOR
 
@@ -17,7 +16,7 @@ public class Rect extends Shape {
 		super(center);
 		this.halfHeight = size.y() / 2;
 		this.halfWidth = size.x() / 2;
-		this.angle_degree = angle_degree;
+		this.angle_degree = (((angle_degree % 360) + 360) % 360);
 	}
 
 	// TRANSLATION ?
@@ -37,6 +36,30 @@ public class Rect extends Shape {
 	public boolean intersects(Circle circle) {
 		RectCircleIntersection inter = new RectCircleIntersection(this, circle);
 		return inter.intersects();
+	}
+
+	private static class Point {
+		double x;
+		double y;
+
+		Point(double x, double y) {
+			this.x = x;
+			this.y = y;
+		}
+
+		void rotate(int angleDegree) {
+			double angle = Math.toRadians(angleDegree);
+			double oldX = this.x;
+			double oldY = this.y;
+
+			this.x = oldX * Math.cos(angle) - oldY * Math.sin(angle);
+			this.y = oldX * Math.sin(angle) + oldY * Math.cos(angle);
+		}
+
+		void translate(double dx, double dy) {
+			this.x += dx;
+			this.y += dy;
+		}
 	}
 
 	// === Helping inner class ===
@@ -62,7 +85,7 @@ public class Rect extends Shape {
 		private Rect outer;
 		private Circle circle;
 
-		private ISU.Coord localCircleCenter;
+		private Point localCircleCenter;
 
 		// CONSTRUCTOR
 
@@ -83,24 +106,27 @@ public class Rect extends Shape {
 		 * @implNote On déplace par rotation le centre du cercle de -Rect.angle.
 		 */
 		void remedy() {
-			ISU.Vector vec = isu.new Vector(-outer.center.x(), -outer.center.y());
-			ISU.Coord newCenter = circle.center.mkTranslated(vec);
-			newCenter.rotation(-outer.angle_degree);
-			this.localCircleCenter = newCenter;
+			double x = isu.euclideanX(outer.center.x(), circle.center.x()) - outer.center.x();
+			double y = isu.euclideanY(outer.center.y(), circle.center.y()) - outer.center.y();
 
+			this.localCircleCenter = new Point(x, y);
+			this.localCircleCenter.rotate(-outer.angle_degree);
 		}
-
 		// INTERSECTION in the easy case
 
 		boolean intersects() {
-			ISU.Coord closestP = this.closestRectpoint();
-			double px = closestP.x();
-			double py = closestP.y();
+			Point closestP = closestRectPointLocal();
 
-			double dx = this.localCircleCenter.x() - px;
-			double dy = this.localCircleCenter.y() - py;
+			double dx = this.localCircleCenter.x - closestP.x;
+			double dy = this.localCircleCenter.y - closestP.y;
 
-			return dx * dx + dy * dy <= circle.radius * circle.radius;
+			return dx * dx + dy * dy < circle.radius * circle.radius;
+		}
+
+		private Point closestRectPointLocal() {
+			double px = clamp(localCircleCenter.x, -outer.halfWidth, outer.halfWidth);
+			double py = clamp(localCircleCenter.y, -outer.halfHeight, outer.halfHeight);
+			return new Point(px, py);
 		}
 
 		/**
@@ -115,10 +141,16 @@ public class Rect extends Shape {
 		 */
 
 		ISU.Coord closestRectpoint() {
-			double px = clamp(localCircleCenter.x(), -outer.halfWidth, outer.halfWidth);
-			double py = clamp(localCircleCenter.y(), -outer.halfHeight, outer.halfHeight);
+			double px = clamp(localCircleCenter.x, -outer.halfWidth, outer.halfWidth);
+			double py = clamp(localCircleCenter.y, -outer.halfHeight, outer.halfHeight);
 
-			return isu.new Coord(px, py);
+			Point p = new Point(px, py);
+
+			// local du rectangle -> monde
+			p.rotate(outer.angle_degree);
+			p.translate(outer.center.x(), outer.center.y());
+
+			return isu.new Coord(p.x, p.y);
 		}
 
 		/**
@@ -160,110 +192,83 @@ public class Rect extends Shape {
 		}
 
 		boolean intersects() {
-			ISU.Coord[] corners1 = corners(rect1);
-			ISU.Coord[] corners2 = corners(rect2);
-			
-			putInFrame(corners1, rect1);
-			putInFrame(corners2, rect2);
-			
-			// Sur rect1
+			return overlapsOnAxesOf(rect1, rect2) && overlapsOnAxesOf(rect2, rect1);
+		}
 
-			putInFrame(corners2, rect1);
-			
-			//l axe h de rect1
-			
-			double start1 = minY(corners1);
-			double end1 = maxY(corners1);
-			
-			double start2 = minY(corners2);
-			double end2 = maxY(corners2);
-			
-			if(end1 < start2 || end2 < start1)
+		/**
+		 * 
+		 * @param a1
+		 * @param a2
+		 * @param b1
+		 * @param b2
+		 * @return true si les deux intervalles ne se chevauchent pas
+		 */
+
+		private boolean notOverlaps(double s1, double e1, double s2, double e2) {
+			return (e1 < s2 || e2 < s1);
+		}
+
+		private boolean overlapsOnAxesOf(Rect rectR, Rect rect) {
+			Point[] corners = cornersL(rect);
+
+			// centre de rect vu depuis rectR, en coordonnées euclidiennes
+			double cx = isu.euclideanX(rectR.center.x(), rect.center.x()) - rectR.center.x();
+			double cy = isu.euclideanY(rectR.center.y(), rect.center.y()) - rectR.center.y();
+
+			for (Point p : corners) {
+				// local rect -> orientation monde
+				p.rotate(rect.angle_degree);
+
+				// monde relatif à rectR
+				p.translate(cx, cy);
+
+				// repère de rectR
+				p.rotate(-rectR.angle_degree);
+			}
+
+			if (notOverlaps(-rectR.halfHeight, rectR.halfHeight, minY(corners), maxY(corners)))
 				return false;
 
-			//l axe w de rect1
-			
-			start1 = minX(corners1);
-			end1 = maxX(corners1);
-			
-			start2 = minX(corners2);
-			end2 = maxX(corners2);
-			
-			if(end1 < start2 || end2 < start1)
-				return false;
-			
-			corners1 = corners(rect1);
-			corners2 = corners(rect2);
-			
-			putInFrame(corners1, rect1);
-			putInFrame(corners2, rect2);
-			
-			
-			// Sur rect2
-
-			putInFrame(corners1, rect2);
-			
-			//l axe h de rect2
-			
-			start1 = minY(corners1);
-			end1 = maxY(corners1);
-			
-			start2 = minY(corners2);
-			end2 = maxY(corners2);
-			
-			if(end1 < start2 || end2 < start1)
+			if (notOverlaps(-rectR.halfWidth, rectR.halfWidth, minX(corners), maxX(corners)))
 				return false;
 
-			//l axe w de rect2
-			
-			start1 = minX(corners1);
-			end1 = maxX(corners1);
-			
-			start2 = minX(corners2);
-			end2 = maxX(corners2);
-			
-			if(end1 < start2 || end2 < start1)
-				return false;
-			
 			return true;
 		}
 
-		private void putInFrame(Coord[] corners, Rect rect) {
-			for (ISU.Coord coord : corners) {
-				coord.translate(isu.new Vector(-rect.center.x(), -rect.center.y()));
-				coord.rotation(-rect.angle_degree);
-			}
-		}
+		/**
+		 * 
+		 * @param rect
+		 * @return les coordonnées locales du rect
+		 */
 
-		private ISU.Coord[] corners(Rect rect) {
-			ISU.Coord[] corners = new ISU.Coord[4];
-			corners[0] = isu.new Coord(-rect.halfWidth, -rect.halfHeight);
-			corners[1] = isu.new Coord(-rect.halfWidth, rect.halfHeight);
-			corners[2] = isu.new Coord(rect.halfWidth, rect.halfHeight);
-			corners[3] = isu.new Coord(rect.halfWidth, -rect.halfHeight);
-			return corners;
+		private Point[] cornersL(Rect rect) {
+			return new Point[] { new Point(-rect.halfWidth, -rect.halfHeight),
+					new Point(-rect.halfWidth, rect.halfHeight), new Point(rect.halfWidth, rect.halfHeight),
+					new Point(rect.halfWidth, -rect.halfHeight) };
 		}
 
 		private double max(double a, double b, double c, double d) {
 			return Math.max(Math.max(a, b), Math.max(c, d));
 		}
+
 		private double min(double a, double b, double c, double d) {
 			return Math.min(Math.min(a, b), Math.min(c, d));
 		}
-		private double maxX(ISU.Coord[] tab) {
-			return max(tab[0].x(), tab[1].x(), tab[2].x(), tab[3].x());
+
+		private double minX(Point[] points) {
+			return min(points[0].x, points[1].x, points[2].x, points[3].x);
 		}
-		
-		private double minX(ISU.Coord[] tab) {
-			return min(tab[0].x(), tab[1].x(), tab[2].x(), tab[3].x());
+
+		private double maxX(Point[] points) {
+			return max(points[0].x, points[1].x, points[2].x, points[3].x);
 		}
-		
-		private double maxY(ISU.Coord[] tab) {
-			return max(tab[0].y(), tab[1].y(), tab[2].y(), tab[3].y());
+
+		private double minY(Point[] points) {
+			return min(points[0].y, points[1].y, points[2].y, points[3].y);
 		}
-		
-		private double minY(ISU.Coord[] tab) {
-			return min(tab[0].y(), tab[1].y(), tab[2].y(), tab[3].y());
+
+		private double maxY(Point[] points) {
+			return max(points[0].y, points[1].y, points[2].y, points[3].y);
 		}
 
 	}

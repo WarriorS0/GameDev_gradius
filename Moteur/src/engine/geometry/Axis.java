@@ -107,4 +107,23 @@ import game.Game;
 			return Math.abs(position1 - position2);
 		}
 	}
+	
+	/**
+	 * Déplie {@code x} autour de {@code origin} sur un axe torique,
+	 * afin que {@code x - origin} représente le plus court déplacement.
+	 *
+	 * @param origin coordonnée de référence
+	 * @param x coordonnée à déplier
+	 * @return une coordonnée équivalente à {@code x}, proche de {@code origin}
+	 */
+	double euclideanFrom(double origin, double x) {
+	    double res = x;
+
+	    if (res - origin > halfPerimeter)
+	        res -= perimeter;
+	    else if (res - origin < -halfPerimeter)
+	        res += perimeter;
+
+	    return res;
+	}
 }

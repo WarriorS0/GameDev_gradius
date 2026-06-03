@@ -17,14 +17,4 @@ abstract class Shape implements iShape {
 		this.center = center;
 	}
 
-	@Override
-	public boolean intersects(iShape shape) {
-		throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `intersects`");
-
-	}
-
-	@Override
-	abstract public boolean intersects(Circle circle);
-	@Override
-	abstract public boolean intersects(Rect rect);
 }

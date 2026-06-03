@@ -3,7 +3,7 @@ package engine.shape;
 
 import engine.geometry.ISU;
 
-public class Circle extends Shape{
+public class Circle extends Shape {
 
 	double radius;
 
@@ -11,7 +11,8 @@ public class Circle extends Shape{
 
 	Circle(ISU.Coord center, double radius) {
 		super(center);
-		
+		this.radius = radius;
+
 	}
 
 	// INTERSECTION
@@ -19,14 +20,14 @@ public class Circle extends Shape{
 	public boolean intersects(Rect rect) {
 		return rect.intersects(this);
 	}
-	
+
 	@Override
 	public boolean intersects(Circle circle) {
-		if(this.center.distanceTo(circle.center) < this.radius + circle.radius)
+		if (this.center.distanceTo(circle.center) < this.radius + circle.radius)
 			return true;
 		return false;
 	}
-	
+
 	@Override
 	public boolean intersects(iShape shape) {
 		return shape.intersects(this);
