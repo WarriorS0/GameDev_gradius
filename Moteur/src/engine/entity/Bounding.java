@@ -11,11 +11,14 @@ class Bounding {
 
 	private Set<iShape> boundings;
 
+
 	// CONSTRUCTOR
 
 	Bounding() {
 		this.boundings = new HashSet<>();
 	}
+	
+	
 
 	// BUILDER
 
@@ -44,5 +47,7 @@ class Bounding {
 		}
 		return false;
 	}
+	
+	
 
 }

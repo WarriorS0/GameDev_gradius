@@ -240,7 +240,7 @@ public class Grid {
 
 	// === CELL ===
 
-	class Cell {
+	public class Cell {
 
 		Grid.Dimension size;
 		Grid.Position position;

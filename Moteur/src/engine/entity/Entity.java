@@ -3,8 +3,10 @@
 package engine.entity;
 
 import java.io.PrintStream;
+import java.util.Set;
 
 import engine.geometry.Grid;
+import engine.geometry.Grid.Cell;
 import engine.geometry.ISU;
 import game.Game;
 
@@ -26,13 +28,13 @@ public class Entity {
 	// FIELDS
 
 	private int orientation_degree; // orientation par rapport à l'axe des x
-	
+
 	private Bounding hitbox;
 
 	// CONSTRUCTOR
 
 	Entity(String name) {
-		Game game= Game.game();
+		Game game = Game.game();
 		this.name = name;
 		this.grid = game.grid;
 		this.isu = game.isu;
@@ -59,7 +61,7 @@ public class Entity {
 	void setSize(ISU.Dimension dimension) {
 		this.size = dimension;
 	}
-	
+
 	void setStep(ISU.Dimension dimension) {
 		this.step = dimension;
 	}
@@ -82,7 +84,7 @@ public class Entity {
 
 	void translate(Grid.Vector v) {
 		if (position == null) {
-		    throw new IllegalStateException("Entity position is not set");
+			throw new IllegalStateException("Entity position is not set");
 		}
 		position.translate(v);
 		this.setPosition(position);
@@ -90,7 +92,7 @@ public class Entity {
 
 	void translate(ISU.Vector v) {
 		if (center == null) {
-		    throw new IllegalStateException("Entity center is not set");
+			throw new IllegalStateException("Entity center is not set");
 		}
 		center.translate(v);
 		this.setCoord(center);
@@ -131,7 +133,7 @@ public class Entity {
 	}
 
 	void moveWest(int nStep) {
-		this.moveWest(nStep *  step.x());
+		this.moveWest(nStep * step.x());
 	}
 
 	/**
@@ -140,36 +142,61 @@ public class Entity {
 	 */
 	void moveEast(double length_cm) {
 		if (step == null) {
-		    throw new IllegalStateException("Entity step is not set");
+			throw new IllegalStateException("Entity step is not set");
 		}
 		this.translate(isu.new Vector(length_cm, 0));
 	}
 
 	void moveWest(double length_cm) {
 		if (step == null) {
-		    throw new IllegalStateException("Entity step is not set");
+			throw new IllegalStateException("Entity step is not set");
 		}
 		this.translate(isu.new Vector(-length_cm, 0));
 	}
 
 	void moveNorth(double length_cm) {
 		if (step == null) {
-		    throw new IllegalStateException("Entity step is not set");
+			throw new IllegalStateException("Entity step is not set");
 		}
 		this.translate(isu.new Vector(0, -length_cm));
 	}
 
 	void moveSouth(double length_cm) {
 		if (step == null) {
-		    throw new IllegalStateException("Entity step is not set");
+			throw new IllegalStateException("Entity step is not set");
 		}
 		this.translate(isu.new Vector(0, length_cm));
 	}
 	
+	// === COLLISION ===
+
 	// INTERSECTION
-	
+
 	public boolean intersects(Entity e) {
 		return this.hitbox.intersects(e.hitbox);
+	}
+
+
+	void setBounding() {
+		this.hitbox = new Bounding();
+	}
+
+
+	double distanceCenterToCenter(Entity e) {
+		return e.center().distanceTo(this.center());
+	}
+
+	// DEPLOY in the Grid according to the BOUNDING
+	
+	Set<Cell> occupied;
+
+	void deploy() {
+	}
+
+	void occupy(Grid.Position position) {
+	}
+
+	void retract() {
 	}
 
 }
