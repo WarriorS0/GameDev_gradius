@@ -2,6 +2,7 @@
 package engine.shape;
 
 import engine.geometry.ISU;
+import engine.shape.Bounding.SimpleBox;
 
 public class Circle extends Shape {
 
@@ -31,6 +32,15 @@ public class Circle extends Shape {
 	@Override
 	public boolean intersects(iShape shape) {
 		return shape.intersects(this);
+	}
+
+	@Override
+	public SimpleBox boundingBox() {
+		double minX = center.x()-this.radius;
+		double maxX = center.x()+this.radius;
+		double minY = center.y()-this.radius;
+		double maxY = center.y()+this.radius;
+		return new SimpleBox(minX, maxX, minY, maxY);
 	}
 
 }

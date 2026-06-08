@@ -3,10 +3,14 @@
 package engine.entity;
 
 import java.io.PrintStream;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import engine.geometry.Grid;
 import engine.geometry.Grid.Cell;
+import engine.shape.Bounding;
+import engine.shape.iShape;
 import engine.geometry.ISU;
 import game.Game;
 
@@ -39,6 +43,7 @@ public class Entity {
 		this.grid = game.grid;
 		this.isu = game.isu;
 		this.hitbox = new Bounding();
+		this.occupied = new HashSet<Cell>();
 
 	}
 
@@ -191,12 +196,37 @@ public class Entity {
 	Set<Cell> occupied;
 
 	void deploy() {
+		this.retract();
+
+		for (iShape.Box box : this.hitbox.boundingBoxes()) {
+			int minX = toCellIndex(box.minX());
+			int maxX = toCellIndex(box.maxX());
+			int minY = toCellIndex(box.minY());
+			int maxY = toCellIndex(box.maxY());
+
+			for (int x = minX; x <= maxX; x++) {
+				for (int y = minY; y <= maxY; y++) {
+					this.occupy(grid.new Position(x, y));
+				}
+			}
+		}
+	}
+
+	private int toCellIndex(double coord_cm) {
+		return (int) Math.floor(coord_cm / Game.game().cmPerCell);
 	}
 
 	void occupy(Grid.Position position) {
+		Cell cell = this.grid.occupy(this, position);
+		this.occupied.add(cell);
 	}
 
 	void retract() {
+		for (Cell cell : this.occupied) {
+			this.grid.retract(this, cell);
+		}
+
+		this.occupied.clear();
 	}
 
 }

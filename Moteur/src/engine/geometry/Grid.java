@@ -257,13 +257,13 @@ public class Grid {
 
 		// ADD
 
-		void add(Entity e) {
+		public void add(Entity e) {
 			this.entities.add(e);
 		}
 
 		// REMOVE
 
-		void remove(Entity e) {
+		public void remove(Entity e) {
 			this.entities.remove(e);
 		}
 

@@ -16,5 +16,7 @@ abstract class Shape implements iShape {
 		this.isu = Game.game().isu;
 		this.center = center;
 	}
+	
+	
 
 }
