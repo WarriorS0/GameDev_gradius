@@ -1,10 +1,11 @@
-// == GUM ==
+package engine.entity;
+// == PAC MAN ==
 
- class Gum  {
+ class PacMan  {
 
   // CONSTRUCTOR
 
-   Gum(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Gum`"); }
+   PacMan(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `PacMan`"); }
 
   // === Task COLLISION ===
    void setBounding(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `setBounding`"); }

@@ -4,7 +4,6 @@ package engine.entity;
 
 import java.io.PrintStream;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import engine.geometry.Grid;
@@ -18,9 +17,9 @@ public class Entity {
 
 	// FIELDS
 
-	private Grid grid;
-	private ISU isu;
-	private String name;
+	protected Grid grid;
+	protected ISU isu;
+	protected String name;
 
 	// FIELDS
 
@@ -184,6 +183,10 @@ public class Entity {
 
 	void setBounding() {
 		this.hitbox = new Bounding();
+	}
+	
+	void addBounding(iShape shape) {
+		this.hitbox.add(shape);
 	}
 
 

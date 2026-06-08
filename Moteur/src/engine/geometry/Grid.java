@@ -59,6 +59,22 @@ public class Grid {
 	Grid.Cell cellAt(Grid.Position p) {
 		return grid[p.y_ncell][p.x_ncell];
 	}
+	
+	public Cell occupy(Entity e, Position p) {
+		Cell cell = this.cellAt(p);
+
+		if (!cell.contains(e)) {
+			cell.add(e);
+		}
+
+		return cell;
+	}
+
+	public void retract(Entity e, Cell cell) {
+		if (cell != null) {
+			cell.remove(e);
+		}
+	}
 
 	// SHOW
 

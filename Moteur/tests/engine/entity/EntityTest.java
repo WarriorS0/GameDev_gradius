@@ -5,6 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import engine.shape.Circle;
+import engine.shape.Rect;
+import engine.shape.iShape;
+
 import engine.entity.Entity;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
@@ -31,6 +39,70 @@ class EntityTest {
 
 		this.entity = new Entity("test-entity");
 		this.entity.setStep(isu.new Dimension(2.0, 2.0));
+	}
+	
+	private static class FakeBox implements iShape.Box {
+		private final double minX;
+		private final double maxX;
+		private final double minY;
+		private final double maxY;
+
+		FakeBox(double minX, double maxX, double minY, double maxY) {
+			this.minX = minX;
+			this.maxX = maxX;
+			this.minY = minY;
+			this.maxY = maxY;
+		}
+
+		@Override
+		public double minX() {
+			return minX;
+		}
+
+		@Override
+		public double maxX() {
+			return maxX;
+		}
+
+		@Override
+		public double minY() {
+			return minY;
+		}
+
+		@Override
+		public double maxY() {
+			return maxY;
+		}
+	}
+
+	private static class FakeShape implements iShape {
+		private final iShape.Box box;
+		private final boolean intersects;
+
+		FakeShape(iShape.Box box, boolean intersects) {
+			this.box = box;
+			this.intersects = intersects;
+		}
+
+		@Override
+		public boolean intersects(iShape shape) {
+			return intersects;
+		}
+
+		@Override
+		public boolean intersects(Circle circle) {
+			return intersects;
+		}
+
+		@Override
+		public boolean intersects(Rect rect) {
+			return intersects;
+		}
+
+		@Override
+		public iShape.Box boundingBox() {
+			return box;
+		}
 	}
 
 	@Test
@@ -269,6 +341,101 @@ class EntityTest {
 			entity.center().y(),
 			EPSILON,
 			"After grid translation, center.y should be synchronized."
+		);
+	}
+	
+	@Test
+	void entitiesShouldIntersectWhenOneShapePairIntersects() {
+		Entity e1 = new Entity("e1");
+		Entity e2 = new Entity("e2");
+
+		e1.addBounding(new FakeShape(new FakeBox(0, 1, 0, 1), true));
+		e2.addBounding(new FakeShape(new FakeBox(10, 11, 10, 11), false));
+
+		assertTrue(e1.intersects(e2));
+	}
+	
+	@Test
+	void entitiesShouldNotIntersectWhenNoShapePairIntersects() {
+		Entity e1 = new Entity("e1");
+		Entity e2 = new Entity("e2");
+
+		e1.addBounding(new FakeShape(new FakeBox(0, 1, 0, 1), false));
+		e2.addBounding(new FakeShape(new FakeBox(10, 11, 10, 11), false));
+
+		assertFalse(e1.intersects(e2));
+	}
+	
+	@Test
+	void setBoundingShouldResetEntityHitbox() {
+		Entity e1 = new Entity("e1");
+		Entity e2 = new Entity("e2");
+
+		e1.addBounding(new FakeShape(new FakeBox(0, 1, 0, 1), true));
+		e2.addBounding(new FakeShape(new FakeBox(10, 11, 10, 11), false));
+
+		assertTrue(e1.intersects(e2));
+
+		e1.setBounding();
+
+		assertFalse(e1.intersects(e2));
+	}
+
+	
+	@Test
+	void deployWithoutBoundingShouldThrowException() {
+		assertThrows(IllegalStateException.class, () -> {
+			entity.deploy();
+		});
+	}
+	
+	@Test
+	void deployShouldOccupyCellsCoveredByBoundingBox() {
+		double cell = Game.game().cmPerCell;
+
+		entity.addBounding(new FakeShape(
+			new FakeBox(
+				2.1 * cell,
+				4.9 * cell,
+				3.1 * cell,
+				4.9 * cell
+			),
+			false
+		));
+
+		entity.deploy();
+
+		assertEquals(
+			6,
+			entity.occupied.size(),
+			"Box from x=2..4 and y=3..4 should occupy 3 * 2 = 6 cells."
+		);
+	}
+	
+	@Test
+	void retractShouldClearOccupiedCells() {
+		double cell = Game.game().cmPerCell;
+
+		entity.addBounding(new FakeShape(
+			new FakeBox(
+				2.1 * cell,
+				4.9 * cell,
+				3.1 * cell,
+				4.9 * cell
+			),
+			false
+		));
+
+		entity.deploy();
+
+		assertEquals(6, entity.occupied.size());
+
+		entity.retract();
+
+		assertEquals(
+			0,
+			entity.occupied.size(),
+			"retract should clear the occupied cells set."
 		);
 	}
 }

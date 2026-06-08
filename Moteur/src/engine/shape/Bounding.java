@@ -26,7 +26,7 @@ public class Bounding {
 
 	// INTERSECTION
 
-	public boolean intersects(iShape shape) {
+	boolean intersects(iShape shape) {
 		for (iShape shape1 : this.boundings) {
 			if (shape1.intersects(shape))
 				return true;

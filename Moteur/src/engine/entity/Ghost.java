@@ -1,8 +1,11 @@
- class Obstacle  {
+package engine.entity;
+// == GHOST ==
+
+ class Ghost  {
 
   // CONSTRUCTOR
 
-   Obstacle(int x_ncell, int y_ncell){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Obstacle`"); }
+   Ghost(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Ghost`"); }
 
   // === Task COLLISION ===
    void setBounding(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `setBounding`"); }

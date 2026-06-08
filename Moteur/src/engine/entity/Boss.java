@@ -1,5 +1,7 @@
 // = BOSS =
 
+package engine.entity;
+
 /**
 //  X
 //  *XX   |--X--X--*--|
