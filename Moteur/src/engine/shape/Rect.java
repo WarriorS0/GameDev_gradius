@@ -13,7 +13,7 @@ public class Rect extends Shape {
 
 	// CONSTRUCTOR
 
-	Rect(ISU.Coord center, ISU.Dimension size, int angle_degree) {
+	public Rect(ISU.Coord center, ISU.Dimension size, int angle_degree) {
 		super(center);
 		this.halfHeight = size.y() / 2;
 		this.halfWidth = size.x() / 2;

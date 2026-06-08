@@ -10,7 +10,7 @@ public class Circle extends Shape {
 
 	// CONSTRUCTOR
 
-	Circle(ISU.Coord center, double radius) {
+	public Circle(ISU.Coord center, double radius) {
 		super(center);
 		this.radius = radius;
 

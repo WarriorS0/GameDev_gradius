@@ -1,6 +1,5 @@
 package engine.geometry;
 
-import game.Game;
 
 /**
  * @apiNote Axis of a Torus with origin at 0

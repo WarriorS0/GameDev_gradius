@@ -36,7 +36,7 @@ public class Entity {
 
 	// CONSTRUCTOR
 
-	Entity(String name) {
+	protected Entity(String name) {
 		Game game = Game.game();
 		this.name = name;
 		this.grid = game.grid;
@@ -48,7 +48,7 @@ public class Entity {
 
 	// SETTER
 
-	void setPosition(Grid.Position position) {
+	protected void setPosition(Grid.Position position) {
 		this.position = position;
 		center = position.toISUCoord();
 	}
@@ -62,7 +62,7 @@ public class Entity {
 		this.size = dimension.toISUDimension();
 	}
 
-	void setSize(ISU.Dimension dimension) {
+	protected void setSize(ISU.Dimension dimension) {
 		this.size = dimension;
 	}
 
@@ -72,15 +72,19 @@ public class Entity {
 
 	// GETTER
 
-	ISU.Coord center() {
+	protected ISU.Coord center() {
 		return this.center;
 	}
 
 	Grid.Position position() {
 		return position;
 	}
+	
+	protected ISU.Dimension size() {
+		return size;
+	}
 
-	int orientation() {
+	protected int orientation() {
 		return this.orientation_degree;
 	}
 
@@ -181,11 +185,11 @@ public class Entity {
 	}
 
 
-	void setBounding() {
+	protected void setBounding() {
 		this.hitbox = new Bounding();
 	}
 	
-	void addBounding(iShape shape) {
+	protected void addBounding(iShape shape) {
 		this.hitbox.add(shape);
 	}
 

@@ -13,7 +13,6 @@ import engine.shape.Circle;
 import engine.shape.Rect;
 import engine.shape.iShape;
 
-import engine.entity.Entity;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 import game.Game;
