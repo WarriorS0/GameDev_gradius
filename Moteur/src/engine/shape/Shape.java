@@ -13,8 +13,9 @@ abstract class Shape implements iShape {
 	// CONSTRUCTOR
 
 	Shape(ISU.Coord center) {
-		this.isu = Game.game().isu;
 		this.center = center;
+		isu = this.center.isu();
+		
 	}
 	
 	

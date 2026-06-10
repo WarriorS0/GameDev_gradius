@@ -76,7 +76,7 @@ public class Rect extends Shape {
 	 *           centre <i>C</i> du cercle de façon efficace car le rectangle est
 	 *           aligné sur les axes X,Y.</LI>
 	 *           </UL>
-	 * @implNote Il y a intersection si distance(P,C) < rayon du cercle</LI>
+	 * @implNote Il y a intersection si distance(P,C) <= rayon du cercle</LI>
 	 */
 
 	private class RectCircleIntersection {
@@ -121,7 +121,7 @@ public class Rect extends Shape {
 			double dx = this.localCircleCenter.x - closestP.x;
 			double dy = this.localCircleCenter.y - closestP.y;
 
-			return dx * dx + dy * dy < circle.radius * circle.radius;
+			return dx * dx + dy * dy <= circle.radius * circle.radius;
 		}
 
 		private Point closestRectPointLocal() {

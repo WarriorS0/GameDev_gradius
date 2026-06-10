@@ -24,7 +24,7 @@ public class Circle extends Shape {
 
 	@Override
 	public boolean intersects(Circle circle) {
-		if (this.center.distanceTo(circle.center) < this.radius + circle.radius)
+		if (this.center.distanceTo(circle.center) <= this.radius + circle.radius)
 			return true;
 		return false;
 	}

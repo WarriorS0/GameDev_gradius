@@ -1,10 +1,10 @@
 package engine.graphics;
 
-import engine.shape.Rect;
 import java.util.ArrayList;
 import java.util.List;
 
 import engine.Entity;
+import engine.shape.Rect;
 import game.Game;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;

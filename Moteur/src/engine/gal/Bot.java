@@ -1,6 +1,6 @@
 package engine.gal;
 
- class Bot {
+ public class Bot {
 
 	 Entity entity;
 

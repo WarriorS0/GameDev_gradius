@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import engine.geometry.ISU;
+import engine.shape.Circle;
+import engine.shape.Rect;
 import game.Game;
 
 public class RectTest {
@@ -235,11 +237,11 @@ public class RectTest {
 
 	@Test
 	void circleTouchingRectEdgeIntersects() {
-		Rect r = rect(50, 50, 10, 10, 0);
-		Circle c = circle(56, 50, 1);
+	    Rect r = rect(50, 50, 10, 10, 0);
+	    Circle c = circle(56, 50, 1);
 
-		assertFalse(r.intersects(c));
-		assertFalse(c.intersects(r));
+	    assertTrue(r.intersects(c));
+	    assertTrue(c.intersects(r));
 	}
 
 	@Test

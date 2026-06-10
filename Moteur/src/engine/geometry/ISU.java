@@ -68,7 +68,7 @@ public class ISU {
 
 		// GETTER
 
-		ISU isu() {
+		public ISU isu() {
 			return isu;
 		}
 

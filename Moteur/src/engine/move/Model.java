@@ -1,11 +1,11 @@
-package game.move;
+package engine.move;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import engine.Entity;
-import engine.Grid;
-import engine.ISU;
+import engine.entity.Entity;
+import engine.geometry.Grid;
+import engine.geometry.ISU;
 import engine.shape.Rect;
 import game.Game;
 

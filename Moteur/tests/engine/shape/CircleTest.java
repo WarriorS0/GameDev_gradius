@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import engine.geometry.ISU;
+import engine.shape.Circle;
+import engine.shape.Rect;
+import engine.shape.iShape;
 import game.Game;
 
 class CircleTest {
@@ -79,8 +82,8 @@ class CircleTest {
 		Circle c1 = circle(50, 50, 5);
 		Circle c2 = circle(60, 50, 5);
 
-		assertFalse(c1.intersects(c2));
-		assertFalse(c2.intersects(c1));
+		assertTrue(c1.intersects(c2));
+		assertTrue(c2.intersects(c1));
 	}
 
 	// =========================
@@ -117,8 +120,8 @@ class CircleTest {
 		Circle c = circle(56, 50, 1);
 		Rect r = rect(50, 50, 10, 10, 0);
 
-		assertFalse(c.intersects(r));
-		assertFalse(r.intersects(c));
+		assertTrue(c.intersects(r));
+		assertTrue(r.intersects(c));
 	}
 
 	@Test
