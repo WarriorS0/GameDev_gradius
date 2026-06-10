@@ -11,7 +11,7 @@ public class ISU {
 	private Axis xAxis, yAxis;
 	private ISU isu;
 	private Grid grid;
-	
+
 	// CONSTRUCTOR
 
 	public ISU(Game game) {
@@ -26,18 +26,18 @@ public class ISU {
 	void set(Grid grid) {
 		this.grid = grid;
 	}
-	
+
 	public double euclideanX(double originX, double x) {
-	    return xAxis.euclideanFrom(originX, x);
+		return xAxis.euclideanFrom(originX, x);
 	}
 
 	public double euclideanY(double originY, double y) {
-	    return yAxis.euclideanFrom(originY, y);
+		return yAxis.euclideanFrom(originY, y);
 	}
 
 	// == DIMENSION (cm) ==
 
-	 public class Dimension {
+	public class Dimension {
 		double x_cm, y_cm;
 
 		// CONSTRUCTOR
@@ -82,9 +82,9 @@ public class ISU {
 		}
 
 		protected boolean equiv(Dimension d) {
-			if ((this instanceof Vector && d instanceof Vector) || (this instanceof Coord && d instanceof Coord)) {
-				double epsilon =1e-9;
-				double deltaX = Math.abs( this.x_cm - d.x_cm);
+			if (this instanceof Coord && d instanceof Coord) {
+				double epsilon = 1e-9;
+				double deltaX = Math.abs(this.x_cm - d.x_cm);
 				double deltaY = Math.abs(this.y_cm - d.y_cm);
 				return (deltaX < epsilon) && (deltaY < epsilon);
 			}
@@ -159,11 +159,14 @@ public class ISU {
 
 		public Grid.Position toGridPosition() {
 			if (Game.game() == null || grid == null) {
-			    throw new IllegalStateException("ISU not linked to game/grid");
+				throw new IllegalStateException("ISU not linked to game/grid");
 			}
-			
-			int x_cell = (int) (this.x_cm / Game.game().cmPerCell);
-			int y_cell = (int) (this.y_cm / Game.game().cmPerCell);
+
+			double cmPerCell = Game.game().cmPerCell;
+
+			int x_cell = (int) Math.floor((this.x_cm + cmPerCell / 2.0) / cmPerCell);
+			int y_cell = (int) Math.floor((this.y_cm + cmPerCell / 2.0) / cmPerCell);
+
 			return isu().grid.new Position(x_cell, y_cell);
 		}
 
@@ -227,12 +230,23 @@ public class ISU {
 	 *          poiting at a target coordinate.
 	 * @apiNote Canonocal vectors are defined by their target Coord.
 	 */
-	public class Vector extends Dimension {
+	public class Vector {
+
+		double x_cm, y_cm;
 
 		// CONSTRUCTOR
 
 		public Vector(double targetX_cm, double targetY_cm) {
-			super(targetX_cm, targetY_cm);
+			this.x_cm = targetX_cm;
+			this.y_cm = targetY_cm;
+		}
+
+		public double x() {
+			return x_cm;
+		}
+
+		public double y() {
+			return y_cm;
 		}
 
 		// OPERATOR
@@ -240,19 +254,16 @@ public class ISU {
 		void add(Vector v) {
 			this.x_cm += v.x_cm;
 			this.y_cm += v.y_cm;
-			this.normalize();
 		}
 
 		void scale(double factor) {
 			this.x_cm *= factor;
 			this.y_cm *= factor;
-			this.normalize();
 		}
 
 		void scale(double xFactor, double yFactor) {
 			this.x_cm *= xFactor;
 			this.y_cm *= yFactor;
-			this.normalize();
 		}
 
 		/**
@@ -278,7 +289,6 @@ public class ISU {
 			}
 			this.x_cm /= norm;
 			this.y_cm /= norm;
-			this.normalize();
 		}
 
 		// TURN
@@ -293,7 +303,6 @@ public class ISU {
 			double tempY = this.y_cm;
 			this.x_cm = tempX * Math.cos(Math.toRadians(angle_degree)) - tempY * Math.sin(Math.toRadians(angle_degree));
 			this.y_cm = tempX * Math.sin(Math.toRadians(angle_degree)) + tempY * Math.cos(Math.toRadians(angle_degree));
-			this.normalize();
 		}
 
 	}

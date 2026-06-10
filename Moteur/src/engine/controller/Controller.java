@@ -1,6 +1,6 @@
 package engine.controller;
 
-import game.move.Stunt;
+import engine.move.Stunt;
 import oop.graphics.Canvas;
 import oop.graphics.VirtualKeyCodes;
 

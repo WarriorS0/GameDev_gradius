@@ -56,10 +56,10 @@ public class Grid {
 		return this.height_ncell;
 	}
 
-	Grid.Cell cellAt(Grid.Position p) {
+	public Grid.Cell cellAt(Grid.Position p) {
 		return grid[p.y_ncell][p.x_ncell];
 	}
-	
+
 	public Cell occupy(Entity e, Position p) {
 		Cell cell = this.cellAt(p);
 
@@ -142,12 +142,23 @@ public class Grid {
 
 	// == VECTOR ==
 
-	public class Vector extends Dimension {
+	public class Vector {
+
+		private int x_ncell, y_ncell;
 
 		// CONSTRUCTOR
 
 		public Vector(int x_ncell, int y_ncell) {
-			super(x_ncell, y_ncell);
+			this.x_ncell = x_ncell;
+			this.y_ncell = y_ncell;
+		}
+
+		public int x() {
+			return x_ncell;
+		}
+
+		public int y() {
+			return y_ncell;
 		}
 
 		// OPERATION
@@ -156,15 +167,22 @@ public class Grid {
 			this.x_ncell += v.x_ncell;
 			this.y_ncell += v.y_ncell;
 
-			super.normalize();
-
 		}
 
 		// SHOW
 
 		void show(PrintStream ps) {
 			ps.printf("Le vecteur " + this.toString() + " vaut :");
-			super.show(ps);
+		}
+
+		public boolean equals(Object o) {
+			if (o instanceof Vector) {
+				Vector vect = (Vector) o;
+				if (vect.x() == x_ncell && vect.y() == y_ncell) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 	}
@@ -231,20 +249,15 @@ public class Grid {
 
 		// CONVERSION
 
-
-
 		public ISU.Coord toISUCoord() {
-			return isu.new Coord(this.x_ncell * Game.game().cmPerCell - Game.game().cmPerCell/2, this.y_ncell * Game.game().cmPerCell - Game.game().cmPerCell/2);
+			return isu.new Coord(this.x_ncell * Game.game().cmPerCell - Game.game().cmPerCell / 2,
+					this.y_ncell * Game.game().cmPerCell - Game.game().cmPerCell / 2);
 		}
 
-		ISU.Coord toISUCoordCentered() {
+		public ISU.Coord toISUCoordCentered() {
 			return isu.new Coord(this.x_ncell * Game.game().cmPerCell, this.y_ncell * Game.game().cmPerCell);
 		}
 
-		Picture.Pixel toPicturePixel() {
-			//TODO
-			return null;
-		}
 		// SHOW
 
 		void show(PrintStream ps) {

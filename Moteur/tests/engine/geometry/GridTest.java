@@ -123,18 +123,26 @@ class GridTest {
 	}
 
 	@Test
-	@DisplayName("Vector.add should add cell components then normalize in cells")
-	void vectorAddShouldAddAndNormalizeWithCellUnits() {
+	@DisplayName("Vector.add should add cell components without normalizing")
+	void vectorAddShouldAddWithoutNormalizing() {
 		Grid.Vector v = vec(WIDTH_NCELL - 1, HEIGHT_NCELL - 1);
 
 		v.add(vec(1, 2));
 
-		assertEquals(0, v.x());
-		assertEquals(1, v.y());
+		assertEquals(WIDTH_NCELL, v.x());
+		assertEquals(HEIGHT_NCELL + 1, v.y());
 	}
 
 	@Test
-	@DisplayName("Position.translate should translate by a vector in cells")
+	@DisplayName("Vector equality should compare raw vector components")
+	void vectorEqualsShouldCompareRawComponents() {
+		assertEquals(vec(1, -2), vec(1, -2));
+		assertNotEquals(vec(1, -2), vec(WIDTH_NCELL + 1, HEIGHT_NCELL - 2));
+		assertNotEquals(vec(1, -2), "not a vector");
+	}
+
+	@Test
+	@DisplayName("Position.translate should translate by a vector in cells and normalize the position")
 	void positionTranslateShouldTranslateAndNormalizeWithCellUnits() {
 		Grid.Position p = pos(WIDTH_NCELL - 1, HEIGHT_NCELL - 1);
 
@@ -206,7 +214,7 @@ class GridTest {
 
 	// ============================================================
 	// CONVERSIONS GRID <-> ISU
-	// Grid = cells, ISU = cm
+	// Convention : le centre de la case 0 est 0.0
 	// ============================================================
 
 	@Test
@@ -222,13 +230,19 @@ class GridTest {
 	}
 
 	@Test
-	@DisplayName("Grid.Position.toISUCoordCentered should multiply cell coordinates by cmPerCell")
+	@DisplayName("Grid.Position.toISUCoordCentered should put cell centers on multiples of cmPerCell")
 	void gridPositionToCenteredISUCoordShouldScaleByCmPerCell() {
-		ISU.Coord c = pos(2, 3).toISUCoordCentered();
+		ISU.Coord c00 = pos(0, 0).toISUCoordCentered();
+		ISU.Coord c23 = pos(2, 3).toISUCoordCentered();
 
-		assertNotNull(c);
-		assertEquals(2 * cmPerCell, c.x(), EPS);
-		assertEquals(3 * cmPerCell, c.y(), EPS);
+		assertNotNull(c00);
+		assertNotNull(c23);
+
+		assertEquals(0.0, c00.x(), EPS);
+		assertEquals(0.0, c00.y(), EPS);
+
+		assertEquals(2 * cmPerCell, c23.x(), EPS);
+		assertEquals(3 * cmPerCell, c23.y(), EPS);
 	}
 
 	@Test
@@ -258,19 +272,25 @@ class GridTest {
 	}
 
 	@Test
-	@DisplayName("ISU coordinates expressed in cm should convert to grid positions expressed in cells")
-	void isuCoordinatesInCmShouldConvertToGridPositionsInCells() {
+	@DisplayName("ISU coordinates should convert to grid positions with cell centers at multiples of cmPerCell")
+	void isuCoordinatesInCmShouldConvertToCenteredGridPositions() {
 		assertEquals(pos(0, 0), isu.new Coord(0.0, 0.0).toGridPosition());
 		assertEquals(pos(1, 0), isu.new Coord(cmPerCell, 0.0).toGridPosition());
 		assertEquals(pos(0, 1), isu.new Coord(0.0, cmPerCell).toGridPosition());
 		assertEquals(pos(2, 3), isu.new Coord(2 * cmPerCell, 3 * cmPerCell).toGridPosition());
+
+		assertEquals(pos(0, 0), isu.new Coord(cmPerCell / 2.0 - EPS, 0.0).toGridPosition());
+		assertEquals(pos(1, 0), isu.new Coord(cmPerCell / 2.0, 0.0).toGridPosition());
+
+		assertEquals(pos(0, 0), isu.new Coord(0.0, cmPerCell / 2.0 - EPS).toGridPosition());
+		assertEquals(pos(0, 1), isu.new Coord(0.0, cmPerCell / 2.0).toGridPosition());
 	}
 
 	@Test
 	@DisplayName("Negative ISU coordinates in cm should wrap to torus grid positions")
 	void negativeISUCoordinatesInCmShouldWrapToTorusGridPosition() {
 		assertEquals(pos(WIDTH_NCELL - 1, 0), isu.new Coord(-cmPerCell, 0.0).toGridPosition());
-		assertEquals(pos(0, HEIGHT_NCELL - 1), isu.new Coord(0.0, -cmPerCell + EPS).toGridPosition());
+		assertEquals(pos(0, HEIGHT_NCELL - 1), isu.new Coord(0.0, -cmPerCell).toGridPosition());
 	}
 
 	@Test

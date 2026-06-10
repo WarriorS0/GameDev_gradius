@@ -2,7 +2,6 @@ package game;
 
 import engine.geometry.Grid;
 import engine.geometry.ISU;
-import engine.geometry.Picture;
 
 import java.io.PrintStream;
 
@@ -28,7 +27,7 @@ public class Game {
 
 	public final Grid grid; // permet la création de coordonnées en unités ncell
 	public final ISU isu; // permet la création de coordonnées en unités cm
-	public final Picture pict; // permet la création de coordonnées en unités pixel, ne sera
+	//public final Picture pict; // permet la création de coordonnées en unités pixel, ne sera
 	// utilisé qu'à
 	// partir de Task2
 
@@ -47,7 +46,7 @@ public class Game {
 		Game.game = this;
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
-		this.pict = new Picture();
+		//this.pict = new Picture();
 		
 
 	}
@@ -78,7 +77,7 @@ public class Game {
 		Game.game = this;
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
-		this.pict = new Picture();
+		//this.pict = new Picture();
 		
 
 	}

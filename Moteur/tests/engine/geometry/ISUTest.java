@@ -98,7 +98,7 @@ class ISUTest {
 	}
 
 	@Test
-	@DisplayName("Coord.translate should add a vector in cm then normalize in cm")
+	@DisplayName("Coord.translate should add a vector in cm then normalize the coord")
 	void translateShouldMoveCoordAndNormalizeResultWithCmUnits() {
 		ISU.Coord c = isu.new Coord(worldWidthCm - cell(1), worldHeightCm - cell(1));
 		ISU.Vector v = isu.new Vector(cell(2), cell(3));
@@ -138,48 +138,48 @@ class ISUTest {
 	}
 
 	// ============================================================
-	// VECTOR
+	// VECTOR : un vecteur n'est pas une coordonnée
 	// ============================================================
 
 	@Test
-	@DisplayName("Vector should store components already inside the world, in cm")
-	void vectorShouldStoreComponentsInsideWorldInCm() {
+	@DisplayName("Vector should store components in cm without normalizing")
+	void vectorShouldStoreComponentsWithoutNormalizing() {
 		ISU.Vector v = isu.new Vector(cell(2), cell(3));
 
 		assertVectorEquals(cell(2), cell(3), v);
 	}
 
 	@Test
-	@DisplayName("Vector should normalize components using the world perimeter in cm")
-	void vectorShouldNormalizeWithCmPerimeter() {
+	@DisplayName("Vector should keep components outside the world without wrapping")
+	void vectorShouldNotNormalizeWithCmPerimeter() {
 		ISU.Vector v = isu.new Vector(worldWidthCm + cell(2), -cell(3));
 
-		assertVectorEquals(cell(2), worldHeightCm - cell(3), v);
+		assertVectorEquals(worldWidthCm + cell(2), -cell(3), v);
 	}
 
 	@Test
-	@DisplayName("Vector.add should add cm components then normalize in cm")
-	void addShouldAddVectorsAndNormalizeResultWithCmUnits() {
+	@DisplayName("Vector.add should add cm components without normalizing")
+	void addShouldAddVectorsWithoutNormalizing() {
 		ISU.Vector v = isu.new Vector(worldWidthCm - cell(1), worldHeightCm - cell(1));
 		ISU.Vector other = isu.new Vector(cell(1), cell(2));
 
 		v.add(other);
 
-		assertVectorEquals(0.0, cell(1), v);
+		assertVectorEquals(worldWidthCm, worldHeightCm + cell(1), v);
 	}
 
 	@Test
-	@DisplayName("scale should multiply a vector in cm then normalize in cm")
-	void scaleShouldMultiplyVectorAndNormalizeResultWithCmUnits() {
+	@DisplayName("scale should multiply a vector in cm without normalizing")
+	void scaleShouldMultiplyVectorWithoutNormalizing() {
 		ISU.Vector v = isu.new Vector(cell(3), 0.0);
 
 		v.scale(4.0);
 
-		assertVectorEquals(0.0, 0.0, v);
+		assertVectorEquals(cell(12), 0.0, v);
 	}
 
 	@Test
-	@DisplayName("scale(x,y) should multiply each axis in cm")
+	@DisplayName("scale(x,y) should multiply each axis in cm without normalizing")
 	void scaleXYShouldMultiplyEachAxisWithCmUnits() {
 		ISU.Vector v = isu.new Vector(cell(2), cell(3));
 
@@ -212,7 +212,7 @@ class ISUTest {
 	}
 
 	@Test
-	@DisplayName("unity should make vector norm equal to one cm-unit")
+	@DisplayName("unity should make vector norm equal to one")
 	void unityShouldMakeVectorNormEqualToOne() {
 		ISU.Vector v = isu.new Vector(3.0, 4.0);
 
@@ -290,18 +290,18 @@ class ISUTest {
 	}
 
 	@Test
-	@DisplayName("Vector.turn(180) should rotate then normalize negative cm components")
-	void vectorTurnShouldRotateVectorBy180DegreesAndWrap() {
+	@DisplayName("Vector.turn(180) should rotate without normalizing negative cm components")
+	void vectorTurnShouldRotateVectorBy180DegreesWithoutWrapping() {
 		ISU.Vector v = isu.new Vector(cmPerCell, 0.0);
 
 		v.turn(180);
 
-		assertVectorEquals(worldWidthCm - cmPerCell, 0.0, v);
+		assertVectorEquals(-cmPerCell, 0.0, v);
 	}
 
 	@Test
-	@DisplayName("Vector.turn should preserve norm when rotated vector stays in canonical positive range")
-	void vectorTurnShouldPreserveNormWhenNoWrapOccurs() {
+	@DisplayName("Vector.turn should preserve norm")
+	void vectorTurnShouldPreserveNorm() {
 		ISU.Vector v = isu.new Vector(3.0, 4.0);
 		double before = v.norm();
 
@@ -339,8 +339,8 @@ class ISUTest {
 	// ============================================================
 
 	@Test
-	@DisplayName("mkVectorToward should return a vector from source to target in cm")
-	void mkVectorTowardShouldReturnVectorFromSourceToTargetInCm() {
+	@DisplayName("mkVectorToward should return a raw vector from source to target in cm")
+	void mkVectorTowardShouldReturnRawVectorFromSourceToTargetInCm() {
 		ISU.Coord source = isu.new Coord(cell(1), cell(1));
 		ISU.Coord target = isu.new Coord(cell(4), cell(5));
 
@@ -350,18 +350,18 @@ class ISUTest {
 	}
 
 	@Test
-	@DisplayName("mkVectorToward should canonicalize the vector on a torus using cm")
-	void mkVectorTowardShouldReturnCanonicalVectorWhenWorldIsToricInCm() {
+	@DisplayName("mkVectorToward should not canonicalize the vector on a torus")
+	void mkVectorTowardShouldNotCanonicalizeVectorOnTorus() {
 		ISU.Coord source = isu.new Coord(worldWidthCm - cmPerCell, 0.0);
 		ISU.Coord target = isu.new Coord(cmPerCell, 0.0);
 
 		ISU.Vector v = source.mkVectorToward(target);
 
-		assertVectorEquals(2.0 * cmPerCell, 0.0, v);
+		assertVectorEquals(cmPerCell - (worldWidthCm - cmPerCell), 0.0, v);
 	}
 
 	@Test
-	@DisplayName("mkVector should create an equivalent vector in cm")
+	@DisplayName("mkVector should create a vector with the same cm components")
 	void mkVectorShouldCreateEquivalentVector() {
 		ISU.Coord c = isu.new Coord(cell(3), cell(4));
 
@@ -393,12 +393,12 @@ class ISUTest {
 
 	// ============================================================
 	// CONVERSION ISU -> GRID
-	// ISU = cm, Grid = cells
+	// Convention : le centre de la case 0 est 0.0
 	// ============================================================
 
 	@Test
-	@DisplayName("toGridPosition should divide cm coordinates by cmPerCell")
-	void toGridPositionShouldConvertCmToCellCoordinates() {
+	@DisplayName("toGridPosition should convert cm coordinates to centered grid cells")
+	void toGridPositionShouldConvertCmToCenteredCellCoordinates() {
 		assertEquals(grid.new Position(0, 0), isu.new Coord(0.0, 0.0).toGridPosition());
 		assertEquals(grid.new Position(1, 0), isu.new Coord(cmPerCell, 0.0).toGridPosition());
 		assertEquals(grid.new Position(0, 1), isu.new Coord(0.0, cmPerCell).toGridPosition());
@@ -406,10 +406,20 @@ class ISUTest {
 	}
 
 	@Test
+	@DisplayName("toGridPosition should switch cell at half cmPerCell")
+	void toGridPositionShouldSwitchCellAtHalfCellBoundary() {
+		assertEquals(grid.new Position(0, 0), isu.new Coord(cmPerCell / 2.0 - EPS, 0.0).toGridPosition());
+		assertEquals(grid.new Position(1, 0), isu.new Coord(cmPerCell / 2.0, 0.0).toGridPosition());
+
+		assertEquals(grid.new Position(0, 0), isu.new Coord(0.0, cmPerCell / 2.0 - EPS).toGridPosition());
+		assertEquals(grid.new Position(0, 1), isu.new Coord(0.0, cmPerCell / 2.0).toGridPosition());
+	}
+
+	@Test
 	@DisplayName("Negative ISU cm coordinates should wrap before conversion to grid cells")
 	void negativeCmCoordinatesShouldWrapBeforeConvertingToGridPosition() {
 		assertEquals(grid.new Position(WIDTH_NCELL - 1, 0), isu.new Coord(-cmPerCell, 0.0).toGridPosition());
-		assertEquals(grid.new Position(0, HEIGHT_NCELL - 1), isu.new Coord(0.0, -cmPerCell + EPS).toGridPosition());
+		assertEquals(grid.new Position(0, HEIGHT_NCELL - 1), isu.new Coord(0.0, -cmPerCell).toGridPosition());
 	}
 
 	// ============================================================
@@ -426,16 +436,18 @@ class ISUTest {
 	}
 
 	@Test
-	@DisplayName("Vectors with same canonical cm coordinates should be equal")
-	void vectorsWithSameCanonicalCoordinatesShouldBeEqual() {
+	@DisplayName("Vectors should not be treated as canonical torus coordinates")
+	void vectorsShouldNotBeCanonicalTorusCoordinates() {
 		ISU.Vector a = isu.new Vector(worldWidthCm + cell(2), 0.0);
 		ISU.Vector b = isu.new Vector(cell(2), 0.0);
 
-		assertEquals(a, b);
+		assertVectorEquals(worldWidthCm + cell(2), 0.0, a);
+		assertVectorEquals(cell(2), 0.0, b);
+		assertNotEquals(a, b);
 	}
 
 	@Test
-	@DisplayName("Coord should not equal Vector even with same cm coordinates")
+	@DisplayName("Coord should not equal Vector even with same cm components")
 	void coordShouldNotEqualVectorEvenWithSameCoordinates() {
 		ISU.Coord c = isu.new Coord(cell(1), cell(2));
 		ISU.Vector v = isu.new Vector(cell(1), cell(2));
