@@ -10,6 +10,8 @@ public class PacMan extends Entity {
 
 	public PacMan() {
 		super("PacMan");
+		
+		super.setPosition(super.grid.new Position(10,10));
 		this.setBounding();
 	}
 

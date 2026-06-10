@@ -96,6 +96,7 @@ public class Entity {
 		}
 		position.translate(v);
 		this.setPosition(position);
+		this.setBounding();
 	}
 
 	void translate(ISU.Vector v) {
@@ -104,6 +105,7 @@ public class Entity {
 		}
 		center.translate(v);
 		this.setCoord(center);
+		this.setBounding();
 	}
 
 	// TURN
@@ -112,8 +114,9 @@ public class Entity {
 	 * @apiNote turn is a rotation around the center of the entity.
 	 * @param angle_degree
 	 */
-	void turn(int angle_degree) {
+	public void turn(int angle_degree) {
 		this.orientation_degree = ((((this.orientation_degree + angle_degree) % 360) + 360) % 360);
+		this.setBounding();
 	}
 
 	// SHOW
@@ -234,6 +237,11 @@ public class Entity {
 		}
 
 		this.occupied.clear();
+	}
+	
+	public void place(Grid.Position position) {
+		this.setPosition(position);
+		this.setBounding();
 	}
 
 }

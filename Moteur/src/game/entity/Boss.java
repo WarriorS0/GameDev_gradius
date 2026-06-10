@@ -3,6 +3,9 @@
 package game.entity;
 
 import engine.entity.Entity;
+import engine.geometry.ISU;
+import engine.shape.Rect;
+import game.Game;
 
 /**
 //  X
@@ -25,6 +28,7 @@ public class Boss extends Entity {
 
 	public Boss() {
 		super("Boss");
+		super.setPosition(super.grid.new Position(20,20));
 		this.setBounding();
 	}
 
@@ -34,16 +38,36 @@ public class Boss extends Entity {
 	protected void setBounding() {
 		super.setBounding();
 
-		// TODO:
-		// Le Boss a une forme de "T".
-		// Il peut être englobé par l'union de deux rectangles :
-		// - un rectangle vertical
-		// - un rectangle horizontal
-		//
-		// Ces rectangles devront dépendre :
-		// - du center()
-		// - de la taille
-		// - de orientation()
+		double c = Game.game().cmPerCell;
+		int angle = super.orientation();
+
+		// Barre verticale :
+		Rect vertical = new Rect(
+			centerFromLocalOffset(0, 0.5 * c),
+			super.isu.new Dimension(1 * c, 4 * c),
+			angle
+		);
+		super.addBounding(vertical);
+
+		// Barre horizontale :
+		Rect horizontal = new Rect(
+			centerFromLocalOffset(1 * c, 0),
+			super.isu.new Dimension(3 * c, 1 * c),
+			angle
+		);
+		super.addBounding(horizontal);
+	}
+	
+	private ISU.Coord centerFromLocalOffset(double dx, double dy) {
+		double angle = Math.toRadians(super.orientation());
+
+		double rotatedDx = dx * Math.cos(angle) - dy * Math.sin(angle);
+		double rotatedDy = dx * Math.sin(angle) + dy * Math.cos(angle);
+
+		return super.isu.new Coord(
+			super.center().x() + rotatedDx,
+			super.center().y() + rotatedDy
+		);
 	}
 
 }

@@ -90,7 +90,7 @@ public class Grid {
 
 		// CONSTRUCTOR
 
-		Dimension(int x_ncell, int y_ncell) {
+		public Dimension(int x_ncell, int y_ncell) {
 			this.x_ncell = x_ncell;
 			this.y_ncell = y_ncell;
 			this.normalize();
