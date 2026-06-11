@@ -1,53 +1,63 @@
-package engine.graphics;
+package game.graphics;
 
-import engine.Entity;
-import engine.Grid;
+import engine.entity.Entity;
+import engine.geometry.Grid;
+import engine.graphics.Avatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
 public class AvatarTerrain extends Avatar {
-	private BufferedImage sprite;
-	private BufferedImage case_libre;
 
-	public AvatarTerrain(Entity e) {
-		super(e);
+	private static final String SPRITE_PATH = "src/game/graphics/pacman_sprite.png";
+
+	private BufferedImage sprite;
+	private BufferedImage freeCell;
+
+	public AvatarTerrain() {
+		super(null);
+	}
+
+	public AvatarTerrain(Entity entity) {
+		super(entity);
 	}
 
 	@Override
 	public void initImages(Graphics g) {
-		sprite = g.load("src/engine/graphics/pacman_sprite.png");
-		case_libre = sprite.getSubimage(250, 5, 20, 15);
-	}
-
-	@Override
-	public void paint(Graphics g) {
-		if (case_libre == null) {
-			initImages(g);
-		}
-		Grid grid = Game.game.grid;
-		int colonnes = grid.width();
-		int lignes = grid.height();
-		double tailleCellulePixel = Game.cmPerCell * Game.pixelPerCm;
-
-		for (int col = 0; col < colonnes; col++) {
-			for (int lig = 0; lig < lignes; lig++) {
-				int xPixel = (int) (col * tailleCellulePixel);
-				int yPixel = (int) (lig * tailleCellulePixel);
-				Grid.Position pos = grid.new Position(col, lig);
-				Grid.Cell cell = grid.cellAt(pos);
-
-				g.drawImage(case_libre, xPixel, yPixel);
-				// faire des cellules vide donc sol, remplit obstacle mur, remplit entités type
-				// pacman/phantom/gum
-			}
-		}
+		sprite = g.load(SPRITE_PATH);
+		freeCell = sprite.getSubimage(250, 5, 20, 15);
 	}
 
 	@Override
 	public void updateAnimation(double delta_t) {
-		// TODO Auto-generated method stub
-
+		/*
+		 * Le terrain n'a pas d'animation.
+		 */
 	}
 
+	@Override
+	public void paint(Graphics g) {
+		if (sprite == null || freeCell == null) {
+			initImages(g);
+		}
+
+		Game game = Game.game();
+
+		if (game == null) {
+			return;
+		}
+
+		Grid grid = game.grid;
+
+		int cellSize = Math.max(1, (int) Math.round(game.cmPerCell * game.pixelPerCm));
+
+		for (int x = 0; x < grid.width(); x++) {
+			for (int y = 0; y < grid.height(); y++) {
+				int xPixel = x * cellSize;
+				int yPixel = y * cellSize;
+
+				g.drawImage(freeCell, xPixel, yPixel, cellSize, cellSize);
+			}
+		}
+	}
 }

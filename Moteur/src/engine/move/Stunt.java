@@ -36,7 +36,9 @@ public abstract class Stunt {
 	}
 
 	
-	protected abstract void set(Cell cell);
+	protected void set(Cell cell) {
+		entity.place(cell.position());
+	}
 
 	
 	protected void set(double x, double y) {

@@ -289,6 +289,12 @@ public class Grid {
 		public void add(Entity e) {
 			this.entities.add(e);
 		}
+		
+		//GETTER
+		
+		public Grid.Position position() {
+			return position;
+		}
 
 		// REMOVE
 

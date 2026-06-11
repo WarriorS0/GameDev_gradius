@@ -1,53 +1,58 @@
-package engine.graphics;
+package game.graphics;
 
-import engine.Entity;
+import engine.entity.Entity;
+import engine.graphics.Avatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
 public class GumAvatar extends Avatar {
-	private BufferedImage animations;
+
+	private static final String SPRITE_PATH = "src/engine/graphics/pacman_sprite.png";
+
 	private BufferedImage sprite;
-	private boolean stop = false;
+	private BufferedImage image;
 
-	public GumAvatar(Entity e) {
-		super(e);
+	public GumAvatar(Entity entity) {
+		super(entity);
 	}
-
-	public void initImages(Graphics g) {
-		sprite = g.load("src/engine/graphics/pacman_sprite.png");
-		animations = sprite.getSubimage(11, 11, 1, 1);
-		
-	}
-	
 
 	@Override
-	public void paint(Graphics g) {
-		if (animations == null) {
-			initImages(g);
-		}
-		double x_cm = e.center().x();
-		double y_cm = e.center().y();
-		int xPixel = (int) (x_cm * Game.pixelPerCm);
-		int yPixel = (int) (y_cm * Game.pixelPerCm);
-		if(stop == false) {
-			BufferedImage img = animations;
-			double targetWidth = e.box().halfWidth * 2 * Game.pixelPerCm;
-	        double targetHeight = e.box().halfHeight * 2 * Game.pixelPerCm;
-	        
-	        int xTopLeft = xPixel - (int)(targetWidth / 2);
-	        int yTopLeft = yPixel - (int)(targetHeight / 2);
-			Object savedTransform = g.getTransform();
-			g.translate(xTopLeft, yTopLeft);
-			g.drawImage(img, -Game.pixelPerCm, -Game.pixelPerCm);
-			g.setTransform(savedTransform);
-		}
-		
+	public void initImages(Graphics g) {
+		sprite = g.load(SPRITE_PATH);
+		image = sprite.getSubimage(11, 11, 1, 1);
 	}
 
 	@Override
 	public void updateAnimation(double delta_t) {
-		// TODO Auto-generated method stub
-		
+		/*
+		 * Une gomme n'a pas d'animation.
+		 */
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		if (sprite == null || image == null) {
+			initImages(g);
+		}
+
+		if (dead() || entity().center() == null) {
+			return;
+		}
+
+		Game game = Game.game();
+
+		double cell = game.cmPerCell;
+		double pixelPerCm = game.pixelPerCm;
+
+		int gumSize = Math.max(2, (int) Math.round(cell * pixelPerCm / 4.0));
+
+		int xCenter = (int) Math.round((entity().center().x() + cell / 2.0) * pixelPerCm);
+		int yCenter = (int) Math.round((entity().center().y() + cell / 2.0) * pixelPerCm);
+
+		int xTopLeft = xCenter - gumSize / 2;
+		int yTopLeft = yCenter - gumSize / 2;
+
+		g.drawImage(image, xTopLeft, yTopLeft, gumSize, gumSize);
 	}
 }

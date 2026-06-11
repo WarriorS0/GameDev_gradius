@@ -2,69 +2,71 @@ package game.move;
 
 import java.util.List;
 
-import engine.Entity;
-import engine.Grid.Cell;
-import engine.ISU.Vector;
+import engine.entity.Entity;
+import engine.geometry.Grid.Cell;
+import engine.geometry.ISU.Vector;
+import game.Game;
 
-public class BasicStunt extends Stunt {
+public class BasicStunt extends engine.move.Stunt {
 
-	public BasicStunt(Model model, Entity e) {
-		super(model, e);
-		entity.set(this);
-		l = new Listener() {
-			public void collision(Entity en) {
-				entity.set_aSpeed(0);
-				entity.set(entity.isu.new Vector(0, 0));
-				System.out.println("ATTENTION COLLISION");
-			}
-		};
+	private static final double DEFAULT_SPEED = 20.0;
+
+	public BasicStunt(engine.move.Model model, Entity entity) {
+		super(model, entity);
+		model.setStunt(entity, this);
 	}
 
 	@Override
 	public void set(int orientation) {
-		entity.set(orientation);
-		if (orientation >= 0 && orientation < 90) {
-			set(entity.isu.new Vector(20,0));
-		} else if (orientation >= 90 && orientation < 180) {
-			set(entity.isu.new Vector(0,20));
-		} else if (orientation >= 180 && orientation < 270) {
-			set(entity.isu.new Vector(-20,0));
+		super.set(orientation);
+
+		double angle = normalizeAngle(orientation);
+
+		if (angle >= 45.0 && angle < 135.0) {
+			set(Game.game().isu.new Vector(0, DEFAULT_SPEED));
+		} else if (angle >= 135.0 && angle < 225.0) {
+			set(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
+		} else if (angle >= 225.0 && angle < 315.0) {
+			set(Game.game().isu.new Vector(0, -DEFAULT_SPEED));
 		} else {
-			set(entity.isu.new Vector(0,-20));
+			set(Game.game().isu.new Vector(DEFAULT_SPEED, 0));
 		}
 	}
 
-	@Override
-	protected void set(Cell c) {
-		entity.set(c);
-		;
 
+	@Override
+	protected void collision(Entity other) {
+		set(Game.game().isu.new Vector(0, 0));
+		set_aSpeed(0);
+
+		System.out.println("ATTENTION COLLISION avec " + other.name());
 	}
 
 	@Override
-	protected void set(double x, double y) {
-		entity.set(x, y);
+	protected void collision(List<Entity> entities) {
+		set(Game.game().isu.new Vector(0, 0));
+		set_aSpeed(0);
 
+		System.out.println("ATTENTION COLLISION avec plusieurs entités");
 	}
 
 	@Override
-	protected void collision(Entity e) {
-
+	public void set(Vector linearSpeed) {
+		super.set(linearSpeed);
 	}
 
 	@Override
-	protected void collision(List<Entity> e) {
-
+	public void set_aSpeed(int angularSpeed) {
+		super.set_aSpeed(angularSpeed);
 	}
 
-	@Override
-	public void set(Vector lSpeed) {
-		entity.set(lSpeed);
-	}
+	private double normalizeAngle(double angle) {
+		double normalized = angle % 360.0;
 
-	@Override
-	public void set_aSpeed(int aSpeed) {
-		entity.set_aSpeed(aSpeed);
-	}
+		if (normalized < 0.0) {
+			normalized += 360.0;
+		}
 
+		return normalized;
+	}
 }
