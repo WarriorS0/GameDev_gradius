@@ -1,177 +1,217 @@
 package engine.move;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import engine.entity.Entity;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
-import engine.shape.Rect;
 import game.Game;
 
 public class Model {
-	// FIELDS
-	private Grid grid;
-	public List<Entity> entities;
+
+	// =========================
+	// Fields
+	// =========================
+
+	private final Grid grid;
+	private final ISU isu;
+
+	public final List<Entity> entities;
+
+	private final Map<Entity, ISU.Vector> linearSpeeds;
+	private final Map<Entity, Double> angularSpeeds;
+	private final Map<Entity, Stunt> stunts;
+
 	public double delta_t;
 
-	// CONSTRUCTOR
+	// =========================
+	// Constructor
+	// =========================
+
 	public Model(Grid grid) {
+		Game game = Game.game();
+
+		if (game == null) {
+			throw new IllegalStateException("No current Game instance");
+		}
+
 		this.grid = grid;
-		entities = new LinkedList<>();
-		delta_t = 0;
+		this.isu = game.isu;
+
+		this.entities = new LinkedList<>();
+
+		this.linearSpeeds = new HashMap<>();
+		this.angularSpeeds = new HashMap<>();
+		this.stunts = new HashMap<>();
+
+		this.delta_t = 0.0;
 	}
 
-	// ADD, REMOVE Entity
-	public void add(Entity e) {
-		entities.add(e);
+	// =========================
+	// Add / remove entities
+	// =========================
+
+	public void add(Entity entity) {
+		if (!entities.contains(entity)) {
+			entities.add(entity);
+			linearSpeeds.put(entity, isu.new Vector(0, 0));
+			angularSpeeds.put(entity, 0.0);
+		}
 	}
 
-	void remove(Entity e) {
-		entities.remove(e);
+	public void add(Entity entity, Stunt stunt) {
+		add(entity);
+		setStunt(entity, stunt);
 	}
+
+	public void remove(Entity entity) {
+		entities.remove(entity);
+		linearSpeeds.remove(entity);
+		angularSpeeds.remove(entity);
+		stunts.remove(entity);
+	}
+
+	// =========================
+	// Stunt
+	// =========================
+
+	public void setStunt(Entity entity, Stunt stunt) {
+		ensureKnownEntity(entity);
+		stunts.put(entity, stunt);
+	}
+
+	public Stunt stunt(Entity entity) {
+		ensureKnownEntity(entity);
+		return stunts.get(entity);
+	}
+
+	// =========================
+	// Speeds
+	// =========================
+
+	public void setLinearSpeed(Entity entity, ISU.Vector speed) {
+		ensureKnownEntity(entity);
+		linearSpeeds.put(entity, speed);
+	}
+
+	public ISU.Vector linearSpeed(Entity entity) {
+		ensureKnownEntity(entity);
+		return linearSpeeds.get(entity);
+	}
+
+	public void setAngularSpeed(Entity entity, double speed_degree_per_second) {
+		ensureKnownEntity(entity);
+		angularSpeeds.put(entity, speed_degree_per_second);
+	}
+
+	public double angularSpeed(Entity entity) {
+		ensureKnownEntity(entity);
+		return angularSpeeds.get(entity);
+	}
+
+	private void ensureKnownEntity(Entity entity) {
+		if (!entities.contains(entity)) {
+			throw new IllegalArgumentException("Entity is not in this model");
+		}
+	}
+
+	// =========================
+	// Tick
+	// =========================
 
 	public void tick(double delta_t) {
 		this.delta_t = delta_t;
+
 		Physique phy = new Physique();
-		for (Entity e : entities) {
-			// phy.intersects(e);
-			phy.move(e);
+
+		for (Entity entity : new LinkedList<>(entities)) {
+			phy.move(entity);
 		}
 	}
 
+	// =========================
+	// Physics
+	// =========================
+
 	class Physique {
 
-		public Physique() {
+		public ISU.Vector delta(Entity entity) {
+			ISU.Vector speed = linearSpeeds.get(entity);
+
+			double delta_x = speed.x() * delta_t;
+			double delta_y = speed.y() * delta_t;
+
+			return isu.new Vector(delta_x, delta_y);
 		}
 
-		public ISU.Coord dest(Entity e) {
-			double x = e.center().x();
-			double y = e.center().y();
-			double vect_x = e.lSpeed.x();
-			double vect_y = e.lSpeed.y();
-			double delta_x = vect_x * delta_t;
-			double delta_y = vect_y * delta_t;
-			return e.isu.new Coord(delta_x, delta_y);
+		public void move(Entity entity) {
+			rotate(entity);
+			translate(entity);
 		}
 
-		public Rect superBounding(Entity e) {
-			double x = e.center().x();
-			double y = e.center().y();
-			ISU.Coord coord = dest(e);
-			double dest_x = coord.x();
-			double dest_y = coord.y();
-			double xmin = Math.min(x, dest_x) - e.size().x() / 2;
-			double xmax = Math.max(x, dest_x) + e.size().x() / 2;
-			double ymin = Math.min(y, dest_y) - e.size().y() / 2;
-			double ymax = Math.max(y, dest_y) + e.size().y() / 2;
-			Rect r = new Rect(e.isu.new Coord((xmax + xmin) / 2, (ymin + ymax) / 2),
-					e.isu.new Dimension(xmax - xmin, ymax - ymin), 0);
-			if (Math.abs(dest_x - x) > e.lSpeed.x()) {
+		private void rotate(Entity entity) {
+			double angularSpeed = angularSpeeds.get(entity);
 
+			if (angularSpeed != 0.0) {
+				entity.turn(angularSpeed * delta_t);
 			}
-			return r;
-
 		}
 
-		
+		private void translate(Entity entity) {
+			ISU.Vector d = delta(entity);
 
-		public void move(Entity e) {
-			if(e.aSpeed != 0 ) {
-				e.turn(e.aSpeed*delta_t);
+			if (d.x() == 0.0 && d.y() == 0.0) {
+				return;
 			}
-			boolean collisionOccurred = false;
-			for (Entity en : entities) {
-				if (e == en)
+
+			// Déplacement en X
+			if (d.x() != 0.0) {
+				entity.translate(isu.new Vector(d.x(), 0));
+
+				Entity other = intersectedEntity(entity);
+
+				if (other != null) {
+					entity.translate(isu.new Vector(-d.x(), 0));
+					collision(entity, other);
+				}
+			}
+
+			// Déplacement en Y
+			if (d.y() != 0.0) {
+				entity.translate(isu.new Vector(0, d.y()));
+
+				Entity other = intersectedEntity(entity);
+
+				if (other != null) {
+					entity.translate(isu.new Vector(0, -d.y()));
+					collision(entity, other);
+				}
+			}
+		}
+
+		private Entity intersectedEntity(Entity entity) {
+			for (Entity other : entities) {
+				if (entity == other) {
 					continue;
+				}
 
-				Rect r_en = superBounding(en);
-				Rect r_e = superBounding(e);
-
-				if (r_en.intersects(r_e)) {
-
-					double vrelx = (e.lSpeed.x() - en.lSpeed.x()) * delta_t;
-					double vrely = (e.lSpeed.y() - en.lSpeed.y()) * delta_t;
-
-					double xInvEntry, yInvEntry;
-					double xInvExit, yInvExit;
-
-					if (vrelx > 0.0) {
-						xInvEntry = (en.center().x() - en.size().x() / 2) - (e.center().x() + e.size().x() / 2);
-						xInvExit = (en.center().x() + en.size().x() / 2) - (e.center().x() - e.size().x() / 2);
-					} else {
-						xInvEntry = (en.center().x() + en.size().x() / 2) - (e.center().x() - e.size().x() / 2);
-						xInvExit = (en.center().x() - en.size().x() / 2) - (e.center().x() + e.size().x() / 2);
-					}
-
-					if (vrely > 0.0) {
-						yInvEntry = (en.center().y() - en.size().y() / 2) - (e.center().y() + e.size().y() / 2);
-						yInvExit = (en.center().y() + en.size().y() / 2) - (e.center().y() - e.size().y() / 2);
-					} else {
-						yInvEntry = (en.center().y() + en.size().y() / 2) - (e.center().y() - e.size().y() / 2);
-						yInvExit = (en.center().y() - en.size().y() / 2) - (e.center().y() + e.size().y() / 2);
-					}
-					double txEntry, tyEntry, txExit, tyExit;
-
-					if (vrelx == 0.0) {
-						boolean noOverlapX = (e.center().x() + e.size().x() / 2 <= en.center().x() - en.size().x() / 2)
-								|| (e.center().x() - e.size().x() / 2 >= en.center().x() + en.size().x() / 2);
-						if (noOverlapX) {
-							txEntry = Double.POSITIVE_INFINITY;
-							txExit = Double.NEGATIVE_INFINITY;
-						} else {
-							txEntry = Double.NEGATIVE_INFINITY;
-							txExit = Double.POSITIVE_INFINITY;
-						}
-					} else {
-						txEntry = xInvEntry / vrelx;
-						txExit = xInvExit / vrelx;
-					}
-
-					if (vrely == 0.0) {
-						boolean noOverlapY = (e.center().y() + e.size().y() / 2 <= en.center().y() - en.size().y() / 2)
-								|| (e.center().y() - e.size().y() / 2 >= en.center().y() + en.size().y() / 2);
-						if (noOverlapY) {
-							tyEntry = Double.POSITIVE_INFINITY;
-							tyExit = Double.NEGATIVE_INFINITY;
-						} else {
-							tyEntry = Double.NEGATIVE_INFINITY;
-							tyExit = Double.POSITIVE_INFINITY;
-						}
-					} else {
-						tyEntry = yInvEntry / vrely;
-						tyExit = yInvExit / vrely;
-					}
-
-					double entryTime = Math.max(txEntry, tyEntry);
-					double exitTime = Math.min(txExit, tyExit);
-
-					if (!(entryTime > exitTime || (txEntry < 0.0 && tyEntry < 0.0) || txEntry > 1.0 || tyEntry > 1.0)) {
-						collisionOccurred = true;
-						e.collision(en);
-					}
+				if (entity.intersects(other)) {
+					return other;
 				}
 			}
-			if (!collisionOccurred) {
-				ISU.Coord dest = dest(e);
-				if(e.lSpeed.x() == 0 && e.lSpeed.y() == 0) {
-					e.translate(
-							e.isu.new Vector( 0, 0));
-				}
-				else if(e.lSpeed.x() == 0) {
-					e.translate(
-							e.isu.new Vector(0, dest.y()));
-				}
-				else if(e.lSpeed.y() == 0) {
-					e.translate(
-							e.isu.new Vector(dest.x(), 0));
-				}
-				else {
-					e.translate(
-							e.isu.new Vector(dest.x(), dest.y()));
-				}
-				
-			
+
+			return null;
+		}
+
+		private void collision(Entity entity, Entity other) {
+			Stunt stunt = stunts.get(entity);
+
+			if (stunt != null) {
+				stunt.listener.collision(other);
 			}
 		}
 	}

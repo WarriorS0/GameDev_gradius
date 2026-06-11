@@ -1,54 +1,71 @@
-package game.move;
+package engine.move;
+
 
 import oop.tasks.Task;
 import oop.tasks.Runtime;
 import oop.tasks.Runnable;
 
 public class Ticker implements Runnable {
+
+	private static final int FRAME_DELAY_MS = 16;
+	private static final double NANO_TO_SECONDS = 1_000_000_000.0;
+
 	private Task task;
 	private Model model;
+
 	private long lastTime;
+	private boolean running;
 
 	public Ticker(Model model) {
 		this.model = model;
 		this.task = Runtime.newTask("GameLoopTask");
 		this.lastTime = System.nanoTime();
-		this.task.post(this);
-	}
+		this.running = true;
 
-	public void test() {
-		while (true) {
-			long current = System.nanoTime();
-			double deltaT = (current - lastTime) / 1000000000.0;
-			lastTime = current;
-			model.tick(deltaT);
-			if (!model.entities.isEmpty()) {
-				System.out.println("PacMan pos: X=" + model.entities.get(0).center().x() + " | Y="
-						+ model.entities.get(0).center().y());
-				System.out.println("Red pos: X=" + model.entities.get(1).center().x() + " | Y="
-						+ model.entities.get(1).center().y());
-			}
-			try {
-				Thread.sleep(17);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		this.task.post(this);
 	}
 
 	@Override
 	public void run() throws Exception {
+		if (!running) {
+			return;
+		}
+
+		tick();
+
+		task.post(this, FRAME_DELAY_MS);
+	}
+
+	private void tick() {
 		long current = System.nanoTime();
-		double deltaT = (current - lastTime) / 1000000000.0;
+		double deltaT = (current - lastTime) / NANO_TO_SECONDS;
 		lastTime = current;
+
 		model.tick(deltaT);
-		task.post(this, 17);
-		if (!model.entities.isEmpty()) {
-//			System.out.println("PacMan pos: X=" + model.entities.get(0).center().x() + " | Y="
-//					+ model.entities.get(0).center().y());
-//			System.out.println("PacMan angle = " + model.entities.get(0).orientation());
-//			System.out.println("Red pos: X=" + model.entities.get(1).center().x() + " | Y="
-//					+ model.entities.get(1).center().y());
+	}
+
+	public void stop() {
+		this.running = false;
+	}
+
+	public boolean isRunning() {
+		return running;
+	}
+
+	/**
+	 * 
+	 * À ne pas utiliser dans le jeu final. C'est du test 
+	 */
+	public void test() {
+		while (running) {
+			tick();
+
+			try {
+				Thread.sleep(FRAME_DELAY_MS);
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+				stop();
+			}
 		}
 	}
 }

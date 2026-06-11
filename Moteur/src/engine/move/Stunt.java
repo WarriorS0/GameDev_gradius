@@ -1,63 +1,81 @@
-package game.move;
+package engine.move;
 
 import java.util.List;
 
-import engine.Entity;
-import engine.Grid.Cell;
-import engine.ISU;
-import engine.ISU.Vector;
+import engine.entity.Entity;
+import engine.geometry.Grid.Cell;
+import engine.geometry.ISU;
+import engine.geometry.ISU.Vector;
+import game.Game;
 
 public abstract class Stunt {
-	public Listener l;
-	Model model;
-	Entity entity;
-	ISU.Vector target_direction;
-	int target_angle;
-	public Stunt(Model model, Entity e) {
+
+	protected final Model model;
+	protected final Entity entity;
+
+	protected ISU.Vector targetDirection;
+	protected double targetAngle;
+
+	public final Listener listener;
+
+	protected Stunt(Model model, Entity entity) {
 		this.model = model;
-		entity = e;
+		this.entity = entity;
+
+		this.targetDirection = Game.game().isu.new Vector(0, 0);
+		this.targetAngle = entity.orientation();
+
+		this.listener = new Listener();
 	}
-	public abstract void set(int orientation);
-	protected abstract void set(Cell c);
-	protected abstract void set(double x,double y);
-	protected abstract void collision(Entity e);
-	protected abstract void collision(List<Entity> e);
-	public abstract void set(Vector lSpeed);
-	public void set_aSpeed(int aSpeed) {
-		// TODO Auto-generated method stub
-		
+
+	public void set(int orientation) {
+		this.targetAngle = normalizeAngle(orientation);
+
+		double deltaAngle = this.targetAngle - entity.orientation();
+		entity.turn(deltaAngle);
 	}
-	public static class Listener {
-		public void collision(Entity e) {
+
+	
+	protected abstract void set(Cell cell);
+
+	
+	protected void set(double x, double y) {
+		entity.place(Game.game().isu.new Coord(x, y));
+	}
+
+	
+	public void set(Vector linearSpeed) {
+		this.targetDirection = linearSpeed;
+		model.setLinearSpeed(entity, linearSpeed);
+	}
+
+	
+	public void set_aSpeed(int angularSpeed) {
+		model.setAngularSpeed(entity, angularSpeed);
+	}
+
+	protected abstract void collision(Entity entity);
+
+	protected abstract void collision(List<Entity> entities);
+
+	private double normalizeAngle(double angle) {
+		double normalized = angle % 360.0;
+
+		if (normalized < 0) {
+			normalized += 360.0;
+		}
+
+		return normalized;
+	}
+
+	public class Listener {
+
+		public void collision(Entity other) {
+			Stunt.this.collision(other);
+		}
+
+		public void collision(List<Entity> others) {
+			Stunt.this.collision(others);
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
