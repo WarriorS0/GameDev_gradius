@@ -1,60 +1,253 @@
 package engine.gal;
 
-// = Stunt =
+import java.util.List;
 
- class GALStunt  implements iAllGALActions{
+import engine.entity.Entity;
+import engine.gal.arguments.Direction;
+import engine.geometry.ISU;
+import engine.move.Model;
+import engine.move.Stunt;
+import game.Game;
 
-	// FIELDS
+public class GALStunt extends Stunt implements iAllGALActions {
 
-	Entity entity;
+	private double step_cm;
+	private double max_cmPer_s;
+	private double max_degPer_s;
 
-	// CONSTRUCTOR
+	private double action_ms;
 
-	 GALStunt(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `GALStunt`"); }
+	private boolean turning;
+	private double finalAngle;
+
+	public GALStunt(Model model, Entity entity) {
+		super(model, entity);
+
+		this.step_cm = Game.game().cmPerCell;
+		this.max_cmPer_s = 20.0;
+		this.max_degPer_s = 180.0;
+
+		this.action_ms = 0.0;
+		this.turning = false;
+
+		model.setStunt(entity, this);
+
+		if (entity.bot() != null) {
+			entity.bot().stunt(this);
+		}
+	}
 
 	// STEP
 
-	 double step_cm;
+	public void setStepLength(double cm) {
+		if (cm <= 0.0) {
+			throw new IllegalArgumentException("step length must be positive");
+		}
 
-	void setStepLength(double cm){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `setStepLength`"); }
+		this.step_cm = cm;
+	}
 
-	 double stepLength(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `stepLength`"); }
+	public double stepLength() {
+		return step_cm;
+	}
 
 	// SPEED
 
-	 double max_cmPer_ms;
+	public void setMaxLinearSpeed(double cmPer_s) {
+		if (cmPer_s < 0.0) {
+			throw new IllegalArgumentException("linear speed cannot be negative");
+		}
 
-	void setMaxLinearSpeed(double cmPer_ms){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `setMaxLinearSpeed`"); }
+		this.max_cmPer_s = cmPer_s;
+	}
 
-	 double max_degPer_ms;
+	public void setMaxAngularSpeed(double degPer_s) {
+		if (degPer_s < 0.0) {
+			throw new IllegalArgumentException("angular speed cannot be negative");
+		}
 
-	void setMaxAngularSpeed(double degPer_ms){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `setMaxAngularSpeed`"); }
+		this.max_degPer_s = degPer_s;
+	}
 
-	// == DEFAULT IMPLEMENTATION of GAL Actions ==
+	// ACTION DURATION
 
-	/**
-	 * @apiNote the remaining time of the action in progress
-	 */
-	double action_ms;
-
-	 double actionDuration(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `actionDuration`"); }
+	public double actionDuration() {
+		return action_ms;
+	}
 
 	// TICK
 
 	/**
-	 * @apiNote The tick regularly provides the elapsed time
-	 * @apiNote informs the Bot when action is completed
-	 * @param elapsed_ms
-	 * @implNote {@code action_ms} is updated according to the {@code elapsed_ms}
+	 * @apiNote The tick regularly provides the elapsed time in milliseconds.
 	 */
-	void tick(double elapsed_ms){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `tick`"); }
+	public void tick(double elapsed_ms) {
+		if (action_ms > 0.0) {
+			action_ms -= elapsed_ms;
+
+			if (action_ms <= 0.0) {
+				finishAction();
+			}
+
+			return;
+		}
+
+		if (entity.bot() != null) {
+			entity.bot().tick(elapsed_ms);
+		}
+	}
+
+	private void finishAction() {
+		action_ms = 0.0;
+
+		set(Game.game().isu.new Vector(0.0, 0.0));
+		set_aSpeed(0);
+
+		if (turning) {
+			set((int) Math.round(finalAngle));
+			turning = false;
+		}
+
+		if (entity.bot() != null) {
+			entity.bot().completed();
+		}
+	}
+
+	private void stopActionWithoutCompleted() {
+		action_ms = 0.0;
+		turning = false;
+
+		set(Game.game().isu.new Vector(0.0, 0.0));
+		set_aSpeed(0);
+	}
 
 	// MOVE
 
-	 boolean startMoving(Direction direction, double intensity, double duration_ms){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `startMoving`"); }
+	@Override
+	public boolean startMoving(Direction direction, double intensity, double duration_ms) {
+		if (direction == null) {
+			return false;
+		}
+
+		if (intensity < 0.0 || intensity > 1.0) {
+			return false;
+		}
+
+		if (duration_ms <= 0.0) {
+			return false;
+		}
+
+		if (action_ms > 0.0) {
+			return false;
+		}
+
+		double angle = angleFromDirection(direction);
+		double speed = max_cmPer_s * intensity;
+
+		double rad = Math.toRadians(angle);
+		double vx = Math.cos(rad) * speed;
+		double vy = Math.sin(rad) * speed;
+
+		set(Game.game().isu.new Vector(vx, vy));
+
+		action_ms = duration_ms;
+		turning = false;
+
+		return true;
+	}
+
+	private double angleFromDirection(Direction direction) {
+		if (direction == Direction.F) {
+			return entity.orientation();
+		}
+
+		if (direction == Direction.B) {
+			return normalizeAngle(entity.orientation() + 180.0);
+		}
+
+		if (direction == Direction.H) {
+			return entity.orientation();
+		}
+
+		return direction.toAngle();
+	}
 
 	// TURN
 
-	 boolean startTurning(int angle_deg, double intensity){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `startTurning`"); }
+	@Override
+	public boolean startTurning(int angle_deg, double intensity) {
+		if (intensity < 0.0 || intensity > 1.0) {
+			return false;
+		}
 
+		if (max_degPer_s <= 0.0 || intensity == 0.0) {
+			return false;
+		}
+
+		if (action_ms > 0.0) {
+			return false;
+		}
+
+		finalAngle = normalizeAngle(angle_deg);
+
+		double delta = shortestDelta(entity.orientation(), finalAngle);
+
+		if (Math.abs(delta) < 1e-9) {
+			return true;
+		}
+
+		double angularSpeed = max_degPer_s * intensity;
+
+		if (delta < 0.0) {
+			angularSpeed = -angularSpeed;
+		}
+
+		set_aSpeed((int) Math.round(angularSpeed));
+
+		action_ms = Math.abs(delta) / Math.abs(angularSpeed) * 1000.0;
+		turning = true;
+
+		return true;
+	}
+
+	private double normalizeAngle(double angle) {
+		double normalized = angle % 360.0;
+
+		if (normalized < 0.0) {
+			normalized += 360.0;
+		}
+
+		return normalized;
+	}
+
+	private double shortestDelta(double currentAngle, double targetAngle) {
+		double delta = normalizeAngle(targetAngle) - normalizeAngle(currentAngle);
+
+		if (delta > 180.0) {
+			delta -= 360.0;
+		}
+
+		if (delta < -180.0) {
+			delta += 360.0;
+		}
+
+		return delta;
+	}
+
+	// COLLISION
+
+	@Override
+	protected void collision(Entity other) {
+		stopActionWithoutCompleted();
+
+		if (entity.bot() != null) {
+			entity.bot().collision(other, 0.0);
+		}
+	}
+
+	@Override
+	protected void collision(List<Entity> entities) {
+		for (Entity other : entities) {
+			collision(other);
+		}
+	}
 }

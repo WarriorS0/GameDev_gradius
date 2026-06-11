@@ -2,11 +2,9 @@ package engine.gal.aut;
 
 import java.util.List;
 
-import engine.gal.State;
-
-interface iTransitions {
+public interface iTransitions {
 
 	List<Transition> get(State state);
 
-	void add(Transition t);
+	void add(Transition transition);
 }

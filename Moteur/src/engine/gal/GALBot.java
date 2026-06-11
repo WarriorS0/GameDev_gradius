@@ -1,49 +1,35 @@
 package engine.gal;
 
- class GALBot  {
+import engine.entity.Entity;
+import engine.gal.aut.Automaton;
 
-	// CONSTRUCTOR
+public class GALBot extends Bot {
 
-	 GALBot(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `GALBot`"); }
+	private Entity selectedEntity;
 
-	// ENTITY SELECTED BY CONDITON
+	public GALBot(Entity entity) {
+		super(entity);
+		this.selectedEntity = entity;
+	}
 
-	 Entity selectedEndity;
+	// ENTITY SELECTED BY CONDITION
 
-	 void selectedEntity(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `selectedEntity`"); }
+	public void selectedEntity(Entity entity) {
+		this.selectedEntity = entity;
+	}
 
-	Entity selected(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `selected`"); }
+	public Entity selected() {
+		return selectedEntity;
+	}
 
 	// AUTOMATON
 
-	 Automaton automaton;
-
 	/**
 	 * @apiNote change the automaton of the Bot
-	 * @impNote Que devient l'état (State) du Bot ?
-	 * @param automaton
+	 * @implNote when changing automaton, the current state is reset.
 	 */
-	 void set(Automaton automaton){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `set`"); }
-
-	// TICK & COLLISION & COMPLETED
-
-	/**
-	 * @apiNote observe, choose an action and execute it
-	 * @implNote The GAL automaton is one way to encode a behaviour
-	 * @param elapsed is not used by the automaton
-	 */
-
-	 void tick(double elapsed){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `tick`"); }
-
-	/**
-	 * @apiNote stops the current action and then queries the PLC to select a new
-	 *          action
-	 */
-	 void collision(Entity impactor, double elapsed_ms);
-
-	/**
-	 * @apiNote notifies the Bot that the action of its Stunt is completed.
-	 */
-	 void completed();
-
+	public void set(Automaton automaton) {
+		automaton(automaton);
+		state(null);
+	}
 }

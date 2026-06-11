@@ -1,10 +1,25 @@
- class GALCondition  {
+package engine.gal.condition;
 
-	Direction direction;
-	Category category;
+import engine.entity.Entity;
+import engine.gal.arguments.Category;
+import engine.gal.arguments.Direction;
 
-	// CONSTANT
+public abstract class GALCondition implements iGALCondition {
 
-	 True TRUE = new True();
+	protected Direction direction;
+	protected Category category;
+
+	public static final True TRUE = new True();
+
+	protected GALCondition(Direction direction, Category category) {
+		this.direction = direction;
+		this.category = category;
+	}
+
+	protected GALCondition() {
+	}
+
+	@Override
+	public abstract boolean eval(Entity e);
 
 }

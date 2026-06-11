@@ -1,18 +1,43 @@
- class Conjunction  {
+package engine.gal.condition;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import engine.entity.Entity;
+
+public class Conjunction extends GALCondition {
 
 	// FIELDS
 
-	LinkedList<iGALCondition> conditions;
+	private final List<iGALCondition> conditions;
 
 	// CONSTRUCTOR
 
-	 Conjunction(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Conjunction`"); }
+	public Conjunction() {
+		super();
+		this.conditions = new ArrayList<>();
+	}
 
 	// BUILDER
 
-	 void add(iGALCondition c){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `add`"); }
+	public void add(iGALCondition condition) {
+		if (condition == null) {
+			throw new IllegalArgumentException("condition cannot be null");
+		}
+
+		conditions.add(condition);
+	}
 
 	// EVAL
-	 boolean eval(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `eval`"); }
 
+	@Override
+	public boolean eval(Entity e) {
+		for (iGALCondition condition : conditions) {
+			if (!condition.eval(e)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

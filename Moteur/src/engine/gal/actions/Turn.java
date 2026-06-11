@@ -1,24 +1,56 @@
- class Turn  {
+package engine.gal.actions;
 
-	int angle_deg;
+import engine.entity.Entity;
+import engine.gal.arguments.Direction;
 
-	// 3 CONSTRUCTORS
+public class Turn extends GALAction {
+
+	private final int angle_deg;
+
+	// 5 CONSTRUCTORS
 
 	/**
-	 * @param angle_deg &in; [-360,360]
-	 * @param intensity &in; [0,1]
+	 * @param angle_deg in [-360,360]
+	 * @param intensity in [0,1]
 	 */
-	 Turn(int angle_deg, double intensity){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Turn`"); }
+	public Turn(int angle_deg, double intensity) {
+		super(intensity);
 
-	 Turn(Direction dir){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Turn`"); }
+		if (angle_deg < -360 || angle_deg > 360) {
+			throw new IllegalArgumentException("angle_deg must be in [-360, 360]");
+		}
 
-	 Turn(int angle_deg){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Turn`"); }
+		this.angle_deg = angle_deg;
+	}
 
-	 Turn(double intensity){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Turn`"); }
+	public Turn(Direction direction) {
+		this(direction.toAngle(), 1.0);
+	}
 
-	 Turn(Direction dir, double intensity){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Turn`"); }
+	public Turn(int angle_deg) {
+		this(angle_deg, 1.0);
+	}
+
+	public Turn(double intensity) {
+		this(0, intensity);
+	}
+
+	public Turn(Direction direction, double intensity) {
+		this(direction.toAngle(), intensity);
+	}
 
 	// EXEC
-	 boolean exec(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `exec`"); }
 
+	@Override
+	public boolean exec(Entity e) {
+		if (e == null || e.bot() == null || e.bot().stunt() == null) {
+			return false;
+		}
+
+		return e.bot().stunt().startTurning(angle_deg, intensity);
+	}
+
+	public int angle() {
+		return angle_deg;
+	}
 }

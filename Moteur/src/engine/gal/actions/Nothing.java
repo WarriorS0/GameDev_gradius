@@ -1,10 +1,15 @@
- class Nothing  {
+package engine.gal.actions;
 
-	// CONSTRUCTOR
+import engine.entity.Entity;
 
-	 Nothing(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Nothing`"); }
+public class Nothing extends GALAction {
 
-	// EXEC
-	 boolean exec(Entity __){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `exec`"); }
+	public Nothing() {
+		super();
+	}
 
+	@Override
+	public boolean exec(Entity e) {
+		return true;
+	}
 }

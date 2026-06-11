@@ -6,12 +6,15 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import engine.gal.arguments.Category;
 import engine.geometry.Grid;
 import engine.geometry.Grid.Cell;
 import engine.geometry.ISU;
 import engine.shape.Bounding;
 import engine.shape.iShape;
 import game.Game;
+import engine.gal.Bot;
+import engine.gal.arguments.Category;
 
 public abstract class Entity {
 
@@ -33,6 +36,7 @@ public abstract class Entity {
 
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
+
 
 	private static final double EPSILON = 1e-9;
 
@@ -347,4 +351,37 @@ public abstract class Entity {
 			throw new IllegalStateException("Entity step is not set");
 		}
 	}
+	
+	// =========================
+	// GAL
+	// =========================
+	
+	public Grid grid() {
+		return grid;
+	}
+
+	private Bot bot;
+	private Category category = Category.Obstacle;
+
+	public Category category() {
+		return category;
+	}
+
+	public void category(Category category) {
+		if (category == null) {
+			throw new IllegalArgumentException("category cannot be null");
+		}
+
+		this.category = category;
+	}
+	
+	public Bot bot() {
+		return bot;
+	}
+
+	public void bot(Bot bot) {
+		this.bot = bot;
+	}
+
+	
 }

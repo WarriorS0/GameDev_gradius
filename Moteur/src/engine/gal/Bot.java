@@ -1,22 +1,61 @@
 package engine.gal;
 
- public class Bot {
+import engine.entity.Entity;
+import engine.gal.aut.Automaton;
+import engine.gal.aut.State;
 
-	 Entity entity;
+public class Bot {
+
+	private final Entity entity;
+
+	private Automaton automaton;
+	private GALStunt stunt;
+
+	private State state;
+
+	/**
+	 * @apiNote 0 <= health <= 100
+	 */
+	private int healthPercent;
 
 	// CONSTRUCTOR
 
-	 Bot(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Bot`"); }
+	public Bot(Entity entity) {
+		if (entity == null) {
+			throw new IllegalArgumentException("entity cannot be null");
+		}
+
+		this.entity = entity;
+		this.healthPercent = 100;
+	}
+
+	// ENTITY
+
+	public Entity entity() {
+		return entity;
+	}
+
+	// AUTOMATON
+
+	public void automaton(Automaton automaton) {
+		this.automaton = automaton;
+	}
+
+	public Automaton automaton() {
+		return automaton;
+	}
 
 	// STUNT
 
-	 GALStunt stunt;
+	public void stunt(GALStunt stunt) {
+		this.stunt = stunt;
+	}
 
-	void stunt(GALStunt stunt){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `stunt`"); }
+	public GALStunt stunt() {
+		return stunt;
+	}
 
 	// STATE
-
-	 State state;
 
 	/**
 	 * @apiNote The state can be used
@@ -26,16 +65,27 @@ package engine.gal;
 	 *          </UL>
 	 * @return the state of mind of the Bot
 	 */
-	 State state(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `state`"); }
+	public State state() {
+		return state;
+	}
 
-	 void state(State state){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `state`"); }
+	public void state(State state) {
+		this.state = state;
+	}
 
 	// HEALTH
 
-	/**
-	 * @apiNote 0 &le; health &le; 100
-	 */
-	 int healthPercent;
+	public int healthPercent() {
+		return healthPercent;
+	}
+
+	public void healthPercent(int healthPercent) {
+		if (healthPercent < 0 || healthPercent > 100) {
+			throw new IllegalArgumentException("healthPercent must be in [0, 100]");
+		}
+
+		this.healthPercent = healthPercent;
+	}
 
 	// TICK & COLLISION & COMPLETED
 
@@ -43,7 +93,9 @@ package engine.gal;
 	 * @apiNote wakes up the Bot so that it can take action
 	 * @param elapsed_ms
 	 */
-	 void tick(double elapsed_ms);
+	public void tick(double elapsed_ms) {
+		stepAutomaton();
+	}
 
 	/**
 	 * @apiNote notifies the Bot that a collision has occurred with {@code impactor}
@@ -51,11 +103,22 @@ package engine.gal;
 	 * @param impactor
 	 * @param elapsed_ms
 	 */
-	 void collision(Entity impactor, double elapsed_ms);
+	public void collision(Entity impactor, double elapsed_ms) {
+		stepAutomaton();
+	}
 
 	/**
 	 * @apiNote notifies the Bot that the action of its Stunt is completed.
 	 */
-	 void completed();
+	public void completed() {
+		stepAutomaton();
+	}
 
+	private boolean stepAutomaton() {
+		if (automaton == null) {
+			return false;
+		}
+
+		return automaton.step(entity);
+	}
 }

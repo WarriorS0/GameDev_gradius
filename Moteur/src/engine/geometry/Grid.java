@@ -295,6 +295,14 @@ public class Grid {
 		public Grid.Position position() {
 			return position;
 		}
+		
+		public Iterable<Entity> entities() {
+			return entities;
+		}
+
+		public boolean isEmpty() {
+			return entities.isEmpty();
+		}
 
 		// REMOVE
 

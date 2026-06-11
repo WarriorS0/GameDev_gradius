@@ -1,40 +1,73 @@
 package engine.gal.aut;
 
-import engine.gal.State;
+import engine.entity.Entity;
 
-class Automaton {
+public class Automaton {
 
-	 State initial;
-	/**
-	 * @apiNote represents a collection of {@code Transition}
-	 * @implNote Transitions are ordered by the order in which they were added so
-	 *           that the automaton processes them in that order.
-	 * @implNote Choose your representation carefully to efficiently identify the
-	 *           potential transitions for triggering.
-	 */
-	 iTransitions transitions;
+	// FIELDS
+
+	private final State initial;
+	private final iTransitions transitions;
+	private final String name;
 
 	// CONSTRUCTOR
 
-	 Automaton(String name, State initial){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `Automaton`"); }
+	public Automaton(String name, State initial) {
+		if (name == null || name.isBlank()) {
+			throw new IllegalArgumentException("name cannot be null or blank");
+		}
+
+		if (initial == null) {
+			throw new IllegalArgumentException("initial cannot be null");
+		}
+
+		this.name = name;
+		this.initial = initial;
+		this.transitions = new Transitions();
+	}
 
 	// BUILDER
 
 	/**
 	 * @apiNote add a transition to the automaton after the previous ones
 	 */
-	 void add(Transition t){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `add`"); }
-
-	// AUTOMATON STEP = TRIGGER A TRANSITION or FAIL and STAY IN THE SAME STATE
+	public void add(Transition transition) {
+		transitions.add(transition);
+	}
 
 	/**
 	 * @apiNote Try to select and execute one valid transition
 	 * @param e = the Entity whose bot evaluates the condition and whose stunt
 	 *          executes the action
-	 * @return {@code true} if there exists a transition which can be triggered by
-	 *         the {@code bot}
-	 *         <LI>{@code false} if no transition can be taken.</LI>
+	 * @return true if there exists a transition which can be triggered by the bot,
+	 *         false if no transition can be taken.
 	 */
-	 boolean step(Entity e){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `step`"); }
+	public boolean step(Entity e) {
+		if (e == null || e.bot() == null) {
+			return false;
+		}
 
+		State currentState = e.bot().state();
+
+		if (currentState == null) {
+			e.bot().state(initial);
+			currentState = initial;
+		}
+
+		for (Transition transition : transitions.get(currentState)) {
+			if (transition.exec(e)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public State initial() {
+		return initial;
+	}
+
+	public String name() {
+		return name;
+	}
 }

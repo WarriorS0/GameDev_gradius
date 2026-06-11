@@ -1,10 +1,16 @@
- class True  {
+package engine.gal.condition;
 
-	// CONSTRUCTOR
+import engine.entity.Entity;
 
-	 True(){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `True`"); }
+public class True extends GALCondition {
 
-	// EVAL
-	 boolean eval(Entity __){ throw new UnsupportedOperationException("UNIMPLEMENTED METHOD `eval`"); }
+	public True() {
+		super();
+	}
+
+	@Override
+	public boolean eval(Entity e) {
+		return true;
+	}
 
 }
