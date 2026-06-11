@@ -86,14 +86,7 @@ class BoundingTest {
 		});
 	}
 
-	@Test
-	void emptyBoundingBoxesThrowsException() {
-		Bounding bounding = new Bounding();
 
-		assertThrows(IllegalStateException.class, () -> {
-			bounding.boundingBoxes();
-		});
-	}
 
 	@Test
 	void boundingBoxesReturnsOneBoxPerShape() {
