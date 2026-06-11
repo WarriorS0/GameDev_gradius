@@ -9,11 +9,11 @@ public class Rect extends Shape {
 	// FIELDS
 
 	private double halfWidth, halfHeight;
-	private int angle_degree;
+	private double angle_degree;
 
 	// CONSTRUCTOR
 
-	public Rect(ISU.Coord center, ISU.Dimension size, int angle_degree) {
+	public Rect(ISU.Coord center, ISU.Dimension size, double angle_degree) {
 		super(center);
 		this.halfHeight = size.y() / 2;
 		this.halfWidth = size.x() / 2;
@@ -24,7 +24,7 @@ public class Rect extends Shape {
 
 	// ROTATION
 
-	void rotate(int angle_degree) {
+	void rotate(double angle_degree) {
 		this.angle_degree = ((((this.angle_degree + angle_degree) % 360) + 360) % 360);
 	}
 
@@ -48,7 +48,7 @@ public class Rect extends Shape {
 			this.y = y;
 		}
 
-		void rotate(int angleDegree) {
+		void rotate(double angleDegree) {
 			double angle = Math.toRadians(angleDegree);
 			double oldX = this.x;
 			double oldY = this.y;

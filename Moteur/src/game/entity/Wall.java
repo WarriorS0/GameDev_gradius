@@ -1,27 +1,41 @@
 package game.entity;
 
-import engine.Entity;
-import engine.shape.Bounding;
+import engine.entity.Entity;
 import engine.shape.Rect;
 import game.Game;
 
-public class Wall extends Entity{
-	// CONSTRUCTOR
+public class Wall extends Entity {
 
-		public Wall() {
-			super("Wall");
-			setSize(isu.new Dimension(Game.cmPerCell, Game.cmPerCell));
-			setPosition(grid.new Position(grid.width() / 2, grid.height() / 2));
-			setStep(isu.new Dimension(0, 0));
-		}
+	public Wall() {
+		super("Wall");
 
-		// === Task COLLISION ===
-		public void setBounding() {
-			this.bounding = new Bounding();
-			bounding.add(new Rect(isu.new Coord(center().x() + Game.cmPerCell/2, center().y() + Game.cmPerCell / 2),
-					isu.new Dimension(Game.cmPerCell, Game.cmPerCell), 0));
-			
-			bounding_box = new Rect(center(),
-					isu.new Dimension(Game.cmPerCell, Game.cmPerCell), 0);
-		}
+		double cmPerCell = Game.game().cmPerCell;
+
+		setSize(isu.new Dimension(cmPerCell, cmPerCell));
+		setStep(isu.new Dimension(0, 0));
+
+		place(grid.new Position(grid.width() / 2, grid.height() / 2));
+	}
+
+	public Wall(int x_ncell, int y_ncell) {
+		super("Wall");
+
+		double cmPerCell = Game.game().cmPerCell;
+
+		setSize(isu.new Dimension(cmPerCell, cmPerCell));
+		setStep(isu.new Dimension(0, 0));
+
+		place(grid.new Position(x_ncell, y_ncell));
+	}
+
+	@Override
+	protected void setBounding() {
+		clearBounding();
+
+		addBounding(new Rect(
+			center(),
+			size(),
+			orientation()
+		));
+	}
 }

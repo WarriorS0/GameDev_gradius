@@ -6,22 +6,18 @@ import game.Game;
 
 public class PacMan extends Entity {
 
-	// CONSTRUCTOR
-
 	public PacMan() {
 		super("PacMan");
-		
-		super.setPosition(super.grid.new Position(10,10));
-		this.setBounding();
+		place(grid.new Position(10, 10));
 	}
-
-	// TASK COLLISION
 
 	@Override
 	protected void setBounding() {
-		super.setBounding();
+		clearBounding();
 
-		this.addBounding(new Circle(super.center(), Game.game().cmPerCell/2));
+		addBounding(new Circle(
+			center(),
+			Game.game().cmPerCell / 2
+		));
 	}
-
 }
