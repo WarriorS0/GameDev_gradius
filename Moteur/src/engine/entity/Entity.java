@@ -2,246 +2,322 @@
 
 package engine.entity;
 
-import java.io.PrintStream;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import engine.geometry.Grid;
 import engine.geometry.Grid.Cell;
+import engine.geometry.ISU;
 import engine.shape.Bounding;
 import engine.shape.iShape;
-import engine.geometry.ISU;
 import game.Game;
 
-public class Entity {
+public abstract class Entity {
 
-	// FIELDS
+	// =========================
+	// Core fields
+	// =========================
 
-	protected Grid grid;
-	protected ISU isu;
-	protected String name;
+	protected final Grid grid;
+	protected final ISU isu;
+	protected final String name;
 
-	// FIELDS
-
-	private ISU.Dimension size; // dimension de l'entité
-	private ISU.Dimension step; // dimension d'un pas de déplacement
+	private ISU.Dimension size; // dimension de l'entité en cm
+	private ISU.Dimension step; // dimension d'un pas de déplacement en cm
 	private Grid.Position position; // position dans la grille
 	private ISU.Coord center; // coordonnées en cm du centre de l'entité
 
-	// FIELDS
-
-	private int orientation_degree; // orientation par rapport à l'axe des x
+	private double orientation_degree;
 
 	private Bounding hitbox;
+	private final Set<Cell> occupied;
 
-	// CONSTRUCTOR
+	private static final double EPSILON = 1e-9;
+
+	// =========================
+	// Constructor
+	// =========================
 
 	protected Entity(String name) {
 		Game game = Game.game();
-		this.name = name;
+
+		if (game == null) {
+			throw new IllegalStateException("No current Game instance");
+		}
+
+		this.name = Objects.requireNonNull(name, "name cannot be null");// masterclass
 		this.grid = game.grid;
 		this.isu = game.isu;
+
 		this.hitbox = new Bounding();
-		this.occupied = new HashSet<Cell>();
-
+		this.occupied = new HashSet<>();
 	}
 
-	// SETTER
+	// =========================
+	// Setters / configuration
+	// =========================
 
-	protected void setPosition(Grid.Position position) {
-		this.position = position;
-		center = position.toISUCoord();
-	}
-
-	void setCoord(ISU.Coord center) {
-		this.center = center;
-		position = center.toGridPosition();
-	}
-
-	void setSize(Grid.Dimension dimension) {
+	public void setSize(Grid.Dimension dimension) {
+		Objects.requireNonNull(dimension, "dimension cannot be null");
 		this.size = dimension.toISUDimension();
 	}
 
-	protected void setSize(ISU.Dimension dimension) {
-		this.size = dimension;
+	public void setSize(ISU.Dimension dimension) {
+		this.size = Objects.requireNonNull(dimension, "dimension cannot be null");
 	}
 
-	void setStep(ISU.Dimension dimension) {
-		this.step = dimension;
+	public void setStep(ISU.Dimension step) {
+		this.step = Objects.requireNonNull(step, "step cannot be null");
 	}
 
-	// GETTER
-
-	protected ISU.Coord center() {
-		return this.center;
+	public void place(Grid.Position position) {
+		setPosition(position);
+		setBounding();
+		deploy();
 	}
 
-	Grid.Position position() {
+	public void place(ISU.Coord center) {
+		setCoord(center);
+		setBounding();
+		deploy();
+	}
+
+	protected void setPosition(Grid.Position position) {
+		this.position = Objects.requireNonNull(position, "position cannot be null");
+		this.center = position.toISUCoord();
+	}
+
+	protected void setCoord(ISU.Coord center) {
+		this.center = Objects.requireNonNull(center, "center cannot be null");
+		this.position = center.toGridPosition();
+	}
+
+	// =========================
+	// Getters
+	// =========================
+
+	public String name() {
+		return name;
+	}
+
+	public ISU.Coord center() {
+		return center;
+	}
+
+	public Grid.Position position() {
 		return position;
 	}
-	
-	protected ISU.Dimension size() {
+
+	public ISU.Dimension size() {
 		return size;
 	}
 
-	protected int orientation() {
-		return this.orientation_degree;
+	public ISU.Dimension step() {
+		return step;
 	}
 
-	// TRANSLATION
+	public double orientation() {
+		return orientation_degree;
+	}
 
-	void translate(Grid.Vector v) {
-		if (position == null) {
-			throw new IllegalStateException("Entity position is not set");
-		}
+	public Set<Cell> occupied() {
+		return occupied;
+	}
+
+	protected Bounding hitbox() {
+		return hitbox;
+	}
+
+	// =========================
+	// Translation
+	// =========================
+
+	public void translate(Grid.Vector v) {
+		Objects.requireNonNull(v, "vector cannot be null");
+		ensurePositionIsSet();
+
 		position.translate(v);
-		this.setPosition(position);
-		this.setBounding();
+		setPosition(position);
+
+		setBounding();
+		deploy();
 	}
 
-	void translate(ISU.Vector v) {
-		if (center == null) {
-			throw new IllegalStateException("Entity center is not set");
-		}
+	public void translate(ISU.Vector v) {
+		Objects.requireNonNull(v, "vector cannot be null");
+		ensureCenterIsSet();
+
 		center.translate(v);
-		this.setCoord(center);
-		this.setBounding();
+		setCoord(center);
+
+		setBounding();
+		deploy();
 	}
 
-	// TURN
+	// =========================
+	// Rotation
+	// =========================
 
 	/**
-	 * @apiNote turn is a rotation around the center of the entity.
-	 * @param angle_degree
+	 * Rotation autour du centre de l'entité.
+	 *
+	 * @param angle_degree angle ajouté à l'orientation actuelle
 	 */
-	public void turn(int angle_degree) {
-		this.orientation_degree = ((((this.orientation_degree + angle_degree) % 360) + 360) % 360);
-		this.setBounding();
+	public void turn(double angle_degree) {
+		this.orientation_degree = normalizeAngle(this.orientation_degree + angle_degree);
+
+		setBounding();
+		deploy();
 	}
 
-	// SHOW
+	private double normalizeAngle(double angle_degree) {
+		double angle = angle_degree % 360.0;
 
-	void show(PrintStream ps) {
-		ps.printf("Entity = %s in (%d,%d) cell\n", this.name, this.position.x(), this.position.y());
+		if (angle < 0) {
+			angle += 360.0;
+		}
+
+		return angle;
 	}
 
-	// === MOVE ===
+	// =========================
+	// Move
+	// =========================
+
+	public void moveNorth(int nStep) {
+		ensureStepIsSet();
+		moveNorth(nStep * step.y());
+	}
+
+	public void moveSouth(int nStep) {
+		ensureStepIsSet();
+		moveSouth(nStep * step.y());
+	}
+
+	public void moveEast(int nStep) {
+		ensureStepIsSet();
+		moveEast(nStep * step.x());
+	}
+
+	public void moveWest(int nStep) {
+		ensureStepIsSet();
+		moveWest(nStep * step.x());
+	}
 
 	/**
-	 * @apiNote déplacement vers le nord en nombre de pas
-	 * @param nStep
+	 * Déplacement vers l'est en cm.
 	 */
-	void moveNorth(int nStep) {
-		this.moveNorth(nStep * step.y());
+	public void moveEast(double length_cm) {
+		translate(isu.new Vector(length_cm, 0));
 	}
 
-	void moveSouth(int nStep) {
-		this.moveSouth(nStep * step.y());
+	public void moveWest(double length_cm) {
+		translate(isu.new Vector(-length_cm, 0));
 	}
 
-	void moveEast(int nStep) {
-		this.moveEast(nStep * step.x());
+	public void moveNorth(double length_cm) {
+		translate(isu.new Vector(0, -length_cm));
 	}
 
-	void moveWest(int nStep) {
-		this.moveWest(nStep * step.x());
+	public void moveSouth(double length_cm) {
+		translate(isu.new Vector(0, length_cm));
 	}
 
-	/**
-	 * @apiNote déplacement vers l'est en cm
-	 * @param length_cm
-	 */
-	void moveEast(double length_cm) {
-		if (step == null) {
-			throw new IllegalStateException("Entity step is not set");
-		}
-		this.translate(isu.new Vector(length_cm, 0));
-	}
-
-	void moveWest(double length_cm) {
-		if (step == null) {
-			throw new IllegalStateException("Entity step is not set");
-		}
-		this.translate(isu.new Vector(-length_cm, 0));
-	}
-
-	void moveNorth(double length_cm) {
-		if (step == null) {
-			throw new IllegalStateException("Entity step is not set");
-		}
-		this.translate(isu.new Vector(0, -length_cm));
-	}
-
-	void moveSouth(double length_cm) {
-		if (step == null) {
-			throw new IllegalStateException("Entity step is not set");
-		}
-		this.translate(isu.new Vector(0, length_cm));
-	}
-	
-	// === COLLISION ===
-
-	// INTERSECTION
+	// =========================
+	// Bounding / collision
+	// =========================
 
 	public boolean intersects(Entity e) {
+		Objects.requireNonNull(e, "entity cannot be null");
 		return this.hitbox.intersects(e.hitbox);
 	}
 
+	public double distanceCenterToCenter(Entity e) {
+		Objects.requireNonNull(e, "entity cannot be null");
+		ensureCenterIsSet();
+		e.ensureCenterIsSet();
 
-	protected void setBounding() {
+		return this.center.distanceTo(e.center);
+	}
+
+	/**
+	 * Les sous-classes doivent définir leur propre hitbox ici.
+	 */
+	protected abstract void setBounding();
+
+	protected void clearBounding() {
 		this.hitbox = new Bounding();
 	}
-	
+
 	protected void addBounding(iShape shape) {
+		Objects.requireNonNull(shape, "shape cannot be null");
 		this.hitbox.add(shape);
 	}
 
+	// =========================
+	// Deploy in grid
+	// =========================
 
-	double distanceCenterToCenter(Entity e) {
-		return e.center().distanceTo(this.center());
-	}
-
-	// DEPLOY in the Grid according to the BOUNDING
-	
-	Set<Cell> occupied;
-
-	void deploy() {
-		this.retract();
+	public void deploy() {
+		retract();
 
 		for (iShape.Box box : this.hitbox.boundingBoxes()) {
-			int minX = toCellIndex(box.minX());
-			int maxX = toCellIndex(box.maxX());
-			int minY = toCellIndex(box.minY());
-			int maxY = toCellIndex(box.maxY());
+			int minX = toCellIndexMin(box.minX());
+			int maxX = toCellIndexMax(box.maxX());
+			int minY = toCellIndexMin(box.minY());
+			int maxY = toCellIndexMax(box.maxY());
 
 			for (int x = minX; x <= maxX; x++) {
 				for (int y = minY; y <= maxY; y++) {
-					this.occupy(grid.new Position(x, y));
+					occupy(grid.new Position(x, y));
 				}
 			}
 		}
 	}
 
-	private int toCellIndex(double coord_cm) {
-		return (int) Math.floor(coord_cm / Game.game().cmPerCell);
+	private int toCellIndexMin(double coord_cm) {
+		double cmPerCell = Game.game().cmPerCell;
+		return (int) Math.floor(coord_cm / cmPerCell + 0.5 + EPSILON);
 	}
 
-	void occupy(Grid.Position position) {
+	private int toCellIndexMax(double coord_cm) {
+		double cmPerCell = Game.game().cmPerCell;
+		return (int) Math.floor(coord_cm / cmPerCell + 0.5 - EPSILON);
+	}
+
+	private void occupy(Grid.Position position) {
 		Cell cell = this.grid.occupy(this, position);
 		this.occupied.add(cell);
 	}
 
-	void retract() {
+	public void retract() {
 		for (Cell cell : this.occupied) {
 			this.grid.retract(this, cell);
 		}
 
 		this.occupied.clear();
 	}
-	
-	public void place(Grid.Position position) {
-		this.setPosition(position);
-		this.setBounding();
+
+	// =========================
+	// Guards
+	// =========================
+
+	private void ensurePositionIsSet() {
+		if (position == null) {
+			throw new IllegalStateException("Entity position is not set");
+		}
 	}
 
+	private void ensureCenterIsSet() {
+		if (center == null) {
+			throw new IllegalStateException("Entity center is not set");
+		}
+	}
+
+	private void ensureStepIsSet() {
+		if (step == null) {
+			throw new IllegalStateException("Entity step is not set");
+		}
+	}
 }

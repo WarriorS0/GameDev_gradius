@@ -1,45 +1,33 @@
 package engine.entity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import engine.geometry.Grid;
+import engine.geometry.ISU;
 import engine.shape.Circle;
 import engine.shape.Rect;
 import engine.shape.iShape;
-
-import engine.geometry.Grid;
-import engine.geometry.ISU;
 import game.Game;
 
 class EntityTest {
 
-	private static final int WIDTH_NCELL = 12;
-	private static final int HEIGHT_NCELL = 10;
-	private static final double EPSILON = 1e-9;
+	private static class TestEntity extends Entity {
 
-	private Game game;
-	private Grid grid;
-	private ISU isu;
-	private Entity entity;
+		TestEntity(String name) {
+			super(name);
+		}
 
-	@BeforeEach
-	void init() {
-		game = new Game(WIDTH_NCELL, HEIGHT_NCELL);
-
-		this.game = Game.game();
-		this.grid = game.grid;
-		this.isu = game.isu;
-
-		this.entity = new Entity("test-entity");
-		this.entity.setStep(isu.new Dimension(2.0, 2.0));
+		@Override
+		protected void setBounding() {
+			clearBounding();
+		}
 	}
-	
+
 	private static class FakeBox implements iShape.Box {
 		private final double minX;
 		private final double maxX;
@@ -104,23 +92,35 @@ class EntityTest {
 		}
 	}
 
+	private static final int WIDTH_NCELL = 12;
+	private static final int HEIGHT_NCELL = 10;
+	private static final double EPSILON = 1e-9;
+
+	private Game game;
+	private Grid grid;
+	private ISU isu;
+	private Entity entity;
+
+	@BeforeEach
+	void init() {
+		new Game(WIDTH_NCELL, HEIGHT_NCELL);
+
+		this.game = Game.game();
+		this.grid = game.grid;
+		this.isu = game.isu;
+
+		this.entity = new TestEntity("test-entity");
+		this.entity.setStep(isu.new Dimension(2.0, 2.0));
+	}
+
 	@Test
 	void setPositionShouldUpdatePositionAndCenter() {
 		Grid.Position position = grid.new Position(2, 3);
 
 		entity.setPosition(position);
 
-		assertEquals(
-			position.x(),
-			entity.position().x(),
-			"setPosition should update position.x."
-		);
-
-		assertEquals(
-			position.y(),
-			entity.position().y(),
-			"setPosition should update position.y."
-		);
+		assertEquals(position.x(), entity.position().x(), "setPosition should update position.x.");
+		assertEquals(position.y(), entity.position().y(), "setPosition should update position.y.");
 
 		ISU.Coord expectedCenter = position.toISUCoord();
 
@@ -145,19 +145,8 @@ class EntityTest {
 
 		entity.setCoord(center);
 
-		assertEquals(
-			center.x(),
-			entity.center().x(),
-			EPSILON,
-			"setCoord should update center.x."
-		);
-
-		assertEquals(
-			center.y(),
-			entity.center().y(),
-			EPSILON,
-			"setCoord should update center.y."
-		);
+		assertEquals(center.x(), entity.center().x(), EPSILON, "setCoord should update center.x.");
+		assertEquals(center.y(), entity.center().y(), EPSILON, "setCoord should update center.y.");
 
 		Grid.Position expectedPosition = center.toGridPosition();
 
@@ -176,35 +165,35 @@ class EntityTest {
 
 	@Test
 	void turnShouldNormalizePositiveAngles() {
-		assertEquals(0, entity.orientation(), "Initial orientation should be 0.");
+		assertEquals(0, entity.orientation(), EPSILON, "Initial orientation should be 0.");
 
 		entity.turn(90);
-		assertEquals(90, entity.orientation(), "turn(90) from 0 should give 90.");
+		assertEquals(90, entity.orientation(), EPSILON, "turn(90) from 0 should give 90.");
 
 		entity.turn(300);
-		assertEquals(30, entity.orientation(), "90 + 300 should be normalized to 30.");
+		assertEquals(30, entity.orientation(), EPSILON, "90 + 300 should be normalized to 30.");
 	}
 
 	@Test
 	void turnShouldNormalizeNegativeAngles() {
-		assertEquals(0, entity.orientation(), "Initial orientation should be 0.");
+		assertEquals(0, entity.orientation(), EPSILON, "Initial orientation should be 0.");
 
 		entity.turn(-60);
-		assertEquals(300, entity.orientation(), "turn(-60) from 0 should give 300.");
+		assertEquals(300, entity.orientation(), EPSILON, "turn(-60) from 0 should give 300.");
 
 		entity.turn(-330);
-		assertEquals(330, entity.orientation(), "300 - 330 should be normalized to 330.");
+		assertEquals(330, entity.orientation(), EPSILON, "300 - 330 should be normalized to 330.");
 	}
 
 	@Test
 	void turnShouldNormalizeAnglesGreaterThan360() {
-		assertEquals(0, entity.orientation(), "Initial orientation should be 0.");
+		assertEquals(0, entity.orientation(), EPSILON, "Initial orientation should be 0.");
 
 		entity.turn(720);
-		assertEquals(0, entity.orientation(), "turn(720) should keep orientation at 0.");
+		assertEquals(0, entity.orientation(), EPSILON, "turn(720) should keep orientation at 0.");
 
 		entity.turn(450);
-		assertEquals(90, entity.orientation(), "turn(450) should be equivalent to turn(90).");
+		assertEquals(90, entity.orientation(), EPSILON, "turn(450) should be equivalent to turn(90).");
 	}
 
 	@Test
@@ -342,33 +331,33 @@ class EntityTest {
 			"After grid translation, center.y should be synchronized."
 		);
 	}
-	
+
 	@Test
 	void entitiesShouldIntersectWhenOneShapePairIntersects() {
-		Entity e1 = new Entity("e1");
-		Entity e2 = new Entity("e2");
+		Entity e1 = new TestEntity("e1");
+		Entity e2 = new TestEntity("e2");
 
 		e1.addBounding(new FakeShape(new FakeBox(0, 1, 0, 1), true));
 		e2.addBounding(new FakeShape(new FakeBox(10, 11, 10, 11), false));
 
 		assertTrue(e1.intersects(e2));
 	}
-	
+
 	@Test
 	void entitiesShouldNotIntersectWhenNoShapePairIntersects() {
-		Entity e1 = new Entity("e1");
-		Entity e2 = new Entity("e2");
+		Entity e1 = new TestEntity("e1");
+		Entity e2 = new TestEntity("e2");
 
 		e1.addBounding(new FakeShape(new FakeBox(0, 1, 0, 1), false));
 		e2.addBounding(new FakeShape(new FakeBox(10, 11, 10, 11), false));
 
 		assertFalse(e1.intersects(e2));
 	}
-	
+
 	@Test
 	void setBoundingShouldResetEntityHitbox() {
-		Entity e1 = new Entity("e1");
-		Entity e2 = new Entity("e2");
+		Entity e1 = new TestEntity("e1");
+		Entity e2 = new TestEntity("e2");
 
 		e1.addBounding(new FakeShape(new FakeBox(0, 1, 0, 1), true));
 		e2.addBounding(new FakeShape(new FakeBox(10, 11, 10, 11), false));
@@ -380,24 +369,27 @@ class EntityTest {
 		assertFalse(e1.intersects(e2));
 	}
 
-	
 	@Test
-	void deployWithoutBoundingShouldThrowException() {
-		assertThrows(IllegalStateException.class, () -> {
-			entity.deploy();
-		});
+	void deployWithoutBoundingShouldOccupyNoCell() {
+		entity.deploy();
+
+		assertEquals(
+			0,
+			entity.occupied().size(),
+			"An entity with an empty hitbox should occupy no cell."
+		);
 	}
-	
+
 	@Test
 	void deployShouldOccupyCellsCoveredByBoundingBox() {
 		double cell = Game.game().cmPerCell;
 
 		entity.addBounding(new FakeShape(
 			new FakeBox(
-				2.1 * cell,
-				4.9 * cell,
-				3.1 * cell,
-				4.9 * cell
+				1.6 * cell,
+				4.4 * cell,
+				2.6 * cell,
+				4.4 * cell
 			),
 			false
 		));
@@ -406,34 +398,34 @@ class EntityTest {
 
 		assertEquals(
 			6,
-			entity.occupied.size(),
-			"Box from x=2..4 and y=3..4 should occupy 3 * 2 = 6 cells."
+			entity.occupied().size(),
+			"Box should occupy x=2..4 and y=3..4, so 3 * 2 = 6 cells."
 		);
 	}
-	
+
 	@Test
 	void retractShouldClearOccupiedCells() {
 		double cell = Game.game().cmPerCell;
 
 		entity.addBounding(new FakeShape(
 			new FakeBox(
-				2.1 * cell,
-				4.9 * cell,
-				3.1 * cell,
-				4.9 * cell
+				1.6 * cell,
+				4.4 * cell,
+				2.6 * cell,
+				4.4 * cell
 			),
 			false
 		));
 
 		entity.deploy();
 
-		assertEquals(6, entity.occupied.size());
+		assertEquals(6, entity.occupied().size());
 
 		entity.retract();
 
 		assertEquals(
 			0,
-			entity.occupied.size(),
+			entity.occupied().size(),
 			"retract should clear the occupied cells set."
 		);
 	}

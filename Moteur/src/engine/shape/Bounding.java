@@ -89,15 +89,10 @@ public class Bounding {
 	}
 
 	public Iterable<iShape.Box> boundingBoxes() {
-		Iterator<iShape> it = boundings.iterator();
 		Set<iShape.Box> boxes = new HashSet<iShape.Box>();
 
-		if (!it.hasNext()) {
-			throw new IllegalStateException("Bounding vide");
-		}
-
-		while (it.hasNext()) {
-			boxes.add(new SimpleBox(it.next().boundingBox()));
+		for(iShape shape : boundings) {
+			boxes.add(new SimpleBox(shape.boundingBox()));
 		}
 
 		return boxes;
