@@ -39,7 +39,7 @@ public class BasicStunt extends engine.move.Stunt {
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
 
-		System.out.println("ATTENTION COLLISION avec " + other.name());
+		//System.out.println("ATTENTION COLLISION avec " + other.name());
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class BasicStunt extends engine.move.Stunt {
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
 
-		System.out.println("ATTENTION COLLISION avec plusieurs entités");
+		//System.out.println("ATTENTION COLLISION avec plusieurs entités");
 	}
 
 	@Override

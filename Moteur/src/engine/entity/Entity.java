@@ -29,6 +29,7 @@ public abstract class Entity {
 	private ISU.Coord center; // coordonnées en cm du centre de l'entité
 
 	private double orientation_degree;
+	private boolean alive = true;
 
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
@@ -46,7 +47,7 @@ public abstract class Entity {
 			throw new IllegalStateException("No current Game instance");
 		}
 
-		this.name = Objects.requireNonNull(name, "name cannot be null");// masterclass
+		this.name = Objects.requireNonNull(name, "name cannot be null");
 		this.grid = game.grid;
 		this.isu = game.isu;
 
@@ -93,6 +94,24 @@ public abstract class Entity {
 		this.position = center.toGridPosition();
 	}
 
+	public void kill() {
+		if (!alive) {
+			return;
+		}
+
+		this.alive = false;
+		retract();
+	}
+
+	public void revive() {
+		if (alive) {
+			return;
+		}
+
+		this.alive = true;
+		setBounding();
+		deploy();
+	}
 	// =========================
 	// Getters
 	// =========================
@@ -127,6 +146,14 @@ public abstract class Entity {
 
 	protected Bounding hitbox() {
 		return hitbox;
+	}
+
+	public boolean alive() {
+		return alive;
+	}
+
+	public boolean dead() {
+		return !alive;
 	}
 
 	// =========================

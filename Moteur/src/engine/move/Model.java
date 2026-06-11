@@ -129,6 +129,9 @@ public class Model {
 		Physique phy = new Physique();
 
 		for (Entity entity : new LinkedList<>(entities)) {
+			if (entity.dead()) {
+				continue;
+			}
 			phy.move(entity);
 		}
 	}
@@ -198,6 +201,10 @@ public class Model {
 				if (entity == other) {
 					continue;
 				}
+				
+				if (other.dead()) {
+					continue;
+				}
 
 				if (entity.intersects(other)) {
 					return other;
@@ -212,6 +219,12 @@ public class Model {
 
 			if (stunt != null) {
 				stunt.listener.collision(other);
+			}
+
+			Stunt otherStunt = stunts.get(other);
+
+			if (otherStunt != null) {
+				otherStunt.listener.collision(entity);
 			}
 		}
 	}

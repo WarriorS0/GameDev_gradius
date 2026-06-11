@@ -187,6 +187,10 @@ public class PacmanAvatar extends Avatar {
 		if (entity().center() == null) {
 			return;
 		}
+		
+		if (dead() && deathAnimationFinished) {
+			return;
+		}
 
 		updateCurrentAnimationIfNeeded();
 

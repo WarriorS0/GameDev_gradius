@@ -3,7 +3,6 @@ package game.move;
 import java.util.List;
 
 import engine.entity.Entity;
-import engine.geometry.Grid.Cell;
 import engine.geometry.ISU.Vector;
 import game.Game;
 import game.entity.Ghost;
@@ -12,31 +11,14 @@ public class PacManStunt extends engine.move.Stunt {
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	private boolean dead;
-
 	public PacManStunt(engine.move.Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
-		this.dead = false;
-	}
-
-	public boolean dead() {
-		return dead;
-	}
-
-	public void kill() {
-		this.dead = true;
-		set(Game.game().isu.new Vector(0, 0));
-		set_aSpeed(0);
-	}
-
-	public void revive() {
-		this.dead = false;
 	}
 
 	@Override
 	public void set(int orientation) {
-		if (dead) {
+		if (entity.dead()) {
 			return;
 		}
 
@@ -55,6 +37,15 @@ public class PacManStunt extends engine.move.Stunt {
 		}
 	}
 
+	public void kill() {
+		entity.kill();
+		super.set(Game.game().isu.new Vector(0, 0));
+		super.set_aSpeed(0);
+	}
+
+	public void revive() {
+		entity.revive();
+	}
 
 	@Override
 	protected void collision(Entity other) {
@@ -66,14 +57,14 @@ public class PacManStunt extends engine.move.Stunt {
 
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
-		
-		//System.out.println("PACMAN COLLISION avec " + other.name());
+
+		System.out.println("PACMAN COLLISION avec " + other.name());
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
-		for (Entity entity : entities) {
-			if (entity instanceof Ghost) {
+		for (Entity other : entities) {
+			if (other instanceof Ghost) {
 				kill();
 				System.out.println("PACMAN EST MORT");
 				return;
@@ -82,13 +73,11 @@ public class PacManStunt extends engine.move.Stunt {
 
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
-
-		//System.out.println("PACMAN COLLISION avec plusieurs entités");
 	}
 
 	@Override
 	public void set(Vector linearSpeed) {
-		if (dead) {
+		if (entity.dead()) {
 			super.set(Game.game().isu.new Vector(0, 0));
 			return;
 		}
@@ -98,7 +87,7 @@ public class PacManStunt extends engine.move.Stunt {
 
 	@Override
 	public void set_aSpeed(int angularSpeed) {
-		if (dead) {
+		if (entity.dead()) {
 			super.set_aSpeed(0);
 			return;
 		}

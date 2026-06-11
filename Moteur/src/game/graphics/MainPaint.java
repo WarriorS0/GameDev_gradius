@@ -73,17 +73,17 @@ public class MainPaint implements Runnable {
 		model.add(blinky);
 		GhostStunt blinkyStunt = new GhostStunt(model, blinky);
 		blinkyStunt.set(game.isu.new Vector(10, 0));
-		blinkyStunt.set_aSpeed(50);
+		blinkyStunt.set_aSpeed(0);
 
 		model.add(pinky);
 		GhostStunt pinkyStunt = new GhostStunt(model, pinky);
 		pinkyStunt.set(game.isu.new Vector(10, 0));
-		pinkyStunt.set_aSpeed(50);
+		pinkyStunt.set_aSpeed(0);
 
 		model.add(inky);
 		GhostStunt inkyStunt = new GhostStunt(model, inky);
 		inkyStunt.set(game.isu.new Vector(10, 0));
-		inkyStunt.set_aSpeed(50);
+		inkyStunt.set_aSpeed(0);
 
 		model.add(clyde);
 		GhostStunt clydeStunt = new GhostStunt(model, clyde);
@@ -93,17 +93,17 @@ public class MainPaint implements Runnable {
 		model.add(weak);
 		GhostStunt weakStunt = new GhostStunt(model, weak);
 		weakStunt.set(game.isu.new Vector(10, 0));
-		weakStunt.set_aSpeed(50);
+		weakStunt.set_aSpeed(0);
 
 		model.add(weakOver);
 		GhostStunt weakOverStunt = new GhostStunt(model, weakOver);
 		weakOverStunt.set(game.isu.new Vector(10, 0));
-		weakOverStunt.set_aSpeed(50);
+		weakOverStunt.set_aSpeed(0);
 
 		model.add(deadGhost);
 		GhostStunt deadGhostStunt = new GhostStunt(model, deadGhost);
 		deadGhostStunt.set(game.isu.new Vector(10, 0));
-		deadGhostStunt.set_aSpeed(50);
+		deadGhostStunt.set_aSpeed(0);
 
 
 		View view = new View();
