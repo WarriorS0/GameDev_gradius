@@ -1,0 +1,124 @@
+package engine.gal;
+
+import engine.entity.Entity;
+import engine.gal.aut.Automaton;
+import engine.gal.aut.State;
+
+public class Bot {
+
+	private final Entity entity;
+
+	private Automaton automaton;
+	private GALStunt stunt;
+
+	private State state;
+
+	/**
+	 * @apiNote 0 <= health <= 100
+	 */
+	private int healthPercent;
+
+	// CONSTRUCTOR
+
+	public Bot(Entity entity) {
+		if (entity == null) {
+			throw new IllegalArgumentException("entity cannot be null");
+		}
+
+		this.entity = entity;
+		this.healthPercent = 100;
+	}
+
+	// ENTITY
+
+	public Entity entity() {
+		return entity;
+	}
+
+	// AUTOMATON
+
+	public void automaton(Automaton automaton) {
+		this.automaton = automaton;
+	}
+
+	public Automaton automaton() {
+		return automaton;
+	}
+
+	// STUNT
+
+	public void stunt(GALStunt stunt) {
+		this.stunt = stunt;
+	}
+
+	public GALStunt stunt() {
+		return stunt;
+	}
+
+	// STATE
+
+	/**
+	 * @apiNote The state can be used
+	 *          <UL>
+	 *          <LI>to drive the automaton</LI>
+	 *          <LI>to select the appropriate avatar</LI>
+	 *          </UL>
+	 * @return the state of mind of the Bot
+	 */
+	public State state() {
+		return state;
+	}
+
+	public void state(State state) {
+		this.state = state;
+	}
+
+	// HEALTH
+
+	public int healthPercent() {
+		return healthPercent;
+	}
+
+	public void healthPercent(int healthPercent) {
+		if (healthPercent < 0 || healthPercent > 100) {
+			throw new IllegalArgumentException("healthPercent must be in [0, 100]");
+		}
+
+		this.healthPercent = healthPercent;
+	}
+
+	// TICK & COLLISION & COMPLETED
+
+	/**
+	 * @apiNote wakes up the Bot so that it can take action
+	 * @param elapsed_ms
+	 */
+	public void tick(double elapsed_ms) {
+		stepAutomaton();
+	}
+
+	/**
+	 * @apiNote notifies the Bot that a collision has occurred with {@code impactor}
+	 *          after {@code elapsed_ms} so that the Bot can take action
+	 * @param impactor
+	 * @param elapsed_ms
+	 */
+	public void collision(Entity impactor, double elapsed_ms) {
+		stepAutomaton();
+	}
+
+	/**
+	 * @apiNote notifies the Bot that the action of its Stunt is completed.
+	 */
+	public void completed() {
+		stepAutomaton();
+	}
+
+	private boolean stepAutomaton() {
+		if (automaton == null) {
+			return false;
+		}
+
+		return automaton.step(entity);
+	}
+}
