@@ -4,4 +4,5 @@
 */.project
 .settings/
 *.class
-
+.classpath
+.project
