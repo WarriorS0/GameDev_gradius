@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import engine.entity.Entity;
 import engine.gal.GALStunt;
@@ -18,7 +17,7 @@ public class Model {
 	// Fields
 	// =========================
 
-	private final Grid grid;
+	//private final Grid grid;
 	private final ISU isu;
 
 	public final List<Entity> entities;
@@ -40,7 +39,7 @@ public class Model {
 			throw new IllegalStateException("No current Game instance");
 		}
 
-		this.grid = grid;
+		//this.grid = grid;
 		this.isu = game.isu;
 
 		this.entities = new LinkedList<>();

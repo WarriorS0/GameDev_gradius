@@ -1,7 +1,6 @@
 package engine.shape;
 
 import engine.geometry.ISU;
-import game.Game;
 
 abstract class Shape implements iShape {
 

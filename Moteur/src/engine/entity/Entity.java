@@ -14,7 +14,6 @@ import engine.shape.Bounding;
 import engine.shape.iShape;
 import game.Game;
 import engine.gal.Bot;
-import engine.gal.arguments.Category;
 
 public abstract class Entity {
 

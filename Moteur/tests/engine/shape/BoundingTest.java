@@ -6,11 +6,6 @@ import java.util.Iterator;
 
 import org.junit.jupiter.api.Test;
 
-import engine.shape.Bounding;
-import engine.shape.Circle;
-import engine.shape.Rect;
-import engine.shape.iShape;
-
 class BoundingTest {
 
 	private static class FakeBox implements iShape.Box {

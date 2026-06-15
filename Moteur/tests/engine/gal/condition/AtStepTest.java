@@ -13,12 +13,12 @@ import game.entity.PacMan;
 
 class AtStepTest {
 
-	private Game game;
+	//private Game game;
 	private PacMan pacman;
 
 	@BeforeEach
 	void setup() {
-		game = new Game(30, 30);
+		new Game(30, 30);
 
 		pacman = new PacMan();
 		pacman.category(Category.Team);

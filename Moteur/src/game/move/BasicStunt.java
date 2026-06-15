@@ -3,7 +3,6 @@ package game.move;
 import java.util.List;
 
 import engine.entity.Entity;
-import engine.geometry.Grid.Cell;
 import engine.geometry.ISU.Vector;
 import game.Game;
 

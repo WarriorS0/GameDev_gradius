@@ -5,12 +5,12 @@ import oop.graphics.Canvas;
 import oop.graphics.VirtualKeyCodes;
 
 public class Controller {
-	private Canvas canvas;
-	private Stunt stunt;
+//	private Canvas canvas;
+//	private Stunt stunt;
 
 	public Controller(Canvas canvas, Stunt stunt) {
-		this.canvas = canvas;
-		this.stunt = stunt;
+//		this.canvas = canvas;
+//		this.stunt = stunt;
 		canvas.set(new Canvas.KeyListener() {
 
 			@Override

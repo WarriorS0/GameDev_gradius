@@ -4,7 +4,6 @@ import java.util.List;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Direction;
-import engine.geometry.ISU;
 import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;

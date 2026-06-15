@@ -6,8 +6,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import engine.geometry.ISU;
-import engine.shape.Circle;
-import engine.shape.Rect;
 import game.Game;
 
 public class RectTest {

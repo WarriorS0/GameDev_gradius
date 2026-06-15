@@ -6,9 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import engine.geometry.ISU;
-import engine.shape.Circle;
-import engine.shape.Rect;
-import engine.shape.iShape;
 import game.Game;
 
 class CircleTest {

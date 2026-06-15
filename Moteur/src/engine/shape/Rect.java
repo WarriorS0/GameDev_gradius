@@ -141,18 +141,18 @@ public class Rect extends Shape {
 		 *
 		 */
 
-		ISU.Coord closestRectpoint() {
-			double px = clamp(localCircleCenter.x, -outer.halfWidth, outer.halfWidth);
-			double py = clamp(localCircleCenter.y, -outer.halfHeight, outer.halfHeight);
-
-			Point p = new Point(px, py);
-
-			// local du rectangle -> monde
-			p.rotate(outer.angle_degree);
-			p.translate(outer.center.x(), outer.center.y());
-
-			return isu.new Coord(p.x, p.y);
-		}
+//		ISU.Coord closestRectpoint() {
+//			double px = clamp(localCircleCenter.x, -outer.halfWidth, outer.halfWidth);
+//			double py = clamp(localCircleCenter.y, -outer.halfHeight, outer.halfHeight);
+//
+//			Point p = new Point(px, py);
+//
+//			// local du rectangle -> monde
+//			p.rotate(outer.angle_degree);
+//			p.translate(outer.center.x(), outer.center.y());
+//
+//			return isu.new Coord(p.x, p.y);
+//		}
 
 		/**
 		 * @return &in; {p, l, r}

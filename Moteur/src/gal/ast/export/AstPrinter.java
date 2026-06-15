@@ -155,6 +155,7 @@ public class AstPrinter implements iVisitor {
 	public void exit(FunCall funcall) {
 	}
 
+	@SuppressWarnings("unchecked") // Eclipse doesn't like (List<Integer>) (Object) but we don't care
 	public Object build(FunCall funcall, List<Object> parameters) {
 		subtree(funcall, (List<Integer>) (Object) parameters);
 		return funcall.id;
@@ -198,7 +199,6 @@ public class AstPrinter implements iVisitor {
 		return terminal.id;
 	}
 
-
 	@Override
 	public Object visit(Variable terminal) {
 		keyword(terminal, "Variable");
@@ -216,6 +216,7 @@ public class AstPrinter implements iVisitor {
 	public void exit(Actions action) {
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object build(Actions action, String operator, List<Object> funcalls) {
 		non_terminal(action, "Action");
 		subtree(action, (List<Integer>) (Object) funcalls);
@@ -224,6 +225,7 @@ public class AstPrinter implements iVisitor {
 
 	// BEHAVIOUR
 
+	@SuppressWarnings("unchecked")
 	public Object visit(Behaviour behaviour, List<Object> transitions) {
 		non_terminal(behaviour, "Behaviour");
 		subtree(behaviour, (List<Integer>) (Object) transitions);
@@ -262,6 +264,7 @@ public class AstPrinter implements iVisitor {
 	public void exit(Automaton automaton) {
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object build(Automaton automaton, Object initial_state, List<Object> modes) {
 		edge(automaton.id, (Integer) initial_state);
 		subtree(automaton, (List<Integer>) (Object) modes);
@@ -276,6 +279,7 @@ public class AstPrinter implements iVisitor {
 	public void exit(AST ast) {
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object build(AST ast, List<Object> automata) {
 		non_terminal(ast, "AST");
 		subtree(ast, (List<Integer>) (Object) automata);
