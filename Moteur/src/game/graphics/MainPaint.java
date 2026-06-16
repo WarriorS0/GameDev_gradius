@@ -1,14 +1,17 @@
 package game.graphics;
 
 import java.awt.Dimension;
+import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.entity.Entity;
 import engine.graphics.Paint;
 import engine.graphics.View;
+import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
 import game.Game;
+import game.Main;
 import game.entity.Ghost;
 import game.entity.PacMan;
 import game.entity.Wall;
@@ -23,6 +26,9 @@ import oop.tasks.Runtime;
 import oop.tasks.Task;
 
 public class MainPaint implements Runnable {
+	
+	private static Logger logger = LoggerManager.getLogger(Main.class.getName());
+
 
 	public static void main(String[] args) throws Exception {
 		Runnable r = new MainPaint();
@@ -33,6 +39,7 @@ public class MainPaint implements Runnable {
 
 	@Override
 	public void run() throws Exception {
+		logger.info("STARTED MAIN");
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
