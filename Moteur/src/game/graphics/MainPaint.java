@@ -176,6 +176,7 @@ public class MainPaint implements Runnable {
 
 			@Override
 			public void revoked(Canvas canvas) {
+				System.exit(0);
 			}
 		});
 
