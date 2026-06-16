@@ -1,4 +1,5 @@
 /bin/
+*/build/*
 .metadata/
 */.classpath
 */.project
