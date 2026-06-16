@@ -1,17 +1,23 @@
 package game.move;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import engine.entity.Entity;
 import engine.geometry.Grid.Cell;
 import engine.geometry.ISU.Vector;
+import engine.logs.LoggerManager;
+import engine.move.Model;
+import engine.move.Stunt;
 import game.Game;
 
-public class GhostStunt extends engine.move.Stunt {
+public class GhostStunt extends Stunt {
+	
+	private static Logger logger = LoggerManager.getLogger(GhostStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public GhostStunt(engine.move.Model model, Entity entity) {
+	public GhostStunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}
@@ -40,12 +46,12 @@ public class GhostStunt extends engine.move.Stunt {
 
 	@Override
 	protected void collision(Entity other) {
-		//System.out.println("GHOST COLLISION avec " + other.name());
+		logger.finer("GHOST COLLISION avec " + other.name());
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
-		//System.out.println("GHOST COLLISION avec plusieurs entités");
+		logger.finer("GHOST COLLISION avec plusieurs entités");
 	}
 
 	@Override

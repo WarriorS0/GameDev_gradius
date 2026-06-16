@@ -1,17 +1,23 @@
 package game.move;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import engine.entity.Entity;
 import engine.geometry.ISU.Vector;
+import engine.logs.LoggerManager;
+import engine.move.Model;
+import engine.move.Stunt;
 import game.Game;
 import game.entity.Ghost;
 
-public class PacManStunt extends engine.move.Stunt {
+public class PacManStunt extends Stunt {
+	
+	private static Logger logger = LoggerManager.getLogger(PacManStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public PacManStunt(engine.move.Model model, Entity entity) {
+	public PacManStunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}
@@ -51,14 +57,14 @@ public class PacManStunt extends engine.move.Stunt {
 	protected void collision(Entity other) {
 		if (other instanceof Ghost) {
 			kill();
-			System.out.println("PACMAN EST MORT");
+			logger.fine("PACMAN EST MORT");
 			return;
 		}
 
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
 
-		System.out.println("PACMAN COLLISION avec " + other.name());
+		logger.finer("PACMAN COLLISION avec " + other.name());
 	}
 
 	@Override
@@ -66,13 +72,14 @@ public class PacManStunt extends engine.move.Stunt {
 		for (Entity other : entities) {
 			if (other instanceof Ghost) {
 				kill();
-				System.out.println("PACMAN EST MORT");
+				logger.fine("PACMAN EST MORT");
 				return;
 			}
 		}
 
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
+		logger.finer("PACMAN COLLISION avec plusieurs entités");
 	}
 
 	@Override

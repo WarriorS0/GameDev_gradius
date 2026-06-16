@@ -1,12 +1,17 @@
 package game.move;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import engine.entity.Entity;
 import engine.geometry.ISU.Vector;
+import engine.logs.LoggerManager;
 import game.Game;
 
 public class GumStunt extends engine.move.Stunt {
+	
+	private static Logger logger = LoggerManager.getLogger(GumStunt.class.getName());
+
 
 	public GumStunt(engine.move.Model model, Entity entity) {
 		super(model, entity);
@@ -22,17 +27,14 @@ public class GumStunt extends engine.move.Stunt {
 		set(Game.game().isu.new Vector(0, 0));
 	}
 
-
-
 	@Override
 	protected void collision(Entity other) {
-		//System.out.println("GUM COLLISION avec " + other.name());
-
+		logger.finer("GUM COLLISION avec " + other.name());
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
-		//System.out.println("GUM COLLISION avec plusieurs entités");
+		logger.finer("GUM COLLISION avec plusieurs entités");
 	}
 
 	@Override

@@ -27,7 +27,8 @@ public class Game {
 
 	public final Grid grid; // permet la création de coordonnées en unités ncell
 	public final ISU isu; // permet la création de coordonnées en unités cm
-	//public final Picture pict; // permet la création de coordonnées en unités pixel, ne sera
+	// public final Picture pict; // permet la création de coordonnées en unités
+	// pixel, ne sera
 	// utilisé qu'à
 	// partir de Task2
 
@@ -42,12 +43,11 @@ public class Game {
 
 		assert (width_ncell * cmPerCell == width_cm);
 		assert (height_ncell * cmPerCell == height_cm);
-		
+
 		Game.game = this;
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
-		//this.pict = new Picture();
-		
+		// this.pict = new Picture();
 
 	}
 
@@ -70,15 +70,13 @@ public class Game {
 		this.height_cm = h_cm;
 		this.width_cm = w_cm;
 
-
 		assert (width_ncell * cmPerCell == width_cm);
 		assert (height_ncell * cmPerCell == height_cm);
-		
+
 		Game.game = this;
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
-		//this.pict = new Picture();
-		
+		// this.pict = new Picture();
 
 	}
 

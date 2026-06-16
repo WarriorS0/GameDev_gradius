@@ -1,16 +1,22 @@
 package game.move;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import engine.entity.Entity;
 import engine.geometry.ISU.Vector;
+import engine.logs.LoggerManager;
+import engine.move.Model;
+import engine.move.Stunt;
 import game.Game;
 
-public class BasicStunt extends engine.move.Stunt {
+public class BasicStunt extends Stunt {
+
+	private static Logger logger = LoggerManager.getLogger(BasicStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public BasicStunt(engine.move.Model model, Entity entity) {
+	public BasicStunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}
@@ -32,13 +38,12 @@ public class BasicStunt extends engine.move.Stunt {
 		}
 	}
 
-
 	@Override
 	protected void collision(Entity other) {
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
 
-		//System.out.println("ATTENTION COLLISION avec " + other.name());
+		logger.finer("ATTENTION COLLISION avec " + other.name());
 	}
 
 	@Override
@@ -46,7 +51,7 @@ public class BasicStunt extends engine.move.Stunt {
 		set(Game.game().isu.new Vector(0, 0));
 		set_aSpeed(0);
 
-		//System.out.println("ATTENTION COLLISION avec plusieurs entités");
+		logger.finer("ATTENTION COLLISION avec plusieurs entités");
 	}
 
 	@Override
