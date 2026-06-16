@@ -1,5 +1,6 @@
 package engine.logs;
 
+import java.io.PrintStream;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.logging.Handler;
@@ -9,11 +10,13 @@ import java.util.logging.Logger;
  * @author Pr. Olivier Gruber
  */
 public class LoggerManager {
+	private static final PrintStream PS;
 	private static Map<String, Logger> loggers;
 	static {
+		PS = System.err; // err to match with the logging color
 		loggers = new Hashtable<String, Logger>();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			System.out.println("Shutting down logging...");
+			PS.println("Shutting down logging...");
 			for (Logger logger : loggers.values()) {
 				for (Handler h : logger.getHandlers()) {
 					try {
@@ -23,7 +26,7 @@ public class LoggerManager {
 					}
 				}
 			}
-			System.out.println("--> handlers are flushed and closed.");
+			PS.println("--> handlers are flushed and closed.");
 		}));
 	}
 
