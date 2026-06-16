@@ -13,7 +13,7 @@ public class LoggerManager {
 	private static final PrintStream PS;
 	private static Map<String, Logger> loggers;
 	static {
-		PS = System.err; // err to match with the logging color
+		PS = System.out;
 		loggers = new Hashtable<String, Logger>();
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			PS.println("Shutting down logging...");
