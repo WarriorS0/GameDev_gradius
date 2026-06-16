@@ -10,6 +10,9 @@ public class View {
 
 	private List<Avatar> avatars;
 	private long lastTime;
+	
+	private Hud hud; //optionnal
+	
 
 	public View() {
 		this.avatars = new ArrayList<>();
@@ -39,5 +42,19 @@ public class View {
 			avatar.updateAnimation(delta_t);
 			avatar.paint(g);
 		}
+		
+		// après les autres paints pour que ça dessine au dessus
+		if (hud != null) {
+			hud.draw(g);
+		}
+	}
+	
+	/**
+	 * Attache un HUD à la vue ; il sera dessiné par-dessus la scène.
+	 *
+	 * @param hud le HUD à dessiner, ou null pour aucun
+	 */
+	public void setHUD(Hud hud) {
+		this.hud = hud;
 	}
 }

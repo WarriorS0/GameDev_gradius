@@ -6,12 +6,13 @@ import java.util.logging.Logger;
 import engine.controller.Controller;
 import engine.entity.Entity;
 import engine.graphics.FpsManager;
+import engine.graphics.Hud;
+import engine.graphics.Label;
 import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
 import game.Game;
-import game.Main;
 import game.entity.Ghost;
 import game.entity.PacMan;
 import game.entity.Wall;
@@ -27,8 +28,7 @@ import oop.tasks.Task;
 
 public class MainPaint implements Runnable {
 
-	private static Logger logger = LoggerManager.getLogger(Main.class.getName());
-
+	private static final Logger logger = LoggerManager.getLogger(MainPaint.class.getName());
 	private static final int FPS = 30;
 	private static final boolean FPS_LOGGING = true;
 
@@ -41,6 +41,7 @@ public class MainPaint implements Runnable {
 
 	@Override
 	public void run() throws Exception {
+
 		logger.info("STARTED MAIN");
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
@@ -144,6 +145,12 @@ public class MainPaint implements Runnable {
 		MapView mapView = new MapView();
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
+
+		Hud hud = new Hud();
+		// Exemple de label avec le fps
+		hud.add(new Label(() -> "FPS " + fpsC.getFps(), 20, 50, Colors.white));
+
+		view.setHUD(hud);
 
 		canvas.set(new Canvas.PaintListener() {
 			@Override
