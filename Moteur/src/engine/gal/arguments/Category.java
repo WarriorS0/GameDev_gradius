@@ -71,6 +71,13 @@ public class Category {
 	public static void setInteraction(Category c1, Category c2, boolean bool) {
 		interaction[c1.index][c2.index] = bool;
 	}
+	
+	
+	// GETTER
+	
+	public String name() {
+		return name;
+	}
 
 	// PREDICATE
 

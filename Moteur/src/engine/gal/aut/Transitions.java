@@ -20,9 +20,7 @@ public class Transitions implements iTransitions {
 			throw new IllegalArgumentException("transition cannot be null");
 		}
 
-		transitions
-			.computeIfAbsent(transition.source(), state -> new ArrayList<>())
-			.add(transition);
+		transitions.computeIfAbsent(transition.source(), state -> new ArrayList<>()).add(transition);
 	}
 
 	@Override
