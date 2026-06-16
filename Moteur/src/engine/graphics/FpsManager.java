@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import engine.logs.LoggerManager;
@@ -7,11 +8,11 @@ import oop.graphics.Canvas;
 import oop.tasks.Task;
 
 /**
- * Anciennement Paint, c'est un Paint plus avancée
- * Manager de FPS : pilote le repaint. La boucle d'affichage est séparée de
- * la boucle de simulation (le Ticker) : ici on demande au Canvas de se
- * redessiner à un rythme borné par fpsLimit, et on tient un compteur de frames
- * réellement dessinées (countFrame appelé par la View à chaque paint).
+ * Anciennement Paint, c'est un Paint plus avancée Manager de FPS : pilote le
+ * repaint. La boucle d'affichage est séparée de la boucle de simulation (le
+ * Ticker) : ici on demande au Canvas de se redessiner à un rythme borné par
+ * fpsLimit, et on tient un compteur de frames réellement dessinées (countFrame
+ * appelé par la View à chaque paint).
  */
 public class FpsManager {
 
@@ -21,23 +22,29 @@ public class FpsManager {
 	private static final int MAX_RECOMMENDED_FPS = 60;
 	private static final int MIN_FPS = 1;
 
-	private final Logger logger = LoggerManager.getLogger(FpsManager.class.getName());
+	private static final boolean LOGGING;
+	private static final Logger logger;
+	static {
+		logger = LoggerManager.getLogger(FpsManager.class.getName());
+		LOGGING = (logger.getLevel() != Level.OFF);
+	}
 
 	private final int UPDATE_FPS_COUNTER;
 	private int fpsLimit, tempFps, fps, time;
 	public boolean shouldLogFps;
 	private final Task fpsTask;
 
-	public FpsManager(Task task, int limit, int update_timer, boolean shouldPrintFps) {
+	public FpsManager(Task task, int limit, int update_timer, boolean shouldLogFps) {
+		if (this.shouldLogFps && LOGGING) logger.info("Starting fps controller");
 		if (limit > MAX_FPS)
-			throw new IllegalArgumentException("Maximum FPS is " + MAX_FPS + ". Recommended FPS is between "
-					+ MIN_RECOMMENDED_FPS + "-" + MAX_RECOMMENDED_FPS + ".");
+			throw new IllegalArgumentException(String.format("Maximum FPS is %d. Recommended FPS is between %d and %d.",
+					MAX_FPS, MIN_RECOMMENDED_FPS, MAX_RECOMMENDED_FPS));
 		if (limit < MIN_FPS)
-			throw new IllegalArgumentException("Minimum FPS is " + MIN_FPS);
+			throw new IllegalArgumentException(String.format("Minimum fps is %d.", MIN_FPS));
 		this.fpsLimit = limit;
 		this.UPDATE_FPS_COUNTER = update_timer;
 		this.time = 0;
-		this.shouldLogFps = shouldPrintFps;
+		this.shouldLogFps = shouldLogFps;
 		this.fpsTask = task;
 	}
 
@@ -51,7 +58,8 @@ public class FpsManager {
 	 * @param canvas given Canvas
 	 */
 	public void start(Canvas canvas) {
-		logger.info("Starting fps controller");
+		if (this.shouldLogFps && LOGGING)
+			logger.info("Starting fps controller");
 		this.fpsTask.post(() -> this.checkFPS());
 		this.fpsTask.post(() -> this.frame(canvas));
 	}
@@ -77,8 +85,8 @@ public class FpsManager {
 	 */
 	public void checkFPS() {
 		this.fps = tempFps;
-		if (this.shouldLogFps)
-			logger.info("Execution time " + this.time + "s | fps:" + this.fps);
+		if (this.shouldLogFps && LOGGING)
+			logger.info(String.format("Execution time s %d | fps: %d", this.time, this.fps));
 		this.tempFps = 0;
 		this.time++;
 		this.fpsTask.post(() -> checkFPS(), this.UPDATE_FPS_COUNTER);
