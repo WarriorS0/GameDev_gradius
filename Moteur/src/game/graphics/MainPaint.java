@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.entity.Entity;
-import engine.graphics.Paint;
+import engine.graphics.FpsManager;
 import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
@@ -26,9 +26,11 @@ import oop.tasks.Runtime;
 import oop.tasks.Task;
 
 public class MainPaint implements Runnable {
-	
+
 	private static Logger logger = LoggerManager.getLogger(Main.class.getName());
 
+	private static final int FPS = 30;
+	private static final boolean FPS_LOGGING = true;
 
 	public static void main(String[] args) throws Exception {
 		Runnable r = new MainPaint();
@@ -112,7 +114,6 @@ public class MainPaint implements Runnable {
 		deadGhostStunt.set(game.isu.new Vector(10, 0));
 		deadGhostStunt.set_aSpeed(0);
 
-
 		View view = new View();
 
 		PacmanAvatar pacmanAvatar = new PacmanAvatar(pacman);
@@ -131,8 +132,6 @@ public class MainPaint implements Runnable {
 		ClydeAvatar deadGhostAvatar = new ClydeAvatar(deadGhost);
 		deadGhostAvatar.kill();
 
-	
-
 		view.add(pacmanAvatar);
 		view.add(blinkyAvatar);
 		view.add(pinkyAvatar);
@@ -143,12 +142,13 @@ public class MainPaint implements Runnable {
 		view.add(deadGhostAvatar);
 
 		MapView mapView = new MapView();
-		Paint paint = new Paint(canvas);
+
+		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		canvas.set(new Canvas.PaintListener() {
 			@Override
 			public void visible(Canvas canvas) {
-				paint.start();
+				fpsC.start(canvas);
 			}
 
 			@Override
@@ -172,6 +172,8 @@ public class MainPaint implements Runnable {
 
 				mapView.paint(g);
 				view.paint(g);
+
+				fpsC.countFrame();
 			}
 
 			@Override
