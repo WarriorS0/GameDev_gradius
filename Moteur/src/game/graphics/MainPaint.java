@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.util.logging.Logger;
 
 import engine.controller.Controller;
+import engine.controller.KeyManager;
+import engine.controller.MouseManager;
 import engine.entity.Entity;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
@@ -22,6 +24,7 @@ import game.move.PacManStunt;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
+import oop.graphics.VirtualKeyCodes;
 import oop.tasks.Runnable;
 import oop.tasks.Runtime;
 import oop.tasks.Task;
@@ -32,9 +35,12 @@ public class MainPaint implements Runnable {
 	private static final int FPS = 30;
 	private static final boolean FPS_LOGGING = true;
 
+	public static final int WIDTH = 640;
+	public static final int HEIGHT = 640;
+
 	public static void main(String[] args) throws Exception {
 		Runnable r = new MainPaint();
-		Dimension windowSize = new Dimension(1600, 900);
+		Dimension windowSize = new Dimension(WIDTH, HEIGHT);
 		Runtime.boot(windowSize, r);
 		Runtime.shutdown();
 	}
@@ -148,7 +154,8 @@ public class MainPaint implements Runnable {
 
 		Hud hud = new Hud();
 		// Exemple de label avec le fps
-		hud.add(new Label(() -> "FPS " + fpsC.getFps(), 20, 50, Colors.white));
+		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), 20, 50, Colors.white);
+		hud.add(labelFPS);
 
 		view.setHUD(hud);
 
@@ -189,7 +196,20 @@ public class MainPaint implements Runnable {
 			}
 		});
 
-		new Controller(canvas, pacmanStunt);
+		// NEW KeyManager and MouseManager ! J'ai mis deux exemples d'utilisation :
+
+		KeyManager km = new KeyManager();
+		km.addDelegate(new Controller(pacmanStunt));
+		km.bind(VirtualKeyCodes.VK_TAB, () -> labelFPS.setVisibility(!labelFPS.isVisible()));
+		// Appuyer sur tab fait appraître/disparaître le label de fps.
+
+		MouseManager mm = new MouseManager();
+		mm.bind(MouseManager.BNO_MIDDLE_BUTTON_MOUSE, () -> System.out.print("MIDDLE BUTTON MOUSE CLICKED TEST!"));
+		// Cliquer sur le bouton du millieu de la souris imprime un message dans la
+		// console.
+
+		canvas.set(km);
+		canvas.set(mm);
 
 		/*
 		 * Le Ticker se lance déjà dans son constructeur.
