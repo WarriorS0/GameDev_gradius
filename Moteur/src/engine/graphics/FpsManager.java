@@ -23,10 +23,12 @@ public class FpsManager {
 	private static final int MIN_FPS = 1;
 
 	private static final boolean LOGGING;
+	private static final boolean INFO;
 	private static final Logger logger;
 	static {
 		logger = LoggerManager.getLogger(FpsManager.class.getName());
 		LOGGING = (logger.getLevel() != Level.OFF);
+		INFO = (logger.getLevel() == Level.INFO);
 	}
 
 	private final int UPDATE_FPS_COUNTER;
@@ -35,7 +37,8 @@ public class FpsManager {
 	private final Task fpsTask;
 
 	public FpsManager(Task task, int limit, int update_timer, boolean shouldLogFps) {
-		if (this.shouldLogFps && LOGGING) logger.info("Starting fps controller");
+		if (this.shouldLogFps && LOGGING)
+			logger.info("Starting fps controller");
 		if (limit > MAX_FPS)
 			throw new IllegalArgumentException(String.format("Maximum FPS is %d. Recommended FPS is between %d and %d.",
 					MAX_FPS, MIN_RECOMMENDED_FPS, MAX_RECOMMENDED_FPS));
@@ -58,7 +61,7 @@ public class FpsManager {
 	 * @param canvas given Canvas
 	 */
 	public void start(Canvas canvas) {
-		if (this.shouldLogFps && LOGGING)
+		if (LOGGING && INFO && this.shouldLogFps)
 			logger.info("Starting fps controller");
 		this.fpsTask.post(() -> this.checkFPS());
 		this.fpsTask.post(() -> this.frame(canvas));
@@ -85,7 +88,7 @@ public class FpsManager {
 	 */
 	public void checkFPS() {
 		this.fps = tempFps;
-		if (this.shouldLogFps && LOGGING)
+		if (LOGGING && INFO && this.shouldLogFps)
 			logger.info(String.format("Execution time s %d | fps: %d", this.time, this.fps));
 		this.tempFps = 0;
 		this.time++;
