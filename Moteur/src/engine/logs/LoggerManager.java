@@ -27,6 +27,7 @@ public class LoggerManager {
 				}
 			}
 			PS.println("--> handlers are flushed and closed.");
+			PS.println("REMINDER : All logs are in the logs files, they are not in the console anymore.");
 		}));
 	}
 

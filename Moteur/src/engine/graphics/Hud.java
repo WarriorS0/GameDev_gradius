@@ -16,12 +16,12 @@ import oop.graphics.Graphics;
 public class Hud {
 
 	private static final boolean LOGGING;
-	private static final boolean FINE;
+	private static final boolean INFO;
 	private static Logger logger;
 	static {
 		logger = LoggerManager.getLogger(Hud.class.getName());
 		LOGGING = (logger.getLevel() != Level.OFF);
-		FINE = (logger.isLoggable(Level.FINE));
+		INFO = (logger.isLoggable(Level.INFO));
 	}
 
 	private final List<HudElement> elements;
@@ -30,8 +30,8 @@ public class Hud {
 	 * Creates a hud object
 	 */
 	public Hud() {
-		if (LOGGING && FINE)
-			logger.fine("Created new HUD");
+		if (LOGGING && INFO)
+			logger.info("Created new HUD");
 		elements = new ArrayList<>();
 	}
 
@@ -42,9 +42,10 @@ public class Hud {
 	 * @return true if sucessfully added, false if not
 	 */
 	public boolean add(HudElement e) {
-		if(e==null) return false;
-		if (LOGGING && FINE)
-			logger.fine(String.format("Added %s to the HUD", e.toString()));
+		if (e == null)
+			return false;
+		if (LOGGING && INFO)
+			logger.info(String.format("Added %s to the HUD", e.toString()));
 		return elements.add(e);
 	}
 
@@ -55,16 +56,17 @@ public class Hud {
 	 * @return true if sucessfully removed, false if not
 	 */
 	public boolean remove(HudElement e) {
-		if(e==null) return false;
-		if (LOGGING && FINE)
-			logger.fine(String.format("Removed %s from the HUD", e.toString()));
+		if (e == null)
+			return false;
+		if (LOGGING && INFO)
+			logger.info(String.format("Removed %s from the HUD", e.toString()));
 		return elements.remove(e);
 	}
 
 	/**
 	 * Draws all visible elements in order (oldest first, newest on top).
 	 *
-	 * @param graphics     the graphics in raw canvas pixels
+	 * @param graphics the graphics in raw canvas pixels
 	 */
 	public void draw(Graphics graphics) {
 		for (HudElement e : elements) {

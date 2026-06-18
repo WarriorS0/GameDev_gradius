@@ -25,7 +25,7 @@ public class Condition extends Node {
 
   // FIELD
 
-  Expression expression;
+  private Expression expression;
 
   // REQUIRED BY INTERFACE Visitable
 
@@ -34,6 +34,11 @@ public class Condition extends Node {
     Object o = expression.accept(visitor);
     visitor.exit(this);
     return visitor.build(this, o);
+  }
+  
+  // GETTER
+  public Expression expression() {
+	  return expression;
   }
 
   // EXPORT
