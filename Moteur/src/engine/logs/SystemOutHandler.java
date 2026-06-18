@@ -3,6 +3,9 @@ package engine.logs;
 import java.util.logging.ConsoleHandler;
 
 /**
+ * UNUSED CLASS BECAUSE IT HIDES EXCEPTION - DO NOT USE FOR NOW UNTIL A FIX IS
+ * FOUND
+ * 
  * Override du SystemOutHandler du java.util.logging
  * 
  * Cette classe permet juste d'écrire les logs dans la sortie normale et pas la

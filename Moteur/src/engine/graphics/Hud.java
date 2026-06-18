@@ -1,0 +1,76 @@
+package engine.graphics;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import engine.logs.LoggerManager;
+import oop.graphics.Graphics;
+
+/**
+ * Unlike Avatars who requires entities, hud allow to display element without
+ * the need for one Hud element will always be drawn on top of any entity (due
+ * to the drawing order)
+ */
+public class Hud {
+
+	private static final boolean LOGGING;
+	private static final boolean FINE;
+	private static Logger logger;
+	static {
+		logger = LoggerManager.getLogger(Hud.class.getName());
+		LOGGING = (logger.getLevel() != Level.OFF);
+		FINE = (logger.isLoggable(Level.FINE));
+	}
+
+	private final List<HudElement> elements;
+
+	/**
+	 * Creates a hud object
+	 */
+	public Hud() {
+		if (LOGGING && FINE)
+			logger.fine("Created new HUD");
+		elements = new ArrayList<>();
+	}
+
+	/**
+	 * Adds an element to the hud
+	 * 
+	 * @param e the hud element to add
+	 * @return true if sucessfully added, false if not
+	 */
+	public boolean add(HudElement e) {
+		if(e==null) return false;
+		if (LOGGING && FINE)
+			logger.fine(String.format("Added %s to the HUD", e.toString()));
+		return elements.add(e);
+	}
+
+	/**
+	 * Removes an element from the hud.
+	 *
+	 * @param e the element to remove
+	 * @return true if sucessfully removed, false if not
+	 */
+	public boolean remove(HudElement e) {
+		if(e==null) return false;
+		if (LOGGING && FINE)
+			logger.fine(String.format("Removed %s from the HUD", e.toString()));
+		return elements.remove(e);
+	}
+
+	/**
+	 * Draws all visible elements in order (oldest first, newest on top).
+	 *
+	 * @param graphics     the graphics in raw canvas pixels
+	 */
+	public void draw(Graphics graphics) {
+		for (HudElement e : elements) {
+			if (e.isVisible())
+				e.draw(graphics);
+		}
+	}
+
+}
