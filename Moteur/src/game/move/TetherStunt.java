@@ -3,6 +3,7 @@ package game.move;
 import java.util.List;
 
 import engine.entity.Entity;
+import engine.geometry.ISU.Coord;
 import engine.move.Model;
 import engine.move.Stunt;
 
@@ -15,6 +16,7 @@ public class TetherStunt extends Stunt {
 		super(model, entity);
 		this.leader = leader;
 		this.targetDistance = targetDistance;
+		setWantsMoveNotif(true);
 	}
 
 	@Override
@@ -25,6 +27,18 @@ public class TetherStunt extends Stunt {
 
 	@Override
 	protected void collision(List<Entity> entities) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void moved(Coord oldPosition, Coord newPosition) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void rotated(double oldRotation, double newRotation) {
 		// TODO Auto-generated method stub
 		
 	}
