@@ -1,0 +1,71 @@
+Ship(Life){
+
+  * (Life)
+  // If there is an arrow key input, we turn
+  | Key(U) ? Turn(N) :(Move_Front)
+  | Key(D) ? Turn(S) :(Move_Front)
+  | Key(R) ? Turn(E) :(Move_Front)
+  | Key(L) ? Turn(O) :(Move_Front)
+  | True   ?         :(Move_Front) 
+
+	
+  * (Move_Front)
+  // We move until we hit an enemy or an obstacle and if so, we check how many life we have left
+  | Cell(F,E) ? Hit(F)     :(LifeCheck) 
+  | Cell(F,O) ? Hit(F)     :(LifeCheck) 
+  | Cell(F,V) ? Move(F)    :(Life)
+  // Case if we hit an upgrade
+  | Cell(F,U) ? Upgrade(F) :(Life)
+  | True      ? Rest       :(Life) 
+  
+  * (LifeCheck)
+  // If there is only one life left then we go to the dead state either way, we go back in invincible state
+  | Life(1) ? :(Dead)
+  | True    ? LooseLife :(Invincible)
+
+  * (Invincible)
+  // Play the invincible effect and we stay in invincible state while the timer has not ended
+  | Timer(Done) ? EndInvincible :(Life)
+  | Key(U)      ? Turn(N) :(Invincible_Check)
+  | Key(D)      ? Turn(S) :(Invincible_Check)
+  | Key(R)      ? Turn(E) :(Invincible_Check)
+  | Key(L)      ? Turn(O) :(Invincible_Check)
+  | True        ?         :(Invincible_Check)
+
+  * (Invincible_Check)
+  // Collisions do not transition to a lower health state.
+  | Cell(F,E) ? Rest       :(Invincible) 
+  | Cell(F,O) ? Rest       :(Invincible) 
+  | Cell(F,V) ? Move(F)    :(Invincible)
+  // Case if we hit an upgrade
+  | Cell(F,U) ? Upgrade(F) :(Invincible)
+  | True      ? Rest       :(Invincible)
+
+  * (Dead)
+  // Play an explosion effect and transition to an empty state '()' 
+  | True ? Explosion :() 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
