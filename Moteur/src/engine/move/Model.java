@@ -129,6 +129,7 @@ public class Model {
 		Physique phy = new Physique();
 
 		for (Entity entity : new LinkedList<>(entities)) {
+
 			if (entity.dead()) {
 				continue;
 			}
@@ -226,11 +227,17 @@ public class Model {
 				if (other.dead()) {
 					continue;
 				}
+				
+				if (!entity.category().interactsWith(other.category())) {
+					continue;
+				}
 
 				if (entity.intersects(other)) {
 					return other;
 				}
 			}
+			
+			
 
 			return null;
 		}

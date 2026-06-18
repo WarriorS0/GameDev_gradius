@@ -1,12 +1,15 @@
 package game.graphics;
 
 import java.awt.Dimension;
+import java.util.List;
 import java.util.logging.Logger;
 
 import engine.entity.Entity;
+import engine.gal.CompositeGALStunt;
 import engine.gal.GALBot;
-import engine.gal.GALStunt;
+import game.move.BasicStunt;
 import engine.gal.actions.Move;
+import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
 import engine.gal.aut.Automaton;
 import engine.gal.aut.State;
@@ -21,6 +24,7 @@ import engine.move.Model;
 import engine.move.Ticker;
 import game.Game;
 import game.entity.Ship;
+import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.ShipAvatar;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
@@ -30,6 +34,8 @@ import oop.tasks.Runnable;
 import oop.tasks.Runtime;
 import oop.tasks.Task;
 import engine.controller.KeyManager;
+import game.entity.Cannon;
+import game.entity.CannonSlot;
 
 public class MainPaintTest implements Runnable {
 
@@ -57,14 +63,43 @@ public class MainPaintTest implements Runnable {
 		Game game = new Game(38, 41);
 		Model model = new Model(game.grid);
 
+		Category.setInteraction(Category.Team, Category.Team, false);
+
+		Category.setInteraction(Category.Team, Category.Obstacle, true);
+		Category.setInteraction(Category.Obstacle, Category.Team, true);
+
+		Category.setInteraction(Category.Team, Category.Adversary, true);
+		Category.setInteraction(Category.Adversary, Category.Team, true);
+
 		// =========================
 		// Ship test entity
 		// =========================
 
 		Ship ship = new Ship();
 		place(ship, 5, game.grid.height() / 2);
-		model.add(ship);
+		
 
+		Cannon topCannon = new Cannon(CannonSlot.TOP);
+		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);
+
+		topCannon.placeRelativeTo(ship);
+		bottomCannon.placeRelativeTo(ship);
+		
+		System.out.println("top = " + topCannon.center().x() + ", " + topCannon.center().y());
+		System.out.println("bottom = " + bottomCannon.center().x() + ", " + bottomCannon.center().y());
+		
+		model.add(ship);
+		model.add(topCannon);
+		model.add(bottomCannon);
+		
+		BasicStunt topCannonStunt = new BasicStunt(model, topCannon);
+		topCannonStunt.set(game.isu.new Vector(0, 0));
+		topCannonStunt.set_aSpeed(0);
+
+		BasicStunt bottomCannonStunt = new BasicStunt(model, bottomCannon);
+		bottomCannonStunt.set(game.isu.new Vector(0, 0));
+		bottomCannonStunt.set_aSpeed(0);
+		
 		// =========================
 		// Minimal GAL test
 		// =========================
@@ -75,18 +110,13 @@ public class MainPaintTest implements Runnable {
 		GALBot shipBot = new GALBot(ship);
 		ship.bot(shipBot);
 
-		GALStunt shipStunt = new GALStunt(model, ship);
+		CompositeGALStunt shipStunt = new CompositeGALStunt(model, ship, List.of(topCannon, bottomCannon));
 		shipStunt.setMaxLinearSpeed(20.0);
 		shipStunt.setMaxAngularSpeed(0.0); // le vaisseau Gradius ne tourne pas
 
 		State life = new State("Life", 0);
 		Automaton shipAutomaton = new Automaton("Ship", life);
-		shipAutomaton.add(new Transition(
-			life,
-			GALCondition.TRUE,
-			new Move(Direction.E, 1.0, 1),
-			life
-		));
+		shipAutomaton.add(new Transition(life, GALCondition.TRUE, new Move(Direction.E, 1.0, 1), life));
 		shipBot.set(shipAutomaton);
 
 		// =========================
@@ -95,6 +125,8 @@ public class MainPaintTest implements Runnable {
 
 		View view = new View();
 		view.add(new ShipAvatar(ship));
+		view.add(new CannonAvatar(topCannon));
+		view.add(new CannonAvatar(bottomCannon));
 
 		MapView mapView = new MapView();
 

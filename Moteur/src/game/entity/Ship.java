@@ -12,7 +12,7 @@ public class Ship extends Entity {
 
 		double cell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(2.0 * cell, 1.0 * cell));
+		setSize(isu.new Dimension(4.0 * cell, 2.0 * cell));
 		setStep(isu.new Dimension(cell, cell));
 		category(Category.Team);
 

@@ -61,7 +61,7 @@ public class CompositeGALStunt extends GALStunt {
 			}
 		}
 	}
-
+	
 	@Override
 	public void set_aSpeed(int angularSpeed) {
 		super.set_aSpeed(angularSpeed);
