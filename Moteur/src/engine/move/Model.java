@@ -17,7 +17,7 @@ public class Model {
 	// Fields
 	// =========================
 
-	//private final Grid grid;
+	// private final Grid grid;
 	private final ISU isu;
 
 	public final List<Entity> entities;
@@ -39,7 +39,7 @@ public class Model {
 			throw new IllegalStateException("No current Game instance");
 		}
 
-		//this.grid = grid;
+		// this.grid = grid;
 		this.isu = game.isu;
 
 		this.entities = new LinkedList<>();
@@ -169,9 +169,13 @@ public class Model {
 
 		private void rotate(Entity entity) {
 			double angularSpeed = angularSpeeds.get(entity);
+			double old = entity.orientation();
 
 			if (angularSpeed != 0.0) {
 				entity.turn(angularSpeed * delta_t);
+				Stunt stunt = stunts.get(entity);
+				if(stunt.wantsMoveNotif())
+					stunt.rotated(old, entity.orientation());
 			}
 		}
 
@@ -181,6 +185,8 @@ public class Model {
 			if (d.x() == 0.0 && d.y() == 0.0) {
 				return;
 			}
+
+			ISU.Coord old = entity.center();
 
 			// Déplacement en X
 			if (d.x() != 0.0) {
@@ -205,6 +211,10 @@ public class Model {
 					collision(entity, other);
 				}
 			}
+
+			Stunt stunt = stunts.get(entity);
+			if (stunt.wantsMoveNotif())
+				stunt.moved(old, entity.center());
 		}
 
 		private Entity intersectedEntity(Entity entity) {
@@ -212,7 +222,7 @@ public class Model {
 				if (entity == other) {
 					continue;
 				}
-				
+
 				if (other.dead()) {
 					continue;
 				}
@@ -229,13 +239,13 @@ public class Model {
 			Stunt stunt = stunts.get(entity);
 
 			if (stunt != null) {
-				stunt.listener.collision(other);
+				stunt.collision(other);
 			}
 
 			Stunt otherStunt = stunts.get(other);
 
 			if (otherStunt != null) {
-				otherStunt.listener.collision(entity);
+				otherStunt.collision(entity);
 			}
 		}
 	}

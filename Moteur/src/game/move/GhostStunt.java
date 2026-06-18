@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import engine.entity.Entity;
 import engine.geometry.Grid.Cell;
+import engine.geometry.ISU.Coord;
 import engine.geometry.ISU.Vector;
 import engine.logs.LoggerManager;
 import engine.move.Model;
@@ -72,5 +73,15 @@ public class GhostStunt extends Stunt {
 		}
 
 		return normalized;
+	}
+
+	@Override
+	protected void moved(Coord oldPosition, Coord newPosition) {
+		// nothing to do here
+	}
+
+	@Override
+	protected void rotated(double oldRotation, double newRotation) {
+		// nothing to do here
 	}
 }

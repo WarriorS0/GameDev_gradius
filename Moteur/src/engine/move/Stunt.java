@@ -16,7 +16,8 @@ public abstract class Stunt {
 	protected ISU.Vector targetDirection;
 	protected double targetAngle;
 
-	public final Listener listener;
+	
+	private boolean wantsMoveNotif = false;
 
 	protected Stunt(Model model, Entity entity) {
 		this.model = model;
@@ -24,8 +25,6 @@ public abstract class Stunt {
 
 		this.targetDirection = Game.game().isu.new Vector(0, 0);
 		this.targetAngle = entity.orientation();
-
-		this.listener = new Listener();
 	}
 
 	public void set(int orientation) {
@@ -55,10 +54,24 @@ public abstract class Stunt {
 	public void set_aSpeed(int angularSpeed) {
 		model.setAngularSpeed(entity, angularSpeed);
 	}
+	
+	public void setWantsMoveNotif(boolean wantsMoveNotif) {
+		this.wantsMoveNotif = wantsMoveNotif;
+	}
+	
+	public boolean wantsMoveNotif() {
+        return this.wantsMoveNotif;
+    }
+	
+	// LISTENER
 
 	protected abstract void collision(Entity entity);
 
 	protected abstract void collision(List<Entity> entities);
+	
+	protected abstract void moved(ISU.Coord oldPosition, ISU.Coord newPosition);
+	
+	protected abstract void rotated(double oldRotation, double newRotation);
 
 	private double normalizeAngle(double angle) {
 		double normalized = angle % 360.0;
@@ -68,16 +81,5 @@ public abstract class Stunt {
 		}
 
 		return normalized;
-	}
-
-	public class Listener {
-
-		public void collision(Entity other) {
-			Stunt.this.collision(other);
-		}
-
-		public void collision(List<Entity> others) {
-			Stunt.this.collision(others);
-		}
 	}
 }
