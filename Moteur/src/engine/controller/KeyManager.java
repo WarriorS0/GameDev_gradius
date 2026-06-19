@@ -18,7 +18,7 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 	private static final Logger logger;
 	private final Set<Canvas.KeyListener> delegates;
 	private final Map<Integer, Runnable> bindings;
-	private final Map<Integer, Boolean> down;
+	private static final Map<Integer, Boolean> down = new HashMap<>();
 	static {
 		logger = LoggerManager.getLogger(KeyManager.class.getName());
 		LOGGING = (logger.getLevel() != Level.OFF);
@@ -28,7 +28,6 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 	public KeyManager() {
 		delegates = new HashSet<>();
 		bindings = new HashMap<>();
-		down = new HashMap<>();
 	}
 
 	/**
@@ -113,6 +112,10 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 			logger.log(Level.INFO, () -> String.format("Key[%c] typed!", keyChar));
 		for (Canvas.KeyListener d : delegates)
 			d.typed(canvas, keyChar);
+	}
+	
+	public static boolean isPressed(int keyCode) {
+		return Boolean.TRUE.equals(down.get(keyCode));
 	}
 
 }
