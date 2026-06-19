@@ -36,7 +36,6 @@ public abstract class Entity {
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
 
-
 	private static final double EPSILON = 1e-9;
 
 	// =========================
@@ -350,11 +349,11 @@ public abstract class Entity {
 			throw new IllegalStateException("Entity step is not set");
 		}
 	}
-	
+
 	// =========================
 	// GAL
 	// =========================
-	
+
 	public Grid grid() {
 		return grid;
 	}
@@ -373,7 +372,7 @@ public abstract class Entity {
 
 		this.category = category;
 	}
-	
+
 	public Bot bot() {
 		return bot;
 	}
@@ -382,5 +381,13 @@ public abstract class Entity {
 		this.bot = bot;
 	}
 
-	
+	public String debugInfo() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.center().toString());
+		sb.append("State:");
+		if (this.bot != null)
+			sb.append(this.bot.state().mode());
+		return sb.toString();
+	}
+
 }
