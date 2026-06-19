@@ -8,13 +8,11 @@ import engine.entity.Entity;
 import engine.gal.CompositeGALStunt;
 import engine.gal.GALBot;
 import game.move.BasicStunt;
-import engine.gal.actions.Move;
 import engine.gal.arguments.Category;
-import engine.gal.arguments.Direction;
 import engine.gal.aut.Automaton;
-import engine.gal.aut.State;
-import engine.gal.aut.Transition;
-import engine.gal.condition.GALCondition;
+import engine.gal.aut.AST2Aut;
+import gal.ast.AST;
+import gal.parser.Parser;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
 import engine.graphics.Label;
@@ -85,8 +83,6 @@ public class MainPaintTest implements Runnable {
 		topCannon.placeRelativeTo(ship);
 		bottomCannon.placeRelativeTo(ship);
 		
-		System.out.println("top = " + topCannon.center().x() + ", " + topCannon.center().y());
-		System.out.println("bottom = " + bottomCannon.center().x() + ", " + bottomCannon.center().y());
 		
 		model.add(ship);
 		model.add(topCannon);
@@ -114,9 +110,7 @@ public class MainPaintTest implements Runnable {
 		shipStunt.setMaxLinearSpeed(20.0);
 		shipStunt.setMaxAngularSpeed(0.0); // le vaisseau Gradius ne tourne pas
 
-		State life = new State("Life", 0);
-		Automaton shipAutomaton = new Automaton("Ship", life);
-		shipAutomaton.add(new Transition(life, GALCondition.TRUE, new Move(Direction.E, 1.0, 1), life));
+		Automaton shipAutomaton = loadAutomaton("src/engine/gal/shipTest.gal", "Ship");
 		shipBot.set(shipAutomaton);
 
 		// =========================
@@ -187,6 +181,23 @@ public class MainPaintTest implements Runnable {
 	private void place(Entity entity, int x, int y) {
 		Game game = Game.game();
 		entity.place(game.grid.new Position(x, y));
+	}
+	private Automaton loadAutomaton(String galFilePath, String automatonName) {
+		try {
+			AST ast = Parser.from_file(galFilePath);
+			AST2Aut converter = new AST2Aut(ast);
+
+			for (Automaton automaton : converter.getAutomata()) {
+				if (automaton.name().equals(automatonName)) {
+					return automaton;
+				}
+			}
+
+			throw new IllegalArgumentException("Automaton not found: " + automatonName);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot load GAL automaton from: " + galFilePath, e);
+		}
 	}
 
 }
