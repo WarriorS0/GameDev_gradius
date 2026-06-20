@@ -7,9 +7,11 @@ import engine.controller.Controller;
 import engine.controller.KeyManager;
 import engine.controller.MouseManager;
 import engine.entity.Entity;
+import engine.graphics.FollowerLabel;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
 import engine.graphics.Label;
+import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
@@ -154,8 +156,12 @@ public class MainPaint implements Runnable {
 
 		Hud hud = new Hud();
 		// Exemple de label avec le fps
-		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), 20, 50, Colors.white);
+		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), new PixelCoordinate(10, 10), Colors.white, false);
 		hud.add(labelFPS);
+		FollowerLabel fbPacman = new FollowerLabel(() -> pacman.debugInfo(), Colors.white, pacman, 0, 10);
+		hud.add(fbPacman);
+		FollowerLabel fbBlinky = new FollowerLabel(() -> blinky.debugInfo(), Colors.white, blinky, 0, 10);
+		hud.add(fbBlinky);
 
 		view.setHUD(hud);
 
