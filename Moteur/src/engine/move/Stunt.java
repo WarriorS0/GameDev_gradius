@@ -77,4 +77,6 @@ public abstract class Stunt {
 
 		return normalized;
 	}
+	
+	protected abstract void tick(double d);
 }
