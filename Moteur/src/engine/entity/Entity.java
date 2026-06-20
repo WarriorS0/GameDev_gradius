@@ -36,6 +36,9 @@ public abstract class Entity {
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
 
+	public ISU.Vector linearSpeed;
+	public double angularSpeed;
+
 	private static final double EPSILON = 1e-9;
 
 	// =========================
@@ -55,6 +58,9 @@ public abstract class Entity {
 
 		this.hitbox = new Bounding();
 		this.occupied = new HashSet<>();
+		
+		this.linearSpeed = isu.new Vector(0, 0);
+		this.angularSpeed = 0;
 	}
 
 	// =========================
