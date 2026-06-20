@@ -84,4 +84,10 @@ public class GhostStunt extends Stunt {
 	protected void rotated(double oldRotation, double newRotation) {
 		// nothing to do here
 	}
+
+	@Override
+	protected void tick(double d) {
+		// TODO Auto-generated method stub
+		
+	}
 }

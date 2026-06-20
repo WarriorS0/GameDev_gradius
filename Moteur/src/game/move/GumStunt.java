@@ -57,4 +57,10 @@ public class GumStunt extends engine.move.Stunt {
 	protected void rotated(double oldRotation, double newRotation) {
 		// nothing to do here
 	}
+
+	@Override
+	protected void tick(double d) {
+		// TODO Auto-generated method stub
+		
+	}
 }
