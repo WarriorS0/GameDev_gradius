@@ -16,7 +16,6 @@ public abstract class Stunt {
 	protected ISU.Vector targetDirection;
 	protected double targetAngle;
 
-	
 	private boolean wantsMoveNotif = false;
 
 	protected Stunt(Model model, Entity entity) {
@@ -34,43 +33,39 @@ public abstract class Stunt {
 		entity.turn(deltaAngle);
 	}
 
-	
 	protected void set(Cell cell) {
 		entity.place(cell.position());
 	}
 
-	
 	protected void set(double x, double y) {
 		entity.place(Game.game().isu.new Coord(x, y));
 	}
 
-	
 	public void set(Vector linearSpeed) {
 		this.targetDirection = linearSpeed;
-		model.setLinearSpeed(entity, linearSpeed);
+		entity.linearSpeed = linearSpeed;
 	}
 
-	
 	public void set_aSpeed(int angularSpeed) {
-		model.setAngularSpeed(entity, angularSpeed);
+		entity.angularSpeed = angularSpeed;
 	}
-	
+
 	public void setWantsMoveNotif(boolean wantsMoveNotif) {
 		this.wantsMoveNotif = wantsMoveNotif;
 	}
-	
+
 	public boolean wantsMoveNotif() {
-        return this.wantsMoveNotif;
-    }
-	
+		return this.wantsMoveNotif;
+	}
+
 	// LISTENER
 
 	protected abstract void collision(Entity entity);
 
 	protected abstract void collision(List<Entity> entities);
-	
+
 	protected abstract void moved(ISU.Coord oldPosition, ISU.Coord newPosition);
-	
+
 	protected abstract void rotated(double oldRotation, double newRotation);
 
 	private double normalizeAngle(double angle) {

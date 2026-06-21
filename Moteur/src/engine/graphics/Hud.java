@@ -32,7 +32,7 @@ public class Hud {
 	public Hud() {
 		if (LOGGING && INFO)
 			logger.info("Created new HUD");
-		elements = new ArrayList<>();
+		this.elements = new ArrayList<>();
 	}
 
 	/**
@@ -70,9 +70,13 @@ public class Hud {
 	 */
 	public void draw(Graphics graphics) {
 		for (HudElement e : elements) {
+			if (e instanceof FollowerLabel fl) {
+				fl.update();
+			}
 			if (e.isVisible())
 				e.draw(graphics);
 		}
+
 	}
 
 }

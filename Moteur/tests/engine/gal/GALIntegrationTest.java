@@ -48,8 +48,8 @@ class GALIntegrationTest {
 
 		assertTrue(move.exec(pacman));
 
-		assertEquals(10.0, model.linearSpeed(pacman).x(), EPSILON);
-		assertEquals(0.0, model.linearSpeed(pacman).y(), EPSILON);
+		assertEquals(10.0, pacman.linearSpeed.x(), EPSILON);
+		assertEquals(0.0, pacman.linearSpeed.y(), EPSILON);
 		assertTrue(stunt.actionDuration() > 0.0);
 	}
 
@@ -57,12 +57,12 @@ class GALIntegrationTest {
 	void stuntTickFinishesMoveAndStopsEntity() {
 		assertTrue(stunt.startMoving(Direction.E, 1.0, 100.0));
 
-		assertEquals(10.0, model.linearSpeed(pacman).x(), EPSILON);
+		assertEquals(10.0, pacman.linearSpeed.x(), EPSILON);
 
 		stunt.tick(100.0);
 
-		assertEquals(0.0, model.linearSpeed(pacman).x(), EPSILON);
-		assertEquals(0.0, model.linearSpeed(pacman).y(), EPSILON);
+		assertEquals(0.0, pacman.linearSpeed.x(), EPSILON);
+		assertEquals(0.0, pacman.linearSpeed.y(), EPSILON);
 		assertEquals(0.0, stunt.actionDuration(), EPSILON);
 	}
 
@@ -72,7 +72,7 @@ class GALIntegrationTest {
 
 		assertTrue(turn.exec(pacman));
 
-		assertEquals(90.0, model.angularSpeed(pacman), EPSILON);
+		assertEquals(90.0, pacman.angularSpeed, EPSILON);
 		assertTrue(stunt.actionDuration() > 0.0);
 	}
 
@@ -83,7 +83,7 @@ class GALIntegrationTest {
 		stunt.tick(1000.0);
 
 		assertEquals(90.0, pacman.orientation(), EPSILON);
-		assertEquals(0.0, model.angularSpeed(pacman), EPSILON);
+		assertEquals(0.0, pacman.angularSpeed, EPSILON);
 		assertEquals(0.0, stunt.actionDuration(), EPSILON);
 	}
 
@@ -165,6 +165,6 @@ class GALIntegrationTest {
 		model.tick(0.1);
 
 		assertEquals(target, bot.state());
-		assertTrue(model.linearSpeed(pacman).x() > 0.0);
+		assertTrue(pacman.linearSpeed.x() > 0.0);
 	}
 }
