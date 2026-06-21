@@ -36,6 +36,8 @@ public abstract class Entity {
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
 
+	public ISU.Vector linearSpeed;
+	public double angularSpeed;
 
 	private static final double EPSILON = 1e-9;
 
@@ -56,6 +58,9 @@ public abstract class Entity {
 
 		this.hitbox = new Bounding();
 		this.occupied = new HashSet<>();
+		
+		this.linearSpeed = isu.new Vector(0, 0);
+		this.angularSpeed = 0;
 	}
 
 	// =========================
@@ -350,11 +355,11 @@ public abstract class Entity {
 			throw new IllegalStateException("Entity step is not set");
 		}
 	}
-	
+
 	// =========================
 	// GAL
 	// =========================
-	
+
 	public Grid grid() {
 		return grid;
 	}
@@ -373,7 +378,7 @@ public abstract class Entity {
 
 		this.category = category;
 	}
-	
+
 	public Bot bot() {
 		return bot;
 	}
@@ -382,5 +387,13 @@ public abstract class Entity {
 		this.bot = bot;
 	}
 
-	
+	public String debugInfo() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.center().toString());
+		sb.append("State:");
+		if (this.bot != null)
+			sb.append(this.bot.state().mode());
+		return sb.toString();
+	}
+
 }

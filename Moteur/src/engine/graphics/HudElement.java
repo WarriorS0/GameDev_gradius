@@ -17,7 +17,6 @@ public interface HudElement {
 	 * @return true if visible
 	 */
 	boolean isVisible();
-	
 
 	/**
 	 * Sets the visibility.

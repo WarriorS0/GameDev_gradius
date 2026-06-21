@@ -22,8 +22,6 @@ public class Model {
 
 	public final List<Entity> entities;
 
-	private final Map<Entity, ISU.Vector> linearSpeeds;
-	private final Map<Entity, Double> angularSpeeds;
 	private final Map<Entity, Stunt> stunts;
 
 	public double delta_t;
@@ -43,9 +41,6 @@ public class Model {
 		this.isu = game.isu;
 
 		this.entities = new LinkedList<>();
-
-		this.linearSpeeds = new HashMap<>();
-		this.angularSpeeds = new HashMap<>();
 		this.stunts = new HashMap<>();
 
 		this.delta_t = 0.0;
@@ -58,8 +53,6 @@ public class Model {
 	public void add(Entity entity) {
 		if (!entities.contains(entity)) {
 			entities.add(entity);
-			linearSpeeds.put(entity, isu.new Vector(0, 0));
-			angularSpeeds.put(entity, 0.0);
 		}
 	}
 
@@ -70,8 +63,6 @@ public class Model {
 
 	public void remove(Entity entity) {
 		entities.remove(entity);
-		linearSpeeds.remove(entity);
-		angularSpeeds.remove(entity);
 		stunts.remove(entity);
 	}
 
@@ -87,30 +78,6 @@ public class Model {
 	public Stunt stunt(Entity entity) {
 		ensureKnownEntity(entity);
 		return stunts.get(entity);
-	}
-
-	// =========================
-	// Speeds
-	// =========================
-
-	public void setLinearSpeed(Entity entity, ISU.Vector speed) {
-		ensureKnownEntity(entity);
-		linearSpeeds.put(entity, speed);
-	}
-
-	public ISU.Vector linearSpeed(Entity entity) {
-		ensureKnownEntity(entity);
-		return linearSpeeds.get(entity);
-	}
-
-	public void setAngularSpeed(Entity entity, double speed_degree_per_second) {
-		ensureKnownEntity(entity);
-		angularSpeeds.put(entity, speed_degree_per_second);
-	}
-
-	public double angularSpeed(Entity entity) {
-		ensureKnownEntity(entity);
-		return angularSpeeds.get(entity);
 	}
 
 	private void ensureKnownEntity(Entity entity) {
@@ -155,7 +122,7 @@ public class Model {
 	class Physique {
 
 		public ISU.Vector delta(Entity entity) {
-			ISU.Vector speed = linearSpeeds.get(entity);
+			ISU.Vector speed = entity.linearSpeed;
 
 			double delta_x = speed.x() * delta_t;
 			double delta_y = speed.y() * delta_t;
@@ -169,13 +136,13 @@ public class Model {
 		}
 
 		private void rotate(Entity entity) {
-			double angularSpeed = angularSpeeds.get(entity);
+			double angularSpeed = entity.angularSpeed;
 			double old = entity.orientation();
 
 			if (angularSpeed != 0.0) {
 				entity.turn(angularSpeed * delta_t);
 				Stunt stunt = stunts.get(entity);
-				if(stunt.wantsMoveNotif())
+				if (stunt.wantsMoveNotif())
 					stunt.rotated(old, entity.orientation());
 			}
 		}

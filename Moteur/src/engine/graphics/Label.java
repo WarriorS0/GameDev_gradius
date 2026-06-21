@@ -8,54 +8,65 @@ import oop.graphics.Graphics;
 
 public class Label implements HudElement {
 
-	private final static String DEFAULT_FONT = "SansSerif";
-	private final static int DEFAULT_FONT_SIZE = 16;
-	private final static int DEFAULT_FONT_STYLE = Font.PLAIN;
+	public final static String DEFAULT_FONT;
+	public final static int DEFAULT_FONT_SIZE;
+	public final static int DEFAULT_FONT_STYLE;
+
+	static {
+		DEFAULT_FONT = "SansSerif";
+		DEFAULT_FONT_SIZE = 8;
+		DEFAULT_FONT_STYLE = Font.PLAIN;
+	}
 
 	protected Supplier<String> text;
 	private boolean visible;
-	protected String fontName;
-	protected int fontStyle;
-	protected int fontSize;
-	
+
+	private String fontName;
+	private int fontStyle;
+	private int fontSize;
+
+	public boolean centeredText;
+
 	/**
 	 * pixel coordinate
 	 */
-	protected int x, y;
-	
+	protected PixelCoordinate pc;
+
 	public Color color;
 
-	public Label(String text, int x, int y, Color color) {
-		this(text, x, y, true, DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color);
+	public Label(String text, PixelCoordinate pc, Color color, boolean centeredText) {
+		this(text, pc, true, DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
 	}
 
-	public Label(Supplier<String> text, int x, int y, Color color) {
-		this(text, x, y, true, DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color);
+	public Label(Supplier<String> text, PixelCoordinate pc, Color color, boolean centeredText) {
+		this(text, pc, true, DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
 	}
 
-	public Label(String text, int x, int y, boolean visible, String fontName, int fontSize, int fontStyle,
-			Color color) {
-		this(() -> text, x, y, visible, fontName, fontSize, fontStyle, color);
+	public Label(String text, PixelCoordinate pc, boolean visible, String fontName, int fontSize, int fontStyle,
+			Color color, boolean centeredText) {
+		this(() -> text, pc, visible, fontName, fontSize, fontStyle, color, centeredText);
 	}
 
-	public Label(Supplier<String> text, int x, int y, boolean visible, String fontName, int fontSize, int fontStyle,
-			Color color) {
+	public Label(Supplier<String> text, PixelCoordinate pc, boolean visible, String fontName, int fontSize,
+			int fontStyle, Color color, boolean centeredText) {
 		this.text = text;
-		this.x = x;
-		this.y = y;
+		this.pc = pc;
 		this.visible = visible;
 		this.fontName = fontName;
 		this.fontSize = fontSize;
 		this.fontStyle = fontStyle;
 		this.color = color;
+		this.centeredText = centeredText;
 	}
 
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(color);
-		g.setFont(g.getFont(fontName, fontStyle, fontSize));
+		Font f = g.getFont(fontName, fontStyle, fontSize);
+		g.setFont(f);
 
-		g.drawString(text.get(), x, y);
+		String text = this.text.get();
+		g.drawString(text, pc.x - ((centeredText) ? f.getWidth(text) / 2 : 0), pc.y);
 	}
 
 	@Override
@@ -66,6 +77,24 @@ public class Label implements HudElement {
 	@Override
 	public void setVisibility(boolean shown) {
 		this.visible = shown;
+	}
+
+	public void changeFont(String name, int style, int size) {
+		this.fontName = name;
+		this.fontStyle = style;
+		this.fontSize = size;
+	}
+
+	public String getFontName() {
+		return fontName;
+	}
+
+	public int getFontStyle() {
+		return fontStyle;
+	}
+
+	public int getFontSize() {
+		return fontSize;
 	}
 
 }
