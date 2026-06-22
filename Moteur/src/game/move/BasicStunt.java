@@ -22,9 +22,7 @@ public class BasicStunt extends Stunt {
 		model.setStunt(entity, this);
 	}
 
-	@Override
 	public void set(int orientation) {
-		super.set(orientation);
 
 		double angle = normalizeAngle(orientation);
 

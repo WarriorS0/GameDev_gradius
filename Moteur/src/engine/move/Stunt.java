@@ -26,20 +26,6 @@ public abstract class Stunt {
 		this.targetAngle = entity.orientation();
 	}
 
-	public void set(int orientation) {
-		this.targetAngle = normalizeAngle(orientation);
-
-		double deltaAngle = this.targetAngle - entity.orientation();
-		entity.turn(deltaAngle);
-	}
-
-	protected void set(Cell cell) {
-		entity.place(cell.position());
-	}
-
-	protected void set(double x, double y) {
-		entity.place(Game.game().isu.new Coord(x, y));
-	}
 
 	public void set(Vector linearSpeed) {
 		this.targetDirection = linearSpeed;

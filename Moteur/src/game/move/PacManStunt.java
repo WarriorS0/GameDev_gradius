@@ -23,13 +23,11 @@ public class PacManStunt extends Stunt {
 		model.setStunt(entity, this);
 	}
 
-	@Override
 	public void set(int orientation) {
 		if (entity.dead()) {
 			return;
 		}
 
-		super.set(orientation);
 
 		double angle = normalizeAngle(orientation);
 

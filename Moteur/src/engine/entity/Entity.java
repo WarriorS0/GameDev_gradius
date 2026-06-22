@@ -231,6 +231,13 @@ public abstract class Entity {
 
 		return angle;
 	}
+	
+	public void forceOrientation(double angleDegree) {
+	    this.orientation_degree = normalizeAngle(angleDegree);
+
+	    setBounding();
+	    deploy();
+	}
 
 	// =========================
 	// Move

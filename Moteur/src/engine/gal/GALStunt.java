@@ -103,7 +103,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		set_aSpeed(0);
 
 		if (turning) {
-			set((int) Math.round(finalAngle));
+			entity.forceOrientation(Math.round(finalAngle));
 			turning = false;
 		}
 

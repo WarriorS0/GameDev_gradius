@@ -23,9 +23,7 @@ public class GhostStunt extends Stunt {
 		model.setStunt(entity, this);
 	}
 
-	@Override
 	public void set(int orientation) {
-		super.set(orientation);
 
 		double angle = normalizeAngle(orientation);
 
@@ -40,10 +38,7 @@ public class GhostStunt extends Stunt {
 		}
 	}
 
-	@Override
-	protected void set(Cell cell) {
-		
-	}
+	
 
 	@Override
 	protected void collision(Entity other) {

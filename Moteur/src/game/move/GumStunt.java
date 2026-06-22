@@ -22,9 +22,7 @@ public class GumStunt extends engine.move.Stunt {
 		set_aSpeed(0);
 	}
 
-	@Override
 	public void set(int orientation) {
-		super.set(orientation);
 		set(Game.game().isu.new Vector(0, 0));
 	}
 
