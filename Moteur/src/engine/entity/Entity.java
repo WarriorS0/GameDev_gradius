@@ -176,7 +176,7 @@ public abstract class Entity {
 		return this.linearSpeed;
 	}
 	
-	public double angulareSpeed() {
+	public double angularSpeed() {
 		return this.angularSpeed;
 	}
 

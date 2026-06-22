@@ -43,11 +43,11 @@ public abstract class Stunt {
 
 	public void set(Vector linearSpeed) {
 		this.targetDirection = linearSpeed;
-		entity.linearSpeed = linearSpeed;
+		entity.setLinearSpeed(linearSpeed);
 	}
 
 	public void set_aSpeed(int angularSpeed) {
-		entity.angularSpeed = angularSpeed;
+		entity.setAngularSpeed(angularSpeed);
 	}
 
 	public void setWantsMoveNotif(boolean wantsMoveNotif) {

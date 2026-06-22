@@ -117,7 +117,7 @@ public class Model {
 	class Physique {
 
 		public ISU.Vector delta(Entity entity) {
-			ISU.Vector speed = entity.linearSpeed;
+			ISU.Vector speed = entity.linearSpeed();
 
 			double delta_x = speed.x() * delta_t;
 			double delta_y = speed.y() * delta_t;
@@ -131,7 +131,7 @@ public class Model {
 		}
 
 		private void rotate(Entity entity) {
-			double angularSpeed = entity.angularSpeed;
+			double angularSpeed = entity.angularSpeed();
 			double old = entity.orientation();
 
 			if (angularSpeed != 0.0) {
