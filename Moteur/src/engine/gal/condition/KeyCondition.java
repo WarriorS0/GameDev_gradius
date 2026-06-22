@@ -35,34 +35,34 @@ public class KeyCondition extends GALCondition implements VirtualKeyCodes {
 		String key = keyName.trim().toUpperCase();
 
 		switch (key) {
-			case "FU":
-			case "UP":
-				return VK_UP;
+		case "FU":
+		case "UP":
+			return VK_UP;
 
-			case "FD":
-			case "DOWN":
-				return VK_DOWN;
+		case "FD":
+		case "DOWN":
+			return VK_DOWN;
 
-			case "FL":
-			case "LEFT":
-				return VK_LEFT;
+		case "FL":
+		case "LEFT":
+			return VK_LEFT;
 
-			case "FR":
-			case "RIGHT":
-				return VK_RIGHT;
+		case "FR":
+		case "RIGHT":
+			return VK_RIGHT;
 
-			case "SPACE":
-				return VK_SPACE;
+		case "SPACE":
+			return VK_SPACE;
 
-			case "ENTER":
-				return VK_ENTER;
+		case "ENTER":
+			return VK_ENTER;
 
-			case "ESC":
-			case "ESCAPE":
-				return VK_ESCAPE;
+		case "ESC":
+		case "ESCAPE":
+			return VK_ESCAPE;
 
-			default:
-				return standardKeyCode(key);
+		default:
+			return standardKeyCode(key);
 		}
 	}
 

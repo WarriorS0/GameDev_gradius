@@ -113,7 +113,7 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 		for (Canvas.KeyListener d : delegates)
 			d.typed(canvas, keyChar);
 	}
-	
+
 	public static boolean isPressed(int keyCode) {
 		return Boolean.TRUE.equals(down.get(keyCode));
 	}

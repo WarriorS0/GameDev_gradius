@@ -1,4 +1,4 @@
-package game.entity;
+package game.graduis.entity;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Category;
@@ -23,10 +23,6 @@ public class Ship extends Entity {
 	protected void setBounding() {
 		clearBounding();
 
-		addBounding(new Rect(
-			center(),
-			size(),
-			orientation()
-		));
+		addBounding(new Rect(center(), size(), orientation()));
 	}
 }

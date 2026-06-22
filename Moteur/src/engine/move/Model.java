@@ -103,7 +103,7 @@ public class Model {
 			Stunt stunt = stunts.get(entity);
 
 			if (stunt != null) {
-			    stunt.tick(delta_t);
+				stunt.tick(delta_t);
 			}
 
 			if (entity.dead()) {
@@ -149,7 +149,6 @@ public class Model {
 				return;
 			}
 
-
 			// Déplacement en X
 			if (d.x() != 0.0) {
 				entity.translate(isu.new Vector(d.x(), 0));
@@ -185,7 +184,7 @@ public class Model {
 				if (other.dead()) {
 					continue;
 				}
-				
+
 				if (!entity.category().interactsWith(other.category())) {
 					continue;
 				}
@@ -194,8 +193,6 @@ public class Model {
 					return other;
 				}
 			}
-			
-			
 
 			return null;
 		}

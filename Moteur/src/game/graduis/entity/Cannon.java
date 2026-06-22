@@ -1,4 +1,4 @@
-package game.entity;
+package game.graduis.entity;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Category;
@@ -37,20 +37,13 @@ public class Cannon extends Entity {
 		double dx = 0.65 * cell;
 		double dy = slot.isTop() ? -0.75 * cell : 0.75 * cell;
 
-		place(isu.new Coord(
-			anchor.center().x() + dx,
-			anchor.center().y() + dy
-		));
+		place(isu.new Coord(anchor.center().x() + dx, anchor.center().y() + dy));
 	}
 
 	@Override
 	protected void setBounding() {
 		clearBounding();
 
-		addBounding(new Rect(
-			center(),
-			size(),
-			orientation()
-		));
+		addBounding(new Rect(center(), size(), orientation()));
 	}
 }

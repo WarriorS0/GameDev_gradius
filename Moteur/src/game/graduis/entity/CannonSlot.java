@@ -1,8 +1,7 @@
-package game.entity;
+package game.graduis.entity;
 
 public enum CannonSlot {
-	TOP,
-	BOTTOM;
+	TOP, BOTTOM;
 
 	public boolean isTop() {
 		return this == TOP;
