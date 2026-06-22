@@ -28,11 +28,11 @@ public abstract class Stunt {
 		entity.setLinearSpeed(linearSpeed);
 	}
 
-	public void setAngularSpeed(int angularSpeed) {
+	public void setAngularSpeed(double angularSpeed) {
 		entity.setAngularSpeed(angularSpeed);
 	}
 
-	// LISTENER
+	// Collision
 
 	protected abstract void collision(Entity entity);
 

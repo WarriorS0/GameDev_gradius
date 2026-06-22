@@ -100,7 +100,10 @@ public class Model {
 			}
 
 			Stunt stunt = stunts.get(entity);
-			stunt.tick(delta_t * 1000.0);
+
+			if (stunt != null) {
+			    stunt.tick(delta_t * 1000.0);
+			}
 
 			if (entity.dead()) {
 				continue;
