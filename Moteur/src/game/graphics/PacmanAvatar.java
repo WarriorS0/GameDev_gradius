@@ -11,7 +11,7 @@ import oop.graphics.Graphics;
 public class PacmanAvatar extends Avatar {
 
 	private static final String SPRITE_PATH = "src/game/graphics/pacman_sprite.png";
-	private static final double ANIMATION_DURATION_MS = 0.13;
+	private static final double ANIMATION_DURATION_MS = 0.13; // TODO plutot frame_duration et en seconde pas en milliseconde 
 
 	private BufferedImage sprite;
 	private BufferedImage[] animations;
