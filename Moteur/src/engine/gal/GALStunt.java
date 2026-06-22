@@ -79,7 +79,8 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	/**
 	 * @apiNote The tick regularly provides the elapsed time in milliseconds.
 	 */
-	public void tick(double elapsed_ms) {
+	public void tick(double elapsed_s) {
+		double elapsed_ms = elapsed_s * 1000.0;
 		if (action_ms > 0.0) {
 			action_ms -= elapsed_ms;
 
