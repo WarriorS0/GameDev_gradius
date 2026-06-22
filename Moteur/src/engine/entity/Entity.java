@@ -36,8 +36,8 @@ public abstract class Entity {
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
 
-	public ISU.Vector linearSpeed;
-	public double angularSpeed;
+	private ISU.Vector linearSpeed;
+	private double angularSpeed;
 
 	private static final double EPSILON = 1e-9;
 
@@ -120,6 +120,14 @@ public abstract class Entity {
 		setBounding();
 		deploy();
 	}
+	
+	public void setLinearSpeed(ISU.Vector linearSpeed) {
+		this.linearSpeed = linearSpeed;
+	}
+	
+	public void setAngularSpeed(double angularSpeed) {
+		this.angularSpeed = angularSpeed;
+	}
 	// =========================
 	// Getters
 	// =========================
@@ -162,6 +170,14 @@ public abstract class Entity {
 
 	public boolean dead() {
 		return !alive;
+	}
+	
+	public ISU.Vector linearSpeed(){
+		return this.linearSpeed;
+	}
+	
+	public double angulareSpeed() {
+		return this.angularSpeed;
 	}
 
 	// =========================
