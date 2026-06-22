@@ -101,7 +101,7 @@ public class Model {
 
 			Stunt stunt = stunts.get(entity);
 			stunt.tick(delta_t * 1000.0);
-			
+
 			if (entity.dead()) {
 				continue;
 			}
@@ -132,13 +132,9 @@ public class Model {
 
 		private void rotate(Entity entity) {
 			double angularSpeed = entity.angularSpeed();
-			double old = entity.orientation();
 
 			if (angularSpeed != 0.0) {
 				entity.turn(angularSpeed * delta_t);
-				Stunt stunt = stunts.get(entity);
-				if (stunt.wantsMoveNotif())
-					stunt.rotated(old, entity.orientation());
 			}
 		}
 
@@ -149,7 +145,6 @@ public class Model {
 				return;
 			}
 
-			ISU.Coord old = entity.center();
 
 			// Déplacement en X
 			if (d.x() != 0.0) {
@@ -175,9 +170,6 @@ public class Model {
 				}
 			}
 
-			Stunt stunt = stunts.get(entity);
-			if (stunt.wantsMoveNotif())
-				stunt.moved(old, entity.center());
 		}
 
 		private Entity intersectedEntity(Entity entity) {
