@@ -156,7 +156,10 @@ public class MainPaint implements Runnable {
 
 		Hud hud = new Hud();
 		// Exemple de label avec le fps
-		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), new PixelCoordinate(10, 10), Colors.white, false);
+		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode.", new PixelCoordinate(10, 10), Colors.white,
+				false);
+		hud.add(labelDebug);
+		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), new PixelCoordinate(10, 20), Colors.white, false);
 		hud.add(labelFPS);
 		FollowerLabel fbPacman = new FollowerLabel(() -> pacman.debugInfo(), Colors.white, pacman, 0, 10);
 		hud.add(fbPacman);
@@ -206,7 +209,11 @@ public class MainPaint implements Runnable {
 
 		KeyManager km = new KeyManager();
 		km.addDelegate(new Controller(pacmanStunt));
-		km.bind(VirtualKeyCodes.VK_TAB, () -> labelFPS.setVisibility(!labelFPS.isVisible()));
+		km.bind(VirtualKeyCodes.VK_TAB, () -> {
+			labelFPS.setVisibility(!labelFPS.isVisible());
+			fbPacman.setVisibility(!fbPacman.isVisible());
+			fbBlinky.setVisibility(!fbBlinky.isVisible());
+		});
 		// Appuyer sur tab fait appraître/disparaître le label de fps.
 
 		MouseManager mm = new MouseManager();

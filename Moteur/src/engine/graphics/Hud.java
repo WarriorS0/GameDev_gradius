@@ -1,6 +1,7 @@
 package engine.graphics;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,6 +62,14 @@ public class Hud {
 		if (LOGGING && INFO)
 			logger.info(String.format("Removed %s from the HUD", e.toString()));
 		return elements.remove(e);
+	}
+	
+	public void clear() {
+		this.elements.clear();
+	}
+	
+	public Iterator<HudElement> iterator(){
+		return this.elements.iterator();
 	}
 
 	/**

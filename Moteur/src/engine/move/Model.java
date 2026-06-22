@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import engine.entity.Entity;
-import engine.gal.GALStunt;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 import game.Game;
@@ -102,11 +101,8 @@ public class Model {
 			}
 
 			Stunt stunt = stunts.get(entity);
-
-			if (stunt instanceof GALStunt galStunt) {
-				galStunt.tick(delta_t * 1000.0);
-			}
-
+			stunt.tick(delta_t * 1000.0);
+			
 			if (entity.dead()) {
 				continue;
 			}

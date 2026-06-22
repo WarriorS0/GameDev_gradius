@@ -85,4 +85,10 @@ public class BasicStunt extends Stunt {
 		// nothing to do here
 		
 	}
+
+	@Override
+	protected void tick(double d) {
+		// TODO Auto-generated method stub
+		
+	}
 }

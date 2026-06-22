@@ -1,10 +1,15 @@
 package engine.geometry;
 
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.util.Objects;
 
 import game.Game;
 
 public class ISU {
+	private static final double EPS = 1e-9;
+
+	private static final DecimalFormat df = new DecimalFormat("0.00");
 
 	// FIELDS
 
@@ -15,10 +20,10 @@ public class ISU {
 	// CONSTRUCTOR
 
 	public ISU(Game game) {
-		this.isu = this;
 		this.xAxis = new Axis(game.torusOnXaxis, game.width_cm);
 		this.yAxis = new Axis(game.torusOnYaxis, game.height_cm);
-		// mettre à la fin du constructeur de grid set pour finir d init isu
+		this.isu = this;
+		// mettre à la fin du constructeur de grid set pour finir d'init isu
 	}
 
 	// SETTER
@@ -73,22 +78,28 @@ public class ISU {
 		}
 
 		// EQUALS / EQUIV
+
 		@Override
 		public boolean equals(Object o) {
-			if (o instanceof Dimension) {
-				return this.equiv((Dimension) o);
-			}
-			return false;
+			if (o == null)
+				return false;
+			if (this == o)
+				return true;
+			if (!(o instanceof Dimension d))
+				return false;
+			return d.isu() == isu() && d.x_cm == x_cm && d.y_cm == y_cm;
 		}
 
-		protected boolean equiv(Dimension d) {
-			if (this instanceof Coord && d instanceof Coord) {
-				double epsilon = 1e-9;
-				double deltaX = Math.abs(this.x_cm - d.x_cm);
-				double deltaY = Math.abs(this.y_cm - d.y_cm);
-				return (deltaX < epsilon) && (deltaY < epsilon);
-			}
-			return false;
+		@Override
+		public int hashCode() {
+			return Double.hashCode(x_cm) * 31 + Double.hashCode(y_cm);
+		}
+
+		/** Égalité à epsilon près (flottants). */
+		public boolean equiv(Dimension d) {
+			if (d == null)
+				return false;
+			return Math.abs(d.x_cm - x_cm) < EPS && Math.abs(d.y_cm - y_cm) < EPS;
 		}
 
 		// GETTER
@@ -116,37 +127,88 @@ public class ISU {
 		}
 
 		// SHOW
-
 		void show(PrintStream ps) {
-			ps.printf(" x = %f cm \n y = %f cm\n", this.x_cm, this.y_cm);
+			ps.printf(this.toString());
+		}
+
+		@Override
+		public String toString() {
+			return String.format(" x = %f cm \n y = %f cm\n", this.x_cm, this.y_cm);
+		}
+
+		public String toStringRounded() {
+			return "{" + df.format(x_cm) + "," + df.format(y_cm) + "}";
 		}
 
 	}
 
 	// == POINT ==
 
-	public class Coord extends Dimension {
+	public class Coord {
+		double x_cm, y_cm;
 
 		// CONSTRUCTOR
 
 		public Coord(double x_cm, double y_cm) {
-			super(x_cm, y_cm);
+			this.x_cm = x_cm;
+			this.y_cm = y_cm;
+			this.normalize();
+		}
+
+		void normalize() {
+			if (xAxis == null || yAxis == null) {
+				throw new IllegalStateException("Axis not initialized");
+			}
+			this.x_cm = xAxis.normalize(x_cm);
+			this.y_cm = yAxis.normalize(y_cm);
 		}
 
 		// SHOW
 
 		void show(PrintStream ps) {
 			ps.print(this.toString());
-			super.show(ps);
 		}
 
-		// EQUALS
 		@Override
-		public boolean equals(Object o) {
-			if (o instanceof Coord) {
-				return super.equals(o);
-			}
-			return false;
+		public String toString() {
+			return "(" + x_cm + "," + y_cm + ")";
+		}
+
+		public String toStringRounded() {
+			return "(" + df.format(x_cm) + "," + df.format(y_cm) + ")";
+		}
+
+		public ISU isu() {
+			return isu;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getEnclosingInstance().hashCode();
+			result = prime * result + Objects.hash(x_cm, y_cm);
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			Coord other = (Coord) obj;
+			return Double.doubleToLongBits(x_cm) == Double.doubleToLongBits(other.x_cm)
+					&& Double.doubleToLongBits(y_cm) == Double.doubleToLongBits(other.y_cm);
+		}
+
+		/** Égalité à epsilon près (flottants). */
+		public boolean equiv(Coord c) {
+			if (c == null)
+				return false;
+			return Math.abs(c.x_cm - x_cm) < EPS && Math.abs(c.y_cm - y_cm) < EPS;
 		}
 
 		// FACTORY
@@ -221,14 +283,32 @@ public class ISU {
 			return Math.sqrt(distX * distX + distY * distY);
 		}
 
+		private ISU getEnclosingInstance() {
+			return ISU.this;
+		}
+
+		public double x() {
+			return this.x_cm;
+		}
+
+		public double y() {
+			return this.y_cm;
+		}
+
+		public void setxy(double x, double y) {
+			this.x_cm = x;
+			this.y_cm = y;
+			this.normalize();
+		}
+
 	}
 
 	// == VECTOR ==
 
 	/**
 	 * @apiNote The Vector class defines canonical vectors with origin in (0,0)
-	 *          poiting at a target coordinate.
-	 * @apiNote Canonocal vectors are defined by their target Coord.
+	 *          pointing at a target coordinate.
+	 * @apiNote Canonical vectors are defined by their target Coord.
 	 */
 	public class Vector {
 
@@ -305,5 +385,16 @@ public class ISU {
 			this.y_cm = tempX * Math.sin(Math.toRadians(angle_degree)) + tempY * Math.cos(Math.toRadians(angle_degree));
 		}
 
+		@Override
+		public String toString() {
+			return "[vx=" + x_cm + ", xy=" + y_cm + "]";
+		}
+
+		public String toStringRounded() {
+			return "[" + df.format(x_cm) + "," + df.format(y_cm) + "]";
+		}
+
+		
+		
 	}
 }

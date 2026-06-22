@@ -389,7 +389,13 @@ public abstract class Entity {
 
 	public String debugInfo() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.center().toString());
+		sb.append(this.center().toStringRounded());
+		sb.append("\n");
+		sb.append("lSpeed:");
+		sb.append(this.linearSpeed.toStringRounded());
+		sb.append(" ; aSpeed:");
+		sb.append(this.angularSpeed);
+		sb.append("\n");
 		sb.append("State:");
 		if (this.bot != null)
 			sb.append(this.bot.state().mode());
