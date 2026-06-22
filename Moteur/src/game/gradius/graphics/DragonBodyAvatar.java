@@ -1,4 +1,4 @@
-package game.graphics;
+package game.gradius.graphics;
 
 import engine.entity.Entity;
 import engine.geometry.ISU;
@@ -7,7 +7,7 @@ import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
-public class DragonHeadAvatar extends Avatar {
+public class DragonBodyAvatar extends Avatar {
 	
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vulture_dragon.png";
 	private static final double DEATH_ANIMATION_DURATION_MS = 130.0;
@@ -17,7 +17,7 @@ public class DragonHeadAvatar extends Avatar {
 	private boolean deathAnimationFinished;
 	private BufferedImage current;
 	
-	protected DragonHeadAvatar(Entity entity) {
+	protected DragonBodyAvatar(Entity entity) {
 		super(entity);
 	}
 	
@@ -25,22 +25,22 @@ public class DragonHeadAvatar extends Avatar {
 	public void initImages(Graphics g) {
 		sprites = g.load(SPRITE_PATH);
 		orientations = new BufferedImage[16];
-		orientations[0] = sprites.getSubimage(1, 1, 49, 49);
-		orientations[1] = sprites.getSubimage(51, 1, 49, 49);
-		orientations[2] = sprites.getSubimage(101, 1, 49, 49);
-		orientations[3] = sprites.getSubimage(151, 1, 49, 49);
-		orientations[4] = sprites.getSubimage(201, 1, 49, 49);
-		orientations[5] = sprites.getSubimage(251, 1, 49, 49);
-		orientations[6] = sprites.getSubimage(301, 1, 49, 49);
-		orientations[7] = sprites.getSubimage(351, 1, 49, 49);
-		orientations[8] = sprites.getSubimage(1, 51, 49, 49);
-		orientations[9] = sprites.getSubimage(51, 51, 49, 49);
-		orientations[10] = sprites.getSubimage(101, 51, 49, 49);
-		orientations[11] = sprites.getSubimage(151, 51, 49, 49);
-		orientations[12] = sprites.getSubimage(201, 51, 49, 49);
-		orientations[13] = sprites.getSubimage(251, 51, 49, 49);
-		orientations[14] = sprites.getSubimage(301, 51, 49, 49);
-		orientations[15] = sprites.getSubimage(351, 51, 49, 49);
+		orientations[0] = sprites.getSubimage(1, 101,33, 33);
+		orientations[1] = sprites.getSubimage(35, 101, 33, 33);
+		orientations[2] = sprites.getSubimage(69, 101, 33, 33);
+		orientations[3] = sprites.getSubimage(103, 101, 33, 33);
+		orientations[4] = sprites.getSubimage(137, 101, 33, 33);
+		orientations[5] = sprites.getSubimage(171, 101, 33, 33);
+		orientations[6] = sprites.getSubimage(205, 101, 33, 33);
+		orientations[7] = sprites.getSubimage(239, 101, 33, 33);
+		orientations[8] = sprites.getSubimage(1, 135, 33, 33);
+		orientations[9] = sprites.getSubimage(35, 135, 33, 33);
+		orientations[10] = sprites.getSubimage(69, 135, 33, 33);
+		orientations[11] = sprites.getSubimage(103, 135, 33, 33);
+		orientations[12] = sprites.getSubimage(137, 135, 33, 33);
+		orientations[13] = sprites.getSubimage(171, 135, 33, 33);
+		orientations[14] = sprites.getSubimage(205, 135, 33, 33);
+		orientations[15] = sprites.getSubimage(239, 135, 33, 33);
 	}
 	
 	private double normalizeAngle(double angle) {
