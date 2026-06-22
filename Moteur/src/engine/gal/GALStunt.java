@@ -4,7 +4,6 @@ import java.util.List;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Direction;
-import engine.geometry.ISU.Coord;
 import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;
@@ -99,11 +98,11 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	private void finishAction() {
 		action_ms = 0.0;
 
-		set(Game.game().isu.new Vector(0.0, 0.0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
+		setAngularSpeed(0);
 
 		if (turning) {
-			set((int) Math.round(finalAngle));
+			entity.forceOrientation(Math.round(finalAngle));
 			turning = false;
 		}
 
@@ -116,8 +115,8 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		action_ms = 0.0;
 		turning = false;
 
-		set(Game.game().isu.new Vector(0.0, 0.0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
+		setAngularSpeed(0);
 	}
 
 	// MOVE
@@ -147,7 +146,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		double vx = Math.cos(rad) * speed;
 		double vy = Math.sin(rad) * speed;
 
-		set(Game.game().isu.new Vector(vx, vy));
+		setLinearSpeed(Game.game().isu.new Vector(vx, vy));
 
 		action_ms = duration_ms;
 		turning = false;
@@ -201,7 +200,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 			angularSpeed = -angularSpeed;
 		}
 
-		set_aSpeed((int) Math.round(angularSpeed));
+		setAngularSpeed((int) Math.round(angularSpeed));
 
 		action_ms = Math.abs(delta) / Math.abs(angularSpeed) * 1000.0;
 		turning = true;
@@ -251,15 +250,4 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		}
 	}
 
-	@Override
-	protected void moved(Coord oldPosition, Coord newPosition) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void rotated(double oldRotation, double newRotation) {
-		// TODO Auto-generated method stub
-		
-	}
 }

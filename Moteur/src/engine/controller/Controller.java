@@ -13,6 +13,7 @@ public class Controller implements Canvas.KeyListener {
 
 	@Override
 	public void pressed(Canvas canvas, int keyCode, char keyChar) {
+		/*
 		if (stunt == null)
 			return;
 		if (keyCode == VirtualKeyCodes.VK_LEFT) {
@@ -23,7 +24,7 @@ public class Controller implements Canvas.KeyListener {
 			stunt.set(0);
 		} else if (keyCode == VirtualKeyCodes.VK_DOWN) {
 			stunt.set(90);
-		}
+		}*/
 	}
 
 	@Override

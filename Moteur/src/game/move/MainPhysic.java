@@ -30,13 +30,13 @@ public class MainPhysic implements Runnable {
 
 		model.add(pacman);
 		BasicStunt pacmanStunt = new BasicStunt(model, pacman);
-		pacmanStunt.set(game.isu.new Vector(10, 0));
-		pacmanStunt.set_aSpeed(10);
+		pacmanStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		pacmanStunt.setAngularSpeed(10);
 
 		model.add(red);
 		BasicStunt redStunt = new BasicStunt(model, red);
-		redStunt.set(game.isu.new Vector(0, 0));
-		redStunt.set_aSpeed(0);
+		redStunt.setLinearSpeed(game.isu.new Vector(0, 0));
+		redStunt.setAngularSpeed(0);
 
 		new engine.move.Ticker(model);
 	}
