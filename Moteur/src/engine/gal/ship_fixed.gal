@@ -1,0 +1,9 @@
+Ship(Life) {
+
+  * (Life)
+  | Key(FU) ? Move(N) :(Life)
+  | Key(FD) ? Move(S) :(Life)
+  | Key(FL) ? Move(W) :(Life)
+  | Key(FR) ? Move(E) :(Life)
+  | True    ?         :(Life)
+}

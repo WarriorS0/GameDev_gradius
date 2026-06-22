@@ -1,8 +1,10 @@
 package engine.move;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 import engine.entity.Entity;
@@ -24,6 +26,9 @@ public class Model {
 	private final Map<Entity, Stunt> stunts;
 
 	public double delta_t;
+
+	private ViewPort viewPort;
+	private final Set<Entity> cullable = new HashSet<>();
 
 	// =========================
 	// Constructor
@@ -86,24 +91,58 @@ public class Model {
 	}
 
 	// =========================
+	// View port / culling
+	// =========================
+
+	/**
+	 * Attaches a view port advanced on every tick.
+	 *
+	 * @param viewPort the camera to drive, or null to detach
+	 */
+	public void setViewPort(ViewPort viewPort) {
+		this.viewPort = viewPort;
+	}
+
+	/**
+	 * @return the attached view port, or null
+	 */
+	public ViewPort viewPort() {
+		return viewPort;
+	}
+
+	/**
+	 * Marks an entity to be killed automatically when it leaves the view port,
+	 * typically a projectile. The entity must already be in the model.
+	 *
+	 * @param entity the entity to cull off-screen
+	 */
+	public void cullOffScreen(Entity entity) {
+		ensureKnownEntity(entity);
+		cullable.add(entity);
+	}
+
+	// =========================
 	// Tick
 	// =========================
 
 	public void tick(double delta_t) {
 		this.delta_t = delta_t;
 
-		Physique phy = new Physique();
+		Physics phy = new Physics();
 
 		for (Entity entity : new LinkedList<>(entities)) {
+
 			if (entity.dead()) {
 				continue;
 			}
 
 			Stunt stunt = stunts.get(entity);
 
+
 			if (stunt != null) {
-			    stunt.tick(delta_t);
+				stunt.tick(delta_t);
 			}
+
 
 			if (entity.dead()) {
 				continue;
@@ -111,13 +150,31 @@ public class Model {
 
 			phy.move(entity);
 		}
+
+		if (viewPort != null) {
+			viewPort.tick(delta_t);
+
+			if (!cullable.isEmpty()) {
+				for (Entity entity : new LinkedList<>(cullable)) {
+					if (entity.dead()) {
+						cullable.remove(entity);
+						continue;
+					}
+
+					if (!viewPort.isVisible(entity)) {
+						entity.kill();
+						cullable.remove(entity);
+					}
+				}
+			}
+		}
 	}
 
 	// =========================
 	// Physics
 	// =========================
 
-	class Physique {
+	class Physics {
 
 		public ISU.Vector delta(Entity entity) {
 			ISU.Vector speed = entity.linearSpeed();
@@ -147,7 +204,6 @@ public class Model {
 			if (d.x() == 0.0 && d.y() == 0.0) {
 				return;
 			}
-
 
 			// Déplacement en X
 			if (d.x() != 0.0) {
@@ -182,6 +238,10 @@ public class Model {
 				}
 
 				if (other.dead()) {
+					continue;
+				}
+
+				if (!entity.category().interactsWith(other.category())) {
 					continue;
 				}
 

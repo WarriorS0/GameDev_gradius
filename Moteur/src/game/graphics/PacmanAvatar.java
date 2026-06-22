@@ -1,5 +1,7 @@
 package game.graphics;
 
+import java.util.ArrayList;
+
 import engine.entity.Entity;
 import engine.graphics.Avatar;
 import game.Game;
@@ -9,7 +11,7 @@ import oop.graphics.Graphics;
 public class PacmanAvatar extends Avatar {
 
 	private static final String SPRITE_PATH = "src/game/graphics/pacman_sprite.png";
-	private static final double ANIMATION_DURATION_MS = 130.0;
+	private static final double ANIMATION_DURATION_MS = 0.13; // TODO plutot frame_duration et en seconde pas en milliseconde 
 
 	private BufferedImage sprite;
 	private BufferedImage[] animations;
@@ -20,6 +22,12 @@ public class PacmanAvatar extends Avatar {
 	private Direction currentDirection;
 	private boolean currentDeadState;
 	private boolean deathAnimationFinished;
+	
+	private ArrayList<BufferedImage> listAnimations;
+	private BufferedImage[] animeLeft;
+	private BufferedImage[] animeRight;
+	private BufferedImage[] animeUp;
+	private BufferedImage[] animeDown;
 
 	private enum Direction {
 		RIGHT, DOWN, LEFT, UP
@@ -36,6 +44,7 @@ public class PacmanAvatar extends Avatar {
 		currentDirection = directionFromOrientation(entity().orientation());
 		currentDeadState = dead();
 
+		initListAnimations();
 		if (currentDeadState) {
 			setDeathAnimation();
 		} else {
@@ -46,33 +55,65 @@ public class PacmanAvatar extends Avatar {
 		frameIndex = 0;
 		deathAnimationFinished = false;
 	}
+	
+	private void initListAnimations() {
+		this.listAnimations = new ArrayList<BufferedImage>();
+		listAnimations.add(sprite.getSubimage(453, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(470, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(487, 0, 15, 15));
+		
+		listAnimations.add(sprite.getSubimage(453, 47, 20, 15));
+		listAnimations.add(sprite.getSubimage(470, 47, 20, 15));
+		listAnimations.add(sprite.getSubimage(487, 0, 15, 15));
+		
+		listAnimations.add(sprite.getSubimage(453, 15, 17, 15));
+		listAnimations.add(sprite.getSubimage(470, 15, 17, 15));
+		listAnimations.add(sprite.getSubimage(487, 0, 15, 15));
+		
+		listAnimations.add(sprite.getSubimage(453, 35, 17, 12));
+		listAnimations.add(sprite.getSubimage(470, 35, 17, 12));
+		listAnimations.add(sprite.getSubimage(487, 0, 15, 15));
+		
+		listAnimations.add(sprite.getSubimage(503, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(519, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(535, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(551, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(567, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(583, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(599, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(617, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(634, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(648, 0, 15, 15));
+		listAnimations.add(sprite.getSubimage(661, 0, 15, 15));
+		
+	}
 
 	private void setNormalAnimation(Direction direction) {
 		animations = new BufferedImage[3];
 
 		switch (direction) {
 		case RIGHT:
-			animations[0] = sprite.getSubimage(453, 0, 15, 15);
-			animations[1] = sprite.getSubimage(470, 0, 15, 15);
-			animations[2] = sprite.getSubimage(487, 0, 15, 15);
+			animations[0] = listAnimations.get(0);
+			animations[1] = listAnimations.get(1);
+			animations[2] = listAnimations.get(2);
 			break;
 
 		case DOWN:
-			animations[0] = sprite.getSubimage(453, 47, 20, 15);
-			animations[1] = sprite.getSubimage(470, 47, 20, 15);
-			animations[2] = sprite.getSubimage(487, 0, 15, 15);
+			animations[0] = listAnimations.get(3);
+			animations[1] = listAnimations.get(4);
+			animations[2] = listAnimations.get(5);
 			break;
 
 		case LEFT:
-			animations[0] = sprite.getSubimage(453, 15, 17, 15);
-			animations[1] = sprite.getSubimage(470, 15, 17, 15);
-			animations[2] = sprite.getSubimage(487, 0, 15, 15);
+			animations[0] = listAnimations.get(6);
+			animations[1] = listAnimations.get(7);
+			animations[2] = listAnimations.get(8);
 			break;
 
 		case UP:
-			animations[0] = sprite.getSubimage(453, 35, 17, 12);
-			animations[1] = sprite.getSubimage(470, 35, 17, 12);
-			animations[2] = sprite.getSubimage(487, 0, 15, 15);
+			animations[0] = listAnimations.get(9);
+			animations[1] = listAnimations.get(10);
+			animations[2] = listAnimations.get(11);
 			break;
 		}
 	}
@@ -80,17 +121,17 @@ public class PacmanAvatar extends Avatar {
 	private void setDeathAnimation() {
 		animations = new BufferedImage[11];
 
-		animations[0] = sprite.getSubimage(503, 0, 15, 15);
-		animations[1] = sprite.getSubimage(519, 0, 15, 15);
-		animations[2] = sprite.getSubimage(535, 0, 15, 15);
-		animations[3] = sprite.getSubimage(551, 0, 15, 15);
-		animations[4] = sprite.getSubimage(567, 0, 15, 15);
-		animations[5] = sprite.getSubimage(583, 0, 15, 15);
-		animations[6] = sprite.getSubimage(599, 0, 15, 15);
-		animations[7] = sprite.getSubimage(617, 0, 15, 15);
-		animations[8] = sprite.getSubimage(634, 0, 15, 15);
-		animations[9] = sprite.getSubimage(648, 0, 15, 15);
-		animations[10] = sprite.getSubimage(661, 0, 15, 15);
+		animations[0] = listAnimations.get(0);
+		animations[1] = listAnimations.get(0);
+		animations[2] = listAnimations.get(0);
+		animations[3] = listAnimations.get(0);
+		animations[4] = listAnimations.get(0);
+		animations[5] = listAnimations.get(0);
+		animations[6] = listAnimations.get(0);
+		animations[7] = listAnimations.get(0);
+		animations[8] = listAnimations.get(0);
+		animations[9] = listAnimations.get(0);
+		animations[10] = listAnimations.get(0);
 	}
 
 	private void updateCurrentAnimationIfNeeded() {
