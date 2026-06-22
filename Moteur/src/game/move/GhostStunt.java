@@ -28,13 +28,13 @@ public class GhostStunt extends Stunt {
 		double angle = normalizeAngle(orientation);
 
 		if (angle >= 45.0 && angle < 135.0) {
-			set(Game.game().isu.new Vector(0, DEFAULT_SPEED));
+			setLinearSpeed(Game.game().isu.new Vector(0, DEFAULT_SPEED));
 		} else if (angle >= 135.0 && angle < 225.0) {
-			set(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
+			setLinearSpeed(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
 		} else if (angle >= 225.0 && angle < 315.0) {
-			set(Game.game().isu.new Vector(0, -DEFAULT_SPEED));
+			setLinearSpeed(Game.game().isu.new Vector(0, -DEFAULT_SPEED));
 		} else {
-			set(Game.game().isu.new Vector(DEFAULT_SPEED, 0));
+			setLinearSpeed(Game.game().isu.new Vector(DEFAULT_SPEED, 0));
 		}
 	}
 
@@ -51,13 +51,13 @@ public class GhostStunt extends Stunt {
 	}
 
 	@Override
-	public void set(Vector linearSpeed) {
-		super.set(linearSpeed);
+	public void setLinearSpeed(Vector linearSpeed) {
+		super.setLinearSpeed(linearSpeed);
 	}
 
 	@Override
-	public void set_aSpeed(int angularSpeed) {
-		super.set_aSpeed(angularSpeed);
+	public void setAngularSpeed(int angularSpeed) {
+		super.setAngularSpeed(angularSpeed);
 	}
 
 	private double normalizeAngle(double angle) {

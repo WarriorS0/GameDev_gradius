@@ -3,7 +3,6 @@ package engine.move;
 import java.util.List;
 
 import engine.entity.Entity;
-import engine.geometry.Grid.Cell;
 import engine.geometry.ISU;
 import engine.geometry.ISU.Vector;
 import game.Game;
@@ -27,12 +26,12 @@ public abstract class Stunt {
 	}
 
 
-	public void set(Vector linearSpeed) {
+	public void setLinearSpeed(Vector linearSpeed) {
 		this.targetDirection = linearSpeed;
 		entity.setLinearSpeed(linearSpeed);
 	}
 
-	public void set_aSpeed(int angularSpeed) {
+	public void setAngularSpeed(int angularSpeed) {
 		entity.setAngularSpeed(angularSpeed);
 	}
 
@@ -54,15 +53,5 @@ public abstract class Stunt {
 
 	protected abstract void rotated(double oldRotation, double newRotation);
 
-	private double normalizeAngle(double angle) {
-		double normalized = angle % 360.0;
-
-		if (normalized < 0) {
-			normalized += 360.0;
-		}
-
-		return normalized;
-	}
-	
 	protected abstract void tick(double d);
 }

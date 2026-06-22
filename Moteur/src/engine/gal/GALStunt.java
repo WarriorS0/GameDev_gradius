@@ -99,8 +99,8 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	private void finishAction() {
 		action_ms = 0.0;
 
-		set(Game.game().isu.new Vector(0.0, 0.0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
+		setAngularSpeed(0);
 
 		if (turning) {
 			entity.forceOrientation(Math.round(finalAngle));
@@ -116,8 +116,8 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		action_ms = 0.0;
 		turning = false;
 
-		set(Game.game().isu.new Vector(0.0, 0.0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
+		setAngularSpeed(0);
 	}
 
 	// MOVE
@@ -147,7 +147,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		double vx = Math.cos(rad) * speed;
 		double vy = Math.sin(rad) * speed;
 
-		set(Game.game().isu.new Vector(vx, vy));
+		setLinearSpeed(Game.game().isu.new Vector(vx, vy));
 
 		action_ms = duration_ms;
 		turning = false;
@@ -201,7 +201,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 			angularSpeed = -angularSpeed;
 		}
 
-		set_aSpeed((int) Math.round(angularSpeed));
+		setAngularSpeed((int) Math.round(angularSpeed));
 
 		action_ms = Math.abs(delta) / Math.abs(angularSpeed) * 1000.0;
 		turning = true;

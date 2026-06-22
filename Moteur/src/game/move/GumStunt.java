@@ -18,12 +18,12 @@ public class GumStunt extends engine.move.Stunt {
 		super(model, entity);
 		model.setStunt(entity, this);
 
-		set(Game.game().isu.new Vector(0, 0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0, 0));
+		setAngularSpeed(0);
 	}
 
 	public void set(int orientation) {
-		set(Game.game().isu.new Vector(0, 0));
+		setLinearSpeed(Game.game().isu.new Vector(0, 0));
 	}
 
 	@Override
@@ -37,13 +37,13 @@ public class GumStunt extends engine.move.Stunt {
 	}
 
 	@Override
-	public void set(Vector linearSpeed) {
-		super.set(linearSpeed);
+	public void setLinearSpeed(Vector linearSpeed) {
+		super.setLinearSpeed(linearSpeed);
 	}
 
 	@Override
-	public void set_aSpeed(int angularSpeed) {
-		super.set_aSpeed(angularSpeed);
+	public void setAngularSpeed(int angularSpeed) {
+		super.setAngularSpeed(angularSpeed);
 	}
 
 	@Override
