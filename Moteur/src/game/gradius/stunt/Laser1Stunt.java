@@ -4,23 +4,19 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import engine.entity.Entity;
-import engine.geometry.Grid.Cell;
-import engine.geometry.ISU.Coord;
 import engine.geometry.ISU.Vector;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;
 
-public class EnemyStunt extends Stunt {
-
+public class Laser1Stunt extends Stunt {
 	
-
 	private static Logger logger = LoggerManager.getLogger(BasicStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public EnemyStunt(Model model, Entity entity) {
+	public Laser1Stunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}
@@ -81,5 +77,4 @@ public class EnemyStunt extends Stunt {
 		// TODO Auto-generated method stub
 		
 	}
-
 }

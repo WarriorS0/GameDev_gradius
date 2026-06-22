@@ -109,7 +109,7 @@ public class MainPaintTest implements Runnable {
 		// View
 		// =========================
 
-		View view = new View();
+		View view = new View(null);
 
 		view.add(new ShipAvatar(ship));
 		view.add(new CannonAvatar(topCannon));

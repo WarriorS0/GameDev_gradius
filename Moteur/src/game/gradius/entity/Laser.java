@@ -5,15 +5,15 @@ import engine.gal.arguments.Category;
 import engine.shape.Rect;
 import game.Game;
 
-public class Enemy extends Entity{
-	public Enemy() {
-		super("Enemy");
+public class Laser extends Entity{
+	public Laser() {
+		super("Laser");
 
 		double cell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(2.0 * cell, 2.0 * cell));
+		setSize(isu.new Dimension(2.0 * cell, 1.0 * cell));
 		setStep(isu.new Dimension(cell, cell));
-		category(Category.Adversary);
+		category(Category.Team);
 
 		place(grid.new Position(5, grid.height() / 2));
 	}
@@ -24,4 +24,5 @@ public class Enemy extends Entity{
 
 		addBounding(new Rect(center(), size(), orientation()));
 	}
+
 }
