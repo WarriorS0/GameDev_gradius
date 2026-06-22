@@ -7,6 +7,7 @@ import engine.controller.Controller;
 import engine.controller.KeyManager;
 import engine.controller.MouseManager;
 import engine.entity.Entity;
+import engine.graphics.Avatar;
 import engine.graphics.FollowerLabel;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
@@ -16,6 +17,7 @@ import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
+import engine.move.ViewPort;
 import game.Game;
 import game.entity.Ghost;
 import game.entity.PacMan;
@@ -123,7 +125,10 @@ public class MainPaint implements Runnable {
 		deadGhostStunt.set(game.isu.new Vector(10, 0));
 		deadGhostStunt.set_aSpeed(0);
 
-		View view = new View();
+		ViewPort vp = new ViewPort(0, 0, 60, 60);
+		vp.follow(pacman);
+		model.setViewPort(vp);
+		View view = new View(vp);
 
 		PacmanAvatar pacmanAvatar = new PacmanAvatar(pacman);
 
@@ -151,6 +156,7 @@ public class MainPaint implements Runnable {
 		view.add(deadGhostAvatar);
 
 		MapView mapView = new MapView();
+		view.setBackground(mapView::paint);
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
@@ -162,8 +168,10 @@ public class MainPaint implements Runnable {
 		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), new PixelCoordinate(10, 20), Colors.white, false);
 		hud.add(labelFPS);
 		FollowerLabel fbPacman = new FollowerLabel(() -> pacman.debugInfo(), Colors.white, pacman, 0, 10);
+		fbPacman.setView(view);
 		hud.add(fbPacman);
 		FollowerLabel fbBlinky = new FollowerLabel(() -> blinky.debugInfo(), Colors.white, blinky, 0, 10);
+		fbBlinky.setView(view);
 		hud.add(fbBlinky);
 
 		view.setHUD(hud);
@@ -182,18 +190,10 @@ public class MainPaint implements Runnable {
 				g.setColor(Colors.black);
 				g.fillRect(0, 0, windowWidth, windowHeight);
 
-				double totalWidthPixels = game.grid.width() * game.cmPerCell * game.pixelPerCm;
-				double totalHeightPixels = game.grid.height() * game.cmPerCell * game.pixelPerCm;
-
-				double scale = Math.min(windowWidth / totalWidthPixels, windowHeight / totalHeightPixels);
-
-				int offsetX = (int) Math.round((windowWidth - totalWidthPixels * scale) / 2.0);
-				int offsetY = (int) Math.round((windowHeight - totalHeightPixels * scale) / 2.0);
-
-				g.translate(offsetX, offsetY);
-				g.scale(scale, scale);
-
-				mapView.paint(g);
+				// The view owns the camera transform and clipping; it fits the
+				// view port into this canvas area and paints the map background
+				// in world space underneath the avatars.
+				view.setCanvasArea(0, 0, windowWidth, windowHeight);
 				view.paint(g);
 
 				fpsC.countFrame();
@@ -215,6 +215,12 @@ public class MainPaint implements Runnable {
 			fbBlinky.setVisibility(!fbBlinky.isVisible());
 		});
 		// Appuyer sur tab fait appraître/disparaître le label de fps.
+
+
+
+		// 'V' bascule la vue d'ensemble : on dézoome sur toute la carte et le
+		// viewport réel (qui continue de suivre l'entité) est tracé en vert.
+		km.bind(VirtualKeyCodes.VK_V, ()->view.toggleDebugViewPort());
 
 		MouseManager mm = new MouseManager();
 		mm.bind(MouseManager.BNO_MIDDLE_BUTTON_MOUSE, () -> System.out.print("MIDDLE BUTTON MOUSE CLICKED TEST!"));
