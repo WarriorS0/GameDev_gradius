@@ -3,7 +3,6 @@ package engine.move;
 import java.util.List;
 
 import engine.entity.Entity;
-import engine.geometry.Grid.Cell;
 import engine.geometry.ISU;
 import engine.geometry.ISU.Vector;
 import game.Game;
@@ -16,8 +15,6 @@ public abstract class Stunt {
 	protected ISU.Vector targetDirection;
 	protected double targetAngle;
 
-	private boolean wantsMoveNotif = false;
-
 	protected Stunt(Model model, Entity entity) {
 		this.model = model;
 		this.entity = entity;
@@ -26,55 +23,20 @@ public abstract class Stunt {
 		this.targetAngle = entity.orientation();
 	}
 
-	public void set(int orientation) {
-		this.targetAngle = normalizeAngle(orientation);
-
-		double deltaAngle = this.targetAngle - entity.orientation();
-		entity.turn(deltaAngle);
-	}
-
-	protected void set(Cell cell) {
-		entity.place(cell.position());
-	}
-
-	protected void set(double x, double y) {
-		entity.place(Game.game().isu.new Coord(x, y));
-	}
-
-	public void set(Vector linearSpeed) {
+	public void setLinearSpeed(Vector linearSpeed) {
 		this.targetDirection = linearSpeed;
-		entity.linearSpeed = linearSpeed;
+		entity.setLinearSpeed(linearSpeed);
 	}
 
-	public void set_aSpeed(int angularSpeed) {
-		entity.angularSpeed = angularSpeed;
+	public void setAngularSpeed(double angularSpeed) {
+		entity.setAngularSpeed(angularSpeed);
 	}
 
-	public void setWantsMoveNotif(boolean wantsMoveNotif) {
-		this.wantsMoveNotif = wantsMoveNotif;
-	}
-
-	public boolean wantsMoveNotif() {
-		return this.wantsMoveNotif;
-	}
-
-	// LISTENER
+	// Collision
 
 	protected abstract void collision(Entity entity);
 
 	protected abstract void collision(List<Entity> entities);
 
-	protected abstract void moved(ISU.Coord oldPosition, ISU.Coord newPosition);
-
-	protected abstract void rotated(double oldRotation, double newRotation);
-
-	private double normalizeAngle(double angle) {
-		double normalized = angle % 360.0;
-
-		if (normalized < 0) {
-			normalized += 360.0;
-		}
-
-		return normalized;
-	}
+	protected abstract void tick(double d);
 }

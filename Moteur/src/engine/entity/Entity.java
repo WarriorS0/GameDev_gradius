@@ -36,8 +36,8 @@ public abstract class Entity {
 	private Bounding hitbox;
 	private final Set<Cell> occupied;
 
-	public ISU.Vector linearSpeed;
-	public double angularSpeed;
+	private ISU.Vector linearSpeed;
+	private double angularSpeed;
 
 	private static final double EPSILON = 1e-9;
 
@@ -120,6 +120,14 @@ public abstract class Entity {
 		setBounding();
 		deploy();
 	}
+	
+	public void setLinearSpeed(ISU.Vector linearSpeed) {
+		this.linearSpeed = linearSpeed;
+	}
+	
+	public void setAngularSpeed(double angularSpeed) {
+		this.angularSpeed = angularSpeed;
+	}
 	// =========================
 	// Getters
 	// =========================
@@ -162,6 +170,14 @@ public abstract class Entity {
 
 	public boolean dead() {
 		return !alive;
+	}
+	
+	public ISU.Vector linearSpeed(){
+		return this.linearSpeed;
+	}
+	
+	public double angularSpeed() {
+		return this.angularSpeed;
 	}
 
 	// =========================
@@ -214,6 +230,13 @@ public abstract class Entity {
 		}
 
 		return angle;
+	}
+	
+	public void forceOrientation(double angleDegree) {
+	    this.orientation_degree = normalizeAngle(angleDegree);
+
+	    setBounding();
+	    deploy();
 	}
 
 	// =========================
@@ -389,7 +412,13 @@ public abstract class Entity {
 
 	public String debugInfo() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(this.center().toString());
+		sb.append(this.center().toStringRounded());
+		sb.append("\n");
+		sb.append("lSpeed:");
+		sb.append(this.linearSpeed.toStringRounded());
+		sb.append(" ; aSpeed:");
+		sb.append(this.angularSpeed);
+		sb.append("\n");
 		sb.append("State:");
 		if (this.bot != null)
 			sb.append(this.bot.state().mode());

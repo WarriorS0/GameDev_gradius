@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import engine.entity.Entity;
-import engine.geometry.ISU.Coord;
 import engine.geometry.ISU.Vector;
 import engine.logs.LoggerManager;
 import engine.move.Model;
@@ -23,31 +22,29 @@ public class PacManStunt extends Stunt {
 		model.setStunt(entity, this);
 	}
 
-	@Override
 	public void set(int orientation) {
 		if (entity.dead()) {
 			return;
 		}
 
-		super.set(orientation);
 
 		double angle = normalizeAngle(orientation);
 
 		if (angle >= 45.0 && angle < 135.0) {
-			set(Game.game().isu.new Vector(0, DEFAULT_SPEED));
+			setLinearSpeed(Game.game().isu.new Vector(0, DEFAULT_SPEED));
 		} else if (angle >= 135.0 && angle < 225.0) {
-			set(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
+			setLinearSpeed(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
 		} else if (angle >= 225.0 && angle < 315.0) {
-			set(Game.game().isu.new Vector(0, -DEFAULT_SPEED));
+			setLinearSpeed(Game.game().isu.new Vector(0, -DEFAULT_SPEED));
 		} else {
-			set(Game.game().isu.new Vector(DEFAULT_SPEED, 0));
+			setLinearSpeed(Game.game().isu.new Vector(DEFAULT_SPEED, 0));
 		}
 	}
 
 	public void kill() {
 		entity.kill();
-		super.set(Game.game().isu.new Vector(0, 0));
-		super.set_aSpeed(0);
+		super.setLinearSpeed(Game.game().isu.new Vector(0, 0));
+		super.setAngularSpeed(0);
 	}
 
 	public void revive() {
@@ -62,8 +59,8 @@ public class PacManStunt extends Stunt {
 			return;
 		}
 
-		set(Game.game().isu.new Vector(0, 0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0, 0));
+		setAngularSpeed(0);
 
 		logger.finer("PACMAN COLLISION avec " + other.name());
 	}
@@ -78,29 +75,29 @@ public class PacManStunt extends Stunt {
 			}
 		}
 
-		set(Game.game().isu.new Vector(0, 0));
-		set_aSpeed(0);
+		setLinearSpeed(Game.game().isu.new Vector(0, 0));
+		setAngularSpeed(0);
 		logger.finer("PACMAN COLLISION avec plusieurs entités");
 	}
 
 	@Override
-	public void set(Vector linearSpeed) {
+	public void setLinearSpeed(Vector linearSpeed) {
 		if (entity.dead()) {
-			super.set(Game.game().isu.new Vector(0, 0));
+			super.setLinearSpeed(Game.game().isu.new Vector(0, 0));
 			return;
 		}
 
-		super.set(linearSpeed);
+		super.setLinearSpeed(linearSpeed);
 	}
 
 	@Override
-	public void set_aSpeed(int angularSpeed) {
+	public void setAngularSpeed(double angularSpeed) {
 		if (entity.dead()) {
-			super.set_aSpeed(0);
+			super.setAngularSpeed(0);
 			return;
 		}
 
-		super.set_aSpeed(angularSpeed);
+		super.setAngularSpeed(angularSpeed);
 	}
 
 	private double normalizeAngle(double angle) {
@@ -114,12 +111,8 @@ public class PacManStunt extends Stunt {
 	}
 
 	@Override
-	protected void moved(Coord oldPosition, Coord newPosition) {
-		// nothing to do here
-	}
-
-	@Override
-	protected void rotated(double oldRotation, double newRotation) {
-		// nothing to do here
+	protected void tick(double d) {
+		// TODO Auto-generated method stub
+		
 	}
 }

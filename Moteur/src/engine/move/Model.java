@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import engine.entity.Entity;
-import engine.gal.GALStunt;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 import game.Game;
@@ -102,8 +101,8 @@ public class Model {
 
 			Stunt stunt = stunts.get(entity);
 
-			if (stunt instanceof GALStunt galStunt) {
-				galStunt.tick(delta_t * 1000.0);
+			if (stunt != null) {
+			    stunt.tick(delta_t);
 			}
 
 			if (entity.dead()) {
@@ -121,7 +120,7 @@ public class Model {
 	class Physique {
 
 		public ISU.Vector delta(Entity entity) {
-			ISU.Vector speed = entity.linearSpeed;
+			ISU.Vector speed = entity.linearSpeed();
 
 			double delta_x = speed.x() * delta_t;
 			double delta_y = speed.y() * delta_t;
@@ -135,14 +134,10 @@ public class Model {
 		}
 
 		private void rotate(Entity entity) {
-			double angularSpeed = entity.angularSpeed;
-			double old = entity.orientation();
+			double angularSpeed = entity.angularSpeed();
 
 			if (angularSpeed != 0.0) {
 				entity.turn(angularSpeed * delta_t);
-				Stunt stunt = stunts.get(entity);
-				if (stunt.wantsMoveNotif())
-					stunt.rotated(old, entity.orientation());
 			}
 		}
 
@@ -153,7 +148,6 @@ public class Model {
 				return;
 			}
 
-			ISU.Coord old = entity.center();
 
 			// Déplacement en X
 			if (d.x() != 0.0) {
@@ -179,9 +173,6 @@ public class Model {
 				}
 			}
 
-			Stunt stunt = stunts.get(entity);
-			if (stunt.wantsMoveNotif())
-				stunt.moved(old, entity.center());
 		}
 
 		private Entity intersectedEntity(Entity entity) {

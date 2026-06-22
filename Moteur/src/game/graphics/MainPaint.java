@@ -85,43 +85,43 @@ public class MainPaint implements Runnable {
 
 		model.add(pacman);
 		PacManStunt pacmanStunt = new PacManStunt(model, pacman);
-		pacmanStunt.set(game.isu.new Vector(20, 0));
-		pacmanStunt.set_aSpeed(0);
+		pacmanStunt.setLinearSpeed(game.isu.new Vector(20, 0));
+		pacmanStunt.setAngularSpeed(0);
 
 		model.add(blinky);
 		GhostStunt blinkyStunt = new GhostStunt(model, blinky);
-		blinkyStunt.set(game.isu.new Vector(10, 0));
-		blinkyStunt.set_aSpeed(0);
+		blinkyStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		blinkyStunt.setAngularSpeed(0);
 
 		model.add(pinky);
 		GhostStunt pinkyStunt = new GhostStunt(model, pinky);
-		pinkyStunt.set(game.isu.new Vector(10, 0));
-		pinkyStunt.set_aSpeed(0);
+		pinkyStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		pinkyStunt.setAngularSpeed(0);
 
 		model.add(inky);
 		GhostStunt inkyStunt = new GhostStunt(model, inky);
-		inkyStunt.set(game.isu.new Vector(10, 0));
-		inkyStunt.set_aSpeed(0);
+		inkyStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		inkyStunt.setAngularSpeed(0);
 
 		model.add(clyde);
 		GhostStunt clydeStunt = new GhostStunt(model, clyde);
-		clydeStunt.set(game.isu.new Vector(10, 0));
-		clydeStunt.set_aSpeed(50);
+		clydeStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		clydeStunt.setAngularSpeed(50);
 
 		model.add(weak);
 		GhostStunt weakStunt = new GhostStunt(model, weak);
-		weakStunt.set(game.isu.new Vector(10, 0));
-		weakStunt.set_aSpeed(0);
+		weakStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		weakStunt.setAngularSpeed(0);
 
 		model.add(weakOver);
 		GhostStunt weakOverStunt = new GhostStunt(model, weakOver);
-		weakOverStunt.set(game.isu.new Vector(10, 0));
-		weakOverStunt.set_aSpeed(0);
+		weakOverStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		weakOverStunt.setAngularSpeed(0);
 
 		model.add(deadGhost);
 		GhostStunt deadGhostStunt = new GhostStunt(model, deadGhost);
-		deadGhostStunt.set(game.isu.new Vector(10, 0));
-		deadGhostStunt.set_aSpeed(0);
+		deadGhostStunt.setLinearSpeed(game.isu.new Vector(10, 0));
+		deadGhostStunt.setAngularSpeed(0);
 
 		View view = new View();
 
@@ -156,7 +156,10 @@ public class MainPaint implements Runnable {
 
 		Hud hud = new Hud();
 		// Exemple de label avec le fps
-		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), new PixelCoordinate(10, 10), Colors.white, false);
+		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode.", new PixelCoordinate(10, 10), Colors.white,
+				false);
+		hud.add(labelDebug);
+		Label labelFPS = new Label(() -> "FPS " + fpsC.getFps(), new PixelCoordinate(10, 20), Colors.white, false);
 		hud.add(labelFPS);
 		FollowerLabel fbPacman = new FollowerLabel(() -> pacman.debugInfo(), Colors.white, pacman, 0, 10);
 		hud.add(fbPacman);
@@ -206,7 +209,11 @@ public class MainPaint implements Runnable {
 
 		KeyManager km = new KeyManager();
 		km.addDelegate(new Controller(pacmanStunt));
-		km.bind(VirtualKeyCodes.VK_TAB, () -> labelFPS.setVisibility(!labelFPS.isVisible()));
+		km.bind(VirtualKeyCodes.VK_TAB, () -> {
+			labelFPS.setVisibility(!labelFPS.isVisible());
+			fbPacman.setVisibility(!fbPacman.isVisible());
+			fbBlinky.setVisibility(!fbBlinky.isVisible());
+		});
 		// Appuyer sur tab fait appraître/disparaître le label de fps.
 
 		MouseManager mm = new MouseManager();
@@ -257,7 +264,7 @@ public class MainPaint implements Runnable {
 		model.add(wall);
 
 		BasicStunt wallStunt = new BasicStunt(model, wall);
-		wallStunt.set(game.isu.new Vector(0, 0));
-		wallStunt.set_aSpeed(0);
+		wallStunt.setLinearSpeed(game.isu.new Vector(0, 0));
+		wallStunt.setAngularSpeed(0);
 	}
 }
