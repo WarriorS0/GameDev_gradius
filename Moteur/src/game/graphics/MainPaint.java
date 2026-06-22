@@ -83,7 +83,7 @@ public class MainPaint implements Runnable {
 		Ghost deadGhost = new Ghost();
 		place(deadGhost, 23, 23);
 
-		addWalls(model, game);
+		//addWalls(model, game);
 
 		model.add(pacman);
 		PacManStunt pacmanStunt = new PacManStunt(model, pacman);
