@@ -80,8 +80,8 @@ public class FollowerLabel extends Label {
 		}
 
 		setVisibility(true);
-		this.pc.x = (int) (target.center().x() + offset.x)+screen.x;
-		this.pc.y = (int) (target.center().y()+offset.y)+screen.y;
+		this.pc.x = screen.x + offset.x;
+		this.pc.y = screen.y + offset.y;
 	}
 
 	public static PixelCoordinate getPosFromCoordAndOffset(PixelCoordinate position, PixelCoordinate offset) {
