@@ -53,7 +53,7 @@ public class View {
 	}
 
 	/**
-	 * Colour of the view-port rectangle drawn in debug mode.
+	 * Color of the view-port rectangle drawn in debug mode.
 	 */
 	private Color viewPortDebugColor = Colors.green;
 
