@@ -11,6 +11,8 @@ import engine.gal.actions.Move;
 import engine.gal.actions.Turn;
 import engine.gal.actions.Get;
 import engine.gal.actions.Hit;
+import engine.gal.actions.Protect;
+
 
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
@@ -19,6 +21,7 @@ import engine.gal.condition.Conjunction;
 import engine.gal.condition.KeyCondition;
 import engine.gal.condition.Struck;
 import engine.gal.condition.Life;
+import engine.gal.condition.Timer;
 
 import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
@@ -150,6 +153,9 @@ public class AST2Aut {
 				}
 
 				throw new IllegalArgumentException("Life condition requires 1 parameter");
+				
+			case "timer":
+				return new Timer();
 			default:
 				return GALCondition.FALSE;
 			}
@@ -248,6 +254,18 @@ public class AST2Aut {
 				return new Get(category);
 			}
 			return new Get(null);
+		case "protect":
+			if (call.parameters.size() >= 1) {
+				Parameter p = call.parameters.get(0);
+
+				if (p instanceof IntValue) {
+					return new Protect(((IntValue) p).value);
+				}
+
+				return new Protect(Double.parseDouble(p.toString()));
+			}
+
+			throw new IllegalArgumentException("Protect action requires 1 parameter");
 
 		default:
 			return GALAction.NOTHING;
