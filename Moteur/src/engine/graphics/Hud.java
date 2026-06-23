@@ -21,8 +21,8 @@ public class Hud {
 	private static Logger logger;
 	static {
 		logger = LoggerManager.getLogger(Hud.class.getName());
-		LOGGING = (logger.getLevel() != Level.OFF);
-		INFO = (logger.isLoggable(Level.INFO));
+		LOGGING = logger.getLevel() != Level.OFF;
+		INFO = logger.isLoggable(Level.INFO);
 	}
 
 	private final List<HudElement> elements;

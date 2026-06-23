@@ -27,8 +27,8 @@ public class FpsManager {
 	private static final Logger logger;
 	static {
 		logger = LoggerManager.getLogger(FpsManager.class.getName());
-		LOGGING = (logger.getLevel() != Level.OFF);
-		INFO = (logger.getLevel() == Level.INFO);
+		LOGGING = logger.getLevel() != Level.OFF;
+		INFO = logger.isLoggable(Level.INFO);
 	}
 
 	private final int NB_LAST_FPS_SAVED;
