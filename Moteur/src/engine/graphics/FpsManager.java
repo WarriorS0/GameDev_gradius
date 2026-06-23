@@ -33,7 +33,12 @@ public class FpsManager {
 
 	private final int NB_LAST_FPS_SAVED;
 	private final int[] ARRAY_LAST_FPS_SAVED;
-	int indexArrayFps;
+	private int indexArrayFps;
+
+	private int sumFps;
+	protected int minFps;
+	protected int avgFps;
+	protected int maxFps;
 
 	private final int UPDATE_FPS_COUNTER;
 	private int fpsLimit, tempFps, fps, time;
@@ -42,7 +47,7 @@ public class FpsManager {
 
 	public FpsManager(Task task, int limit, int update_timer, int nb_fps_for_avg, boolean shouldLogFps) {
 		if (this.shouldLogFps && LOGGING)
-			logger.info("Starting fps controller");
+			logger.info("Creating new fps controller");
 		if (limit > MAX_FPS)
 			throw new IllegalArgumentException(String.format("Maximum FPS is %d. Recommended FPS is between %d and %d.",
 					MAX_FPS, MIN_RECOMMENDED_FPS, MAX_RECOMMENDED_FPS));
@@ -51,6 +56,9 @@ public class FpsManager {
 		this.NB_LAST_FPS_SAVED = nb_fps_for_avg;
 		this.ARRAY_LAST_FPS_SAVED = new int[NB_LAST_FPS_SAVED];
 		this.indexArrayFps = 0;
+		this.minFps = 0;
+		this.avgFps = 0;
+		this.maxFps = 0;
 		this.fpsLimit = limit;
 		this.UPDATE_FPS_COUNTER = update_timer;
 		this.time = 0;
@@ -94,12 +102,22 @@ public class FpsManager {
 	 * boucle 1 : une fois par seconde, fige le compteur et le remet à zéro.
 	 */
 	public void checkFPS() {
-		this.fps = tempFps;
-		System.out.println("- - - -");
-		System.out.println(LOGGING);
-		System.out.println(INFO);
-		System.out.println(shouldLogFps);
-		System.out.println("- - - -");
+		this.fps = tempFps; // this.fps sont les fps à l'affichage
+		this.ARRAY_LAST_FPS_SAVED[indexArrayFps++] = tempFps;
+		this.indexArrayFps %= NB_LAST_FPS_SAVED;
+		this.sumFps = 0;
+		this.minFps = MAX_FPS;
+		this.avgFps = 0;
+		this.maxFps = 0;
+		for (int i = 0; i < this.NB_LAST_FPS_SAVED; i++) {
+			int localFps = this.ARRAY_LAST_FPS_SAVED[i];
+			this.sumFps += localFps;
+			this.avgFps = this.sumFps / NB_LAST_FPS_SAVED;
+			if (localFps < minFps)
+				minFps = localFps;
+			if (localFps > maxFps)
+				maxFps = localFps;
+		}
 		if (LOGGING && INFO && this.shouldLogFps) {
 			StringBuilder sb = new StringBuilder();
 			for (int i = 0; i < NB_LAST_FPS_SAVED; i++) {
@@ -109,10 +127,11 @@ public class FpsManager {
 				sb.append(ARRAY_LAST_FPS_SAVED[i]);
 				sb.append("]");
 			}
-			logger.info(String.format("Execution time s %d | fps: %d \n%s", this.time, this.fps, sb.toString()));
+			logger.info(String.format(
+					"Execution time + Extended FPS \nExectime %ds | fps: %d { min: %d ; avg: %d ; max: %d (of the last %ds) }\n%s sum:%d",
+					this.time, this.fps, this.minFps, this.avgFps, this.maxFps, this.NB_LAST_FPS_SAVED, sb.toString(),
+					this.sumFps));
 		}
-		this.ARRAY_LAST_FPS_SAVED[indexArrayFps++] = tempFps;
-		this.indexArrayFps %= NB_LAST_FPS_SAVED;
 		this.tempFps = 0;
 		this.time++;
 		this.fpsTask.post(() -> checkFPS(), this.UPDATE_FPS_COUNTER);
