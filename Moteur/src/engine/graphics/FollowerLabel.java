@@ -79,7 +79,6 @@ public class FollowerLabel extends Label {
 			return;
 		}
 
-		setVisibility(true);
 		this.pc.x = screen.x + offset.x;
 		this.pc.y = screen.y + offset.y;
 	}

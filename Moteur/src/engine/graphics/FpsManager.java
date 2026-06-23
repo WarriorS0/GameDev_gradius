@@ -31,7 +31,7 @@ public class FpsManager {
 		INFO = logger.isLoggable(Level.INFO);
 	}
 
-	private final int NB_LAST_FPS_SAVED;
+	public final int NB_LAST_FPS_SAVED;
 	private final int[] ARRAY_LAST_FPS_SAVED;
 	private int indexArrayFps;
 
@@ -96,6 +96,18 @@ public class FpsManager {
 	 */
 	public int getFps() {
 		return this.fps;
+	}
+	
+	public int getMinFps() {
+		return minFps;
+	}
+
+	public int getAvgFps() {
+		return avgFps;
+	}
+
+	public int getMaxFps() {
+		return maxFps;
 	}
 
 	/**
