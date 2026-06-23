@@ -18,6 +18,7 @@ import engine.gal.condition.AtStep;
 import engine.gal.condition.Conjunction;
 import engine.gal.condition.KeyCondition;
 import engine.gal.condition.Struck;
+import engine.gal.condition.Life;
 
 import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
@@ -137,6 +138,18 @@ public class AST2Aut {
 					return new Struck(category);
 				}
 				return new Struck();
+			case "life":
+				if (call.parameters.size() >= 1) {
+					Parameter p = call.parameters.get(0);
+
+					if (p instanceof IntValue) {
+						return new Life(((IntValue) p).value);
+					}
+
+					return new Life(Integer.parseInt(p.toString()));
+				}
+
+				throw new IllegalArgumentException("Life condition requires 1 parameter");
 			default:
 				return GALCondition.FALSE;
 			}
