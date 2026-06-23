@@ -102,7 +102,7 @@ public class MainPaintTest implements Runnable {
 				List.of(topCannon, bottomCannon)
 		);
 
-		shipStunt.setMaxLinearSpeed(20.0);
+		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 
 		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");

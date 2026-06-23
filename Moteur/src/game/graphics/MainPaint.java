@@ -21,6 +21,8 @@ import game.Game;
 import game.entity.Ghost;
 import game.entity.PacMan;
 import game.entity.Wall;
+import game.gradius.entity.Ship;
+import game.gradius.graphics.ShipAvatar;
 import game.move.BasicStunt;
 import game.move.GhostStunt;
 import game.move.PacManStunt;
@@ -58,6 +60,9 @@ public class MainPaint implements Runnable {
 		Game game = new Game(38, 41);
 		Model model = new Model(game.grid);
 
+		Ship ship = new Ship();
+		place( ship , 3,3);
+		
 		PacMan pacman = new PacMan();
 		place(pacman, 2, 2);
 
@@ -82,8 +87,10 @@ public class MainPaint implements Runnable {
 		Ghost deadGhost = new Ghost();
 		place(deadGhost, 23, 23);
 
-		addWalls(model, game);
+		//addWalls(model, game);
 
+		model.add(ship);
+		
 		model.add(pacman);
 		PacManStunt pacmanStunt = new PacManStunt(model, pacman);
 		pacmanStunt.setLinearSpeed(game.isu.new Vector(20, 0));
@@ -129,6 +136,8 @@ public class MainPaint implements Runnable {
 		model.setViewPort(vp);
 		View view = new View(vp);
 
+		ShipAvatar shipAvatar = new ShipAvatar(ship);
+		
 		PacmanAvatar pacmanAvatar = new PacmanAvatar(pacman);
 
 		BlinkyAvatar blinkyAvatar = new BlinkyAvatar(blinky);
@@ -145,6 +154,7 @@ public class MainPaint implements Runnable {
 		ClydeAvatar deadGhostAvatar = new ClydeAvatar(deadGhost);
 		deadGhostAvatar.kill();
 
+		view.add(shipAvatar);
 		view.add(pacmanAvatar);
 		view.add(blinkyAvatar);
 		view.add(pinkyAvatar);
