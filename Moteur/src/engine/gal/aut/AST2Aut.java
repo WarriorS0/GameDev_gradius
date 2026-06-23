@@ -15,6 +15,7 @@ import engine.gal.condition.iGALCondition;
 import engine.gal.condition.AtStep;
 import engine.gal.condition.Conjunction;
 import engine.gal.condition.KeyCondition;
+import engine.gal.condition.Struck;
 
 import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
@@ -127,6 +128,13 @@ public class AST2Aut {
 					return new KeyCondition(keyName);
 				}
 				throw new IllegalArgumentException("Key condition requires 1 parameter");
+				
+			case "struck":
+				if (call.parameters.size() >= 1) {
+					Category category = Category.canonical(call.parameters.get(0).toString());
+					return new Struck(category);
+				}
+				return new Struck();
 			default:
 				return GALCondition.FALSE;
 			}
