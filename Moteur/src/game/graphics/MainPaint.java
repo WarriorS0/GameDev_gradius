@@ -7,7 +7,6 @@ import engine.controller.Controller;
 import engine.controller.KeyManager;
 import engine.controller.MouseManager;
 import engine.entity.Entity;
-import engine.graphics.Avatar;
 import engine.graphics.FollowerLabel;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
@@ -83,7 +82,7 @@ public class MainPaint implements Runnable {
 		Ghost deadGhost = new Ghost();
 		place(deadGhost, 23, 23);
 
-		//addWalls(model, game);
+		addWalls(model, game);
 
 		model.add(pacman);
 		PacManStunt pacmanStunt = new PacManStunt(model, pacman);
@@ -156,7 +155,9 @@ public class MainPaint implements Runnable {
 		view.add(deadGhostAvatar);
 
 		MapView mapView = new MapView();
+		// pour que l'image de fond se dessine correctement
 		view.setBackground(mapView::paint);
+		
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
