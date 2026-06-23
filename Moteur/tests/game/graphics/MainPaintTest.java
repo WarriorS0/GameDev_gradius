@@ -61,7 +61,7 @@ public class MainPaintTest implements Runnable {
 		Canvas canvas = (Canvas) task.find("canvas");
 
 		Game game = new Game(30, 30);
-		Model model = new Model(game.grid);
+		Model model = game.model;
 
 		// =========================
 		// Category interactions
