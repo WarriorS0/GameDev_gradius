@@ -11,12 +11,13 @@ public class Category {
 	public static final Category Obstacle;
 	public static final Category Team;
 	public static final Category Void;
+	public static final Category Power;
 
 	// STATIC
 
 	private static final Map<String, Category> categories = new HashMap<>();
 
-	private static final int CATEGORY_COUNT = 4;
+	private static final int CATEGORY_COUNT = 5;
 	private static final boolean[][] interaction = new boolean[CATEGORY_COUNT][CATEGORY_COUNT];
 
 	// STATIC INITIALIZATION
@@ -26,11 +27,13 @@ public class Category {
 		Adversary = new Category("Adversary", 1);
 		Obstacle = new Category("Obstacle", 2);
 		Team = new Category("Team", 3);
+		Power = new Category("Power", 4);
 
 		register(Void, "Void");
 		register(Adversary, "Adversary");
 		register(Obstacle, "Obstacle");
 		register(Team, "Team");
+		register(Power, "Power");
 	}
 
 	private static void register(Category category, String name) {
