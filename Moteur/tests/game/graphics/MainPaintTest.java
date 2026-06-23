@@ -26,6 +26,8 @@ import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
 import game.gradius.entity.Ship;
 import game.gradius.entity.Power;
+import game.gradius.entity.Obstacle;
+import game.gradius.graphics.ObstacleAvatar;
 import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.ShipAvatar;
@@ -89,16 +91,18 @@ public class MainPaintTest implements Runnable {
 		Cannon topCannon = new Cannon(CannonSlot.TOP);
 		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);
 
-		topCannon.placeRelativeTo(ship);
-		bottomCannon.placeRelativeTo(ship);
+		ship.attachCannon(topCannon);
+		ship.attachCannon(bottomCannon);
 		
 		Power power = new Power();
+		Obstacle obstacle = new Obstacle();
 
 		// D'abord ajouter les entities au model
 		model.add(ship);
 		model.add(topCannon);
 		model.add(bottomCannon);
 		model.add(power);
+		model.add(obstacle);
 
 		// Ensuite seulement créer le bot / stunt GAL
 		GALBot shipBot = new GALBot(ship);
@@ -130,6 +134,7 @@ public class MainPaintTest implements Runnable {
 		view.add(new CannonAvatar(topCannon));
 		view.add(new CannonAvatar(bottomCannon));
 		view.add(new PowerAvatar(power));
+		view.add(new ObstacleAvatar(obstacle));
 
 		MapView mapView = new MapView();
 		view.setBackground(mapView::paint);

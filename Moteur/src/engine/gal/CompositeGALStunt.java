@@ -62,9 +62,9 @@ public class CompositeGALStunt extends GALStunt {
 	    entity.setLinearSpeed(realSpeed);
 
 	    for (Entity subEntity : subEntities) {
-	        if (!subEntity.dead()) {
-	            subEntity.setLinearSpeed(realSpeed);
-	        }
+	    	if (!subEntity.dead()) {
+	    		subEntity.setLinearSpeed(game.Game.game().isu.new Vector(0.0, 0.0));
+	    	}
 	    }
 	}
 
@@ -74,7 +74,7 @@ public class CompositeGALStunt extends GALStunt {
 
 		for (Entity subEntity : subEntities) {
 			if (!subEntity.dead()) {
-				subEntity.setAngularSpeed(angularSpeed);
+				subEntity.setAngularSpeed(0.0);
 			}
 		}
 	}
