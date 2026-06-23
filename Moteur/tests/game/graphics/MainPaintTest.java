@@ -24,6 +24,7 @@ import gal.parser.Parser;
 import game.Game;
 import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
+import game.gradius.entity.Laser;
 import game.gradius.entity.Ship;
 import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.MapView;
@@ -85,6 +86,7 @@ public class MainPaintTest implements Runnable {
 		Cannon topCannon = new Cannon(CannonSlot.TOP);
 		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);
 
+		
 		topCannon.placeRelativeTo(ship);
 		bottomCannon.placeRelativeTo(ship);
 
