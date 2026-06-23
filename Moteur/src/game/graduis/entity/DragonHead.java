@@ -1,8 +1,8 @@
-package game.entity;
+package game.graduis.entity;
 
 import engine.entity.Entity;
 
-public class DragonHead extends Entity {
+class DragonHead extends Entity {
 
 	public DragonHead() {
 		super("dragon_head");
