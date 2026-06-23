@@ -176,6 +176,23 @@ public class View {
 	}
 
 	/**
+	 * @return an list of lists of Avatar objects, sorted by z_order
+	 */
+	
+	private List<List<Avatar>> getByZorder() {
+		List<List<Avatar>> res = new ArrayList<>();
+
+		for (int i = 0; i < Avatar.MAX_ZORDER; i++) {
+			res.add(new ArrayList<>());
+		}
+
+		for (Avatar avatar : avatars) {
+			res.get(avatar.z_order()).add(avatar);
+		}
+		return res;
+	}
+
+	/**
 	 * Projects a world coordinate (cm) to screen pixels, using the same extent as
 	 * the scene currently rendered (the real view port, or the whole map in debug
 	 * overview). On a toric axis the point is unfolded around the rendered origin
@@ -312,8 +329,11 @@ public class View {
 			background.paint(g);
 		}
 
-		for (Avatar avatar : avatars) {
-			avatar.paint(g);
+		List<List<Avatar>> avatarsByZorder = this.getByZorder();
+		for(int i=0; i<avatarsByZorder.size(); i++) {
+			for(Avatar avatar: avatarsByZorder.get(i)) {
+				avatar.paint(g);
+			}
 		}
 	}
 
