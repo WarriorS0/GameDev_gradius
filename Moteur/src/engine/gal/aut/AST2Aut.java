@@ -12,6 +12,7 @@ import engine.gal.actions.Turn;
 import engine.gal.actions.Get;
 import engine.gal.actions.Hit;
 import engine.gal.actions.Protect;
+import engine.gal.actions.Explode;
 
 
 import engine.gal.condition.GALCondition;
@@ -266,7 +267,8 @@ public class AST2Aut {
 			}
 
 			throw new IllegalArgumentException("Protect action requires 1 parameter");
-
+		case "explode":
+			return new Explode();
 		default:
 			return GALAction.NOTHING;
 		}

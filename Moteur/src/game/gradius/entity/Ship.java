@@ -56,6 +56,23 @@ public class Ship extends Entity {
 		}
 	}
 	
+	// LIFE
+	
+	@Override
+	public void kill() {
+		if (dead()) {
+			return;
+		}
+
+		super.kill();
+
+		for (Cannon cannon : cannons) {
+			if (!cannon.dead()) {
+				cannon.kill();
+			}
+		}
+	}
+	
 	//MOVEMENT
 	
 	@Override

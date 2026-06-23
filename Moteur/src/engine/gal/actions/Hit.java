@@ -24,7 +24,6 @@ public class Hit extends GALAction {
 		
 		int currentLife = e.bot().healthPercent();
 		int newLife = Math.max(0, currentLife - damage);
-
 		e.bot().healthPercent(newLife);
 
 		return true;
