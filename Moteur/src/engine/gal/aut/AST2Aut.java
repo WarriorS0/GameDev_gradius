@@ -128,7 +128,7 @@ public class AST2Aut {
 				}
 				throw new IllegalArgumentException("Key condition requires 1 parameter");
 			default:
-				return GALCondition.TRUE;
+				return GALCondition.FALSE;
 			}
 		}
 
@@ -154,7 +154,7 @@ public class AST2Aut {
 			}
 		}
 
-		return GALCondition.TRUE;
+		return GALCondition.FALSE;
 	}
 
 	private iGALAction convertAction(gal.ast.Actions astAction) {
