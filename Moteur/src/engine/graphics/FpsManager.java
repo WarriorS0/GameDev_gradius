@@ -31,12 +31,16 @@ public class FpsManager {
 		INFO = (logger.getLevel() == Level.INFO);
 	}
 
+	private final int NB_LAST_FPS_SAVED;
+	private final int[] ARRAY_LAST_FPS_SAVED;
+	int indexArrayFps;
+
 	private final int UPDATE_FPS_COUNTER;
 	private int fpsLimit, tempFps, fps, time;
 	public boolean shouldLogFps;
 	private final Task fpsTask;
 
-	public FpsManager(Task task, int limit, int update_timer, boolean shouldLogFps) {
+	public FpsManager(Task task, int limit, int update_timer, int nb_fps_for_avg, boolean shouldLogFps) {
 		if (this.shouldLogFps && LOGGING)
 			logger.info("Starting fps controller");
 		if (limit > MAX_FPS)
@@ -44,6 +48,9 @@ public class FpsManager {
 					MAX_FPS, MIN_RECOMMENDED_FPS, MAX_RECOMMENDED_FPS));
 		if (limit < MIN_FPS)
 			throw new IllegalArgumentException(String.format("Minimum fps is %d.", MIN_FPS));
+		this.NB_LAST_FPS_SAVED = nb_fps_for_avg;
+		this.ARRAY_LAST_FPS_SAVED = new int[NB_LAST_FPS_SAVED];
+		this.indexArrayFps = 0;
 		this.fpsLimit = limit;
 		this.UPDATE_FPS_COUNTER = update_timer;
 		this.time = 0;
@@ -51,8 +58,8 @@ public class FpsManager {
 		this.fpsTask = task;
 	}
 
-	public FpsManager(Task task, int limit, boolean shouldPrintFps) {
-		this(task, limit, A_SECOND, shouldPrintFps);
+	public FpsManager(Task task, int limit, boolean shouldLogFps) {
+		this(task, limit, A_SECOND, 10, shouldLogFps);
 	}
 
 	/**
@@ -88,8 +95,24 @@ public class FpsManager {
 	 */
 	public void checkFPS() {
 		this.fps = tempFps;
-		if (LOGGING && INFO && this.shouldLogFps)
-			logger.info(String.format("Execution time s %d | fps: %d", this.time, this.fps));
+		System.out.println("- - - -");
+		System.out.println(LOGGING);
+		System.out.println(INFO);
+		System.out.println(shouldLogFps);
+		System.out.println("- - - -");
+		if (LOGGING && INFO && this.shouldLogFps) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < NB_LAST_FPS_SAVED; i++) {
+				sb.append("[");
+				sb.append(i);
+				sb.append(":");
+				sb.append(ARRAY_LAST_FPS_SAVED[i]);
+				sb.append("]");
+			}
+			logger.info(String.format("Execution time s %d | fps: %d \n%s", this.time, this.fps, sb.toString()));
+		}
+		this.ARRAY_LAST_FPS_SAVED[indexArrayFps++] = tempFps;
+		this.indexArrayFps %= NB_LAST_FPS_SAVED;
 		this.tempFps = 0;
 		this.time++;
 		this.fpsTask.post(() -> checkFPS(), this.UPDATE_FPS_COUNTER);
