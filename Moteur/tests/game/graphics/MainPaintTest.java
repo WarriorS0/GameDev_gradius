@@ -6,14 +6,18 @@ import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.controller.KeyManager;
+import engine.controller.MouseManager;
 import engine.entity.Entity;
 import engine.gal.CompositeGALStunt;
 import engine.gal.GALBot;
 import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
+import engine.graphics.FollowerLabel;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
+import engine.graphics.Label;
+import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
@@ -61,7 +65,7 @@ public class MainPaintTest implements Runnable {
 		Canvas canvas = (Canvas) task.find("canvas");
 
 		Game game = new Game(30, 30);
-		Model model = new Model(game.grid);
+		Model model = game.model;
 
 		// =========================
 		// Category interactions
@@ -97,11 +101,7 @@ public class MainPaintTest implements Runnable {
 		GALBot shipBot = new GALBot(ship);
 		ship.bot(shipBot);
 
-		CompositeGALStunt shipStunt = new CompositeGALStunt(
-				model,
-				ship,
-				List.of(topCannon, bottomCannon)
-		);
+		CompositeGALStunt shipStunt = new CompositeGALStunt(model, ship, List.of(topCannon, bottomCannon));
 
 		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
@@ -113,7 +113,7 @@ public class MainPaintTest implements Runnable {
 		// View
 		// =========================
 
-		ViewPort vp = new ViewPort(0, 0, 120, 120);
+		ViewPort vp = new ViewPort(0, 0, 60, 60);
 		vp.follow(ship);
 		model.setViewPort(vp);
 		View view = new View(vp);
@@ -128,6 +128,28 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
+
+		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode.",
+				new PixelCoordinate(10, 10), Colors.white, false);
+		hud.add(labelDebug);
+		StringBuilder sb = new StringBuilder();
+		sb.append("FPS");
+		Label labelFPS = new Label(
+				() -> String.format("FPS %d { min: %d ; avg: %d ; max: %d (of the last %ds)", fpsC.getFps(),
+						fpsC.getMinFps(), fpsC.getAvgFps(), fpsC.getMaxFps(), fpsC.NB_LAST_FPS_SAVED),
+				new PixelCoordinate(10, 20), Colors.white, false);
+		hud.add(labelFPS);
+		FollowerLabel flShip = new FollowerLabel(() -> ship.debugInfo(), Colors.white, ship, 0, 10);
+		flShip.setView(view);
+		hud.add(flShip);
+//		FollowerLabel fbTopCannon = new FollowerLabel(() -> topCannon.debugInfo(), Colors.white, topCannon, 0, 10);
+//		fbTopCannon.setView(view);
+//		hud.add(fbTopCannon);
+//		FollowerLabel fbBottomCannon = new FollowerLabel(() -> bottomCannon.debugInfo(), Colors.white, bottomCannon, 0,
+//				10);
+//		fbBottomCannon.setView(view);
+//		hud.add(fbBottomCannon);
+
 		view.setHUD(hud);
 
 		canvas.set(new Canvas.PaintListener() {
@@ -159,6 +181,20 @@ public class MainPaintTest implements Runnable {
 		// Le KeyManager capte le clavier, mais il faut aussi lui donner
 		// un Controller relié au stunt du vaisseau.
 		KeyManager km = new KeyManager();
+
+		// Appuyer sur tab fait appraître/disparaître le label de fps.
+		km.bind(VirtualKeyCodes.VK_TAB, () -> {
+			labelFPS.setVisibility(!labelFPS.isVisible());
+			flShip.setVisibility(!flShip.isVisible());
+		});
+
+		MouseManager mm = new MouseManager();
+		// Cliquer sur le bouton du millieu de la souris print un msg dans la console.
+		mm.bind(MouseManager.BNO_MIDDLE_BUTTON_MOUSE, () -> System.out.print("MIDDLE BUTTON MOUSE CLICKED TEST!"));
+
+		canvas.set(km);
+		canvas.set(mm);
+
 		km.addDelegate(new Controller(shipStunt));
 		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());
 		canvas.set(km);
