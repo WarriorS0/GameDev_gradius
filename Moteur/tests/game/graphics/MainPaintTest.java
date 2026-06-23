@@ -15,6 +15,7 @@ import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
 import engine.graphics.Hud;
 import engine.graphics.View;
+import engine.graphics.FollowerLabel;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
@@ -142,6 +143,18 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
+
+		FollowerLabel shipDebug = new FollowerLabel(
+				() -> ship.debugInfo(),
+				Colors.white,
+				ship,
+				0,
+				-40
+		);
+
+		shipDebug.setView(view);
+		hud.add(shipDebug);
+
 		view.setHUD(hud);
 
 		canvas.set(new Canvas.PaintListener() {
