@@ -12,6 +12,7 @@ public class Bot {
 	private GALStunt stunt;
 
 	private State state;
+	private Entity impactor;
 
 	/**
 	 * @apiNote 0 <= health <= 100
@@ -87,6 +88,10 @@ public class Bot {
 		this.healthPercent = healthPercent;
 	}
 
+	public Entity impactor() {
+		return impactor;
+	}
+
 	// TICK & COLLISION & COMPLETED
 
 	/**
@@ -104,7 +109,9 @@ public class Bot {
 	 * @param elapsed_ms
 	 */
 	public void collision(Entity impactor, double elapsed_ms) {
+		this.impactor = impactor;
 		stepAutomaton();
+		this.impactor = null;
 	}
 
 	/**
