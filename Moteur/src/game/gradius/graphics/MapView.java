@@ -1,4 +1,4 @@
-package game.graphics;
+package game.gradius.graphics;
 
 import game.Game;
 import oop.graphics.BufferedImage;
@@ -6,7 +6,7 @@ import oop.graphics.Graphics;
 
 public class MapView {
 
-	private static final String SPRITE_PATH = "src/game/graphics/pacman_sprite.png";
+	private static final String SPRITE_PATH = "src/game/gradius/graphics/map_gradius.png";
 
 	private BufferedImage mapImage;
 	private boolean initialized;
@@ -17,7 +17,7 @@ public class MapView {
 
 	public void initImages(Graphics g) {
 		BufferedImage sprite = g.load(SPRITE_PATH);
-		this.mapImage = sprite.getSubimage(225, 0, 230, 248);
+		this.mapImage = sprite.getSubimage(733, 406, 500, 400);
 		this.initialized = true;
 	}
 

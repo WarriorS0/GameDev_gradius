@@ -1,4 +1,4 @@
-package game.move;
+package game.gradius.stunt;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -10,13 +10,13 @@ import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;
 
-public class GhostStunt extends Stunt {
-	
-	private static Logger logger = LoggerManager.getLogger(GhostStunt.class.getName());
+public class BasicStunt extends Stunt {
+
+	private static Logger logger = LoggerManager.getLogger(BasicStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public GhostStunt(Model model, Entity entity) {
+	public BasicStunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}
@@ -36,16 +36,20 @@ public class GhostStunt extends Stunt {
 		}
 	}
 
-	
-
 	@Override
 	protected void collision(Entity other) {
-		logger.finer("GHOST COLLISION avec " + other.name());
+		setLinearSpeed(Game.game().isu.new Vector(0, 0));
+		setAngularSpeed(0);
+
+		logger.finer("ATTENTION COLLISION avec " + other.name());
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
-		logger.finer("GHOST COLLISION avec plusieurs entités");
+		setLinearSpeed(Game.game().isu.new Vector(0, 0));
+		setAngularSpeed(0);
+
+		logger.finer("ATTENTION COLLISION avec plusieurs entités");
 	}
 
 	@Override
@@ -67,7 +71,7 @@ public class GhostStunt extends Stunt {
 
 		return normalized;
 	}
-
+	
 	@Override
 	protected void tick(double d) {
 		// TODO Auto-generated method stub

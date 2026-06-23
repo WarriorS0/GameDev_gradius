@@ -1,4 +1,4 @@
-package game.graphics;
+package game.gradius.graphics;
 
 import engine.entity.Entity;
 import engine.geometry.Grid;
