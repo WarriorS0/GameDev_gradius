@@ -11,6 +11,7 @@ import engine.move.Model;
 public class CompositeGALStunt extends GALStunt {
 
 	private final List<Entity> subEntities;
+	private Vector baseLinearSpeed;
 
 	public CompositeGALStunt(Model model, Entity mainEntity, List<Entity> subEntities) {
 		super(model, mainEntity);
@@ -20,6 +21,7 @@ public class CompositeGALStunt extends GALStunt {
 		}
 
 		this.subEntities = new ArrayList<>();
+		this.baseLinearSpeed = game.Game.game().isu.new Vector(0.0, 0.0);
 
 		for (Entity subEntity : subEntities) {
 			addSubEntity(subEntity);
@@ -50,13 +52,20 @@ public class CompositeGALStunt extends GALStunt {
 
 	@Override
 	public void setLinearSpeed(Vector linearSpeed) {
-		super.setLinearSpeed(linearSpeed);
+	    this.targetDirection = linearSpeed;
 
-		for (Entity subEntity : subEntities) {
-			if (!subEntity.dead()) {
-				subEntity.setLinearSpeed(linearSpeed);
-			}
-		}
+	    Vector realSpeed = game.Game.game().isu.new Vector(
+	            baseLinearSpeed.x() + linearSpeed.x(),
+	            baseLinearSpeed.y() + linearSpeed.y()
+	    );
+
+	    entity.setLinearSpeed(realSpeed);
+
+	    for (Entity subEntity : subEntities) {
+	        if (!subEntity.dead()) {
+	            subEntity.setLinearSpeed(realSpeed);
+	        }
+	    }
 	}
 
 	@Override
@@ -68,6 +77,11 @@ public class CompositeGALStunt extends GALStunt {
 				subEntity.setAngularSpeed(angularSpeed);
 			}
 		}
+	}
+	
+	public void setBaseLinearSpeed(double x_cmPer_s, double y_cmPer_s) {
+	    this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
+	    setLinearSpeed(targetDirection);
 	}
 
 }

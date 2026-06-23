@@ -104,6 +104,7 @@ public class MainPaintTest implements Runnable {
 
 		shipStunt.setMaxLinearSpeed(20.0);
 		shipStunt.setMaxAngularSpeed(0.0);
+		shipStunt.setBaseLinearSpeed(10.0, 0.0);
 
 		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");
 		shipBot.set(shipAutomaton);
@@ -113,7 +114,7 @@ public class MainPaintTest implements Runnable {
 		// =========================
 
 		ViewPort vp = new ViewPort(0, 0, 120, 120);
-		vp.follow(ship);
+		vp.rail(10, 0); 
 		model.setViewPort(vp);
 		View view = new View(vp);
 
