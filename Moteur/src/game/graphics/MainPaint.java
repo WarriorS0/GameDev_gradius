@@ -155,9 +155,9 @@ public class MainPaint implements Runnable {
 		view.add(deadGhostAvatar);
 
 		MapView mapView = new MapView();
-		// pour que l'image de fond se dessine correctement
+		// pour que l'image de fond se dessine correctement quand il faut, on utilise le
+		// method reference operator
 		view.setBackground(mapView::paint);
-		
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
@@ -191,9 +191,9 @@ public class MainPaint implements Runnable {
 				g.setColor(Colors.black);
 				g.fillRect(0, 0, windowWidth, windowHeight);
 
-				// The view owns the camera transform and clipping; it fits the
-				// view port into this canvas area and paints the map background
-				// in world space underneath the avatars.
+				// La vue gère la transformation et le clipping du viewport cad de la caméra
+				// elle ajuste la zone d'affichage (viewport) à cet espace de canvas et dessine
+				// l'arrière-plan de la carte dans l'espace monde, sous les avatars.
 				view.setCanvasArea(0, 0, windowWidth, windowHeight);
 				view.paint(g);
 
@@ -217,16 +217,13 @@ public class MainPaint implements Runnable {
 		});
 		// Appuyer sur tab fait appraître/disparaître le label de fps.
 
-
-
 		// 'V' bascule la vue d'ensemble : on dézoome sur toute la carte et le
 		// viewport réel (qui continue de suivre l'entité) est tracé en vert.
-		km.bind(VirtualKeyCodes.VK_V, ()->view.toggleDebugViewPort());
+		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());
 
 		MouseManager mm = new MouseManager();
+		// Cliquer sur le bouton du millieu de la souris print un msg dans la console.
 		mm.bind(MouseManager.BNO_MIDDLE_BUTTON_MOUSE, () -> System.out.print("MIDDLE BUTTON MOUSE CLICKED TEST!"));
-		// Cliquer sur le bouton du millieu de la souris imprime un message dans la
-		// console.
 
 		canvas.set(km);
 		canvas.set(mm);
