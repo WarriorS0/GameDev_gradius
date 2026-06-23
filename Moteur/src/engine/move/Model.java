@@ -131,6 +131,7 @@ public class Model {
 		Physics phy = new Physics();
 
 		for (Entity entity : new LinkedList<>(entities)) {
+
 			if (entity.dead()) {
 				continue;
 			}
@@ -139,7 +140,7 @@ public class Model {
 
 
 			if (stunt != null) {
-			    stunt.tick(delta_t);
+				stunt.tick(delta_t);
 			}
 
 
@@ -204,7 +205,6 @@ public class Model {
 				return;
 			}
 
-
 			// Déplacement en X
 			if (d.x() != 0.0) {
 				entity.translate(isu.new Vector(d.x(), 0));
@@ -238,6 +238,10 @@ public class Model {
 				}
 
 				if (other.dead()) {
+					continue;
+				}
+
+				if (!entity.category().interactsWith(other.category())) {
 					continue;
 				}
 
