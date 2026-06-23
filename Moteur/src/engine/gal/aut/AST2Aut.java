@@ -208,6 +208,8 @@ public class AST2Aut {
 		case "hit":
 			// need to implement Hit
 			return GALAction.NOTHING;
+		case "rest":
+			return GALAction.NOTHING;
 
 		default:
 			return GALAction.NOTHING;
