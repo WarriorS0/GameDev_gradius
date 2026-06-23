@@ -10,6 +10,7 @@ import engine.gal.actions.iGALAction;
 import engine.gal.actions.Move;
 import engine.gal.actions.Turn;
 import engine.gal.actions.Get;
+import engine.gal.actions.Hit;
 
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
@@ -215,8 +216,17 @@ public class AST2Aut {
 			return new Turn(0);
 
 		case "hit":
-			// need to implement Hit
-			return GALAction.NOTHING;
+			if (call.parameters.size() >= 1) {
+				Parameter p = call.parameters.get(0);
+
+				if (p instanceof IntValue) {
+					return new Hit(((IntValue) p).value);
+				}
+
+				return new Hit(Integer.parseInt(p.toString()));
+			}
+
+			return new Hit(1);
 		case "rest":
 			return GALAction.NOTHING;
 		case "get":
