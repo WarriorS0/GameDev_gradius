@@ -24,10 +24,10 @@ public class PacmanAvatar extends Avatar {
 	private boolean deathAnimationFinished;
 	
 	private ArrayList<BufferedImage> listAnimations;
-	private BufferedImage[] animeLeft;
-	private BufferedImage[] animeRight;
-	private BufferedImage[] animeUp;
-	private BufferedImage[] animeDown;
+//	private BufferedImage[] animeLeft;
+//	private BufferedImage[] animeRight;
+//	private BufferedImage[] animeUp;
+//	private BufferedImage[] animeDown;
 
 	private enum Direction {
 		RIGHT, DOWN, LEFT, UP
