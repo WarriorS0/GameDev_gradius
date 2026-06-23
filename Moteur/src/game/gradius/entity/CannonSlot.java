@@ -1,4 +1,4 @@
-package game.graduis.entity;
+package game.gradius.entity;
 
 public enum CannonSlot {
 	TOP, BOTTOM;

@@ -1,4 +1,4 @@
-package game.graduis.entity;
+package game.gradius.entity;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Category;
