@@ -9,6 +9,7 @@ import engine.gal.actions.GALAction;
 import engine.gal.actions.iGALAction;
 import engine.gal.actions.Move;
 import engine.gal.actions.Turn;
+import engine.gal.actions.Get;
 
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
@@ -218,6 +219,12 @@ public class AST2Aut {
 			return GALAction.NOTHING;
 		case "rest":
 			return GALAction.NOTHING;
+		case "get":
+			if (call.parameters.size() >= 1) {
+				Category category = Category.canonical(call.parameters.get(0).toString());
+				return new Get(category);
+			}
+			return new Get(null);
 
 		default:
 			return GALAction.NOTHING;
