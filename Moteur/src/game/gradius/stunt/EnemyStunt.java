@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import engine.entity.Entity;
-import engine.geometry.Grid.Cell;
-import engine.geometry.ISU.Coord;
 import engine.geometry.ISU.Vector;
 import engine.logs.LoggerManager;
 import engine.move.Model;

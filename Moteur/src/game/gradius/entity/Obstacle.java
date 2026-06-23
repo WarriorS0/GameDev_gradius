@@ -1,4 +1,4 @@
-package game.entity;
+package game.gradius.entity;
 
 import engine.entity.Entity;
 import engine.shape.Rect;

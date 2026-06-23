@@ -14,7 +14,7 @@ import engine.gal.aut.State;
 import engine.gal.aut.Transition;
 import engine.move.Model;
 import game.Game;
-import game.entity.PacMan;
+import game.gradius.entity.Ship;
 
 class GALIntegrationTest {
 
@@ -22,7 +22,7 @@ class GALIntegrationTest {
 
 	private Game game;
 	private Model model;
-	private PacMan pacman;
+	private Ship ship;
 	private GALBot bot;
 	private GALStunt stunt;
 
@@ -31,13 +31,13 @@ class GALIntegrationTest {
 		game = new Game(30, 30);
 		model = new Model(game.grid);
 
-		pacman = new PacMan();
-		model.add(pacman);
+		ship = new Ship();
+		model.add(ship);
 
-		bot = new GALBot(pacman);
-		pacman.bot(bot);
+		bot = new GALBot(ship);
+		ship.bot(bot);
 
-		stunt = new GALStunt(model, pacman);
+		stunt = new GALStunt(model, ship);
 		stunt.setMaxLinearSpeed(10.0);
 		stunt.setMaxAngularSpeed(90.0);
 	}
@@ -46,10 +46,10 @@ class GALIntegrationTest {
 	void moveExecStartsLinearMovement() {
 		Move move = new Move(Direction.E, 1.0, 1);
 
-		assertTrue(move.exec(pacman));
+		assertTrue(move.exec(ship));
 
-		assertEquals(10.0, pacman.linearSpeed().x(), EPSILON);
-		assertEquals(0.0, pacman.linearSpeed().y(), EPSILON);
+		assertEquals(10.0, ship.linearSpeed().x(), EPSILON);
+		assertEquals(0.0, ship.linearSpeed().y(), EPSILON);
 		assertTrue(stunt.actionDuration() > 0.0);
 	}
 
@@ -57,12 +57,12 @@ class GALIntegrationTest {
 	void stuntTickFinishesMoveAndStopsEntity() {
 		assertTrue(stunt.startMoving(Direction.E, 1.0, 100.0));
 
-		assertEquals(10.0, pacman.linearSpeed().x(), EPSILON);
+		assertEquals(10.0, ship.linearSpeed().x(), EPSILON);
 
 		stunt.tick(100.0);
 
-		assertEquals(0.0, pacman.linearSpeed().x(), EPSILON);
-		assertEquals(0.0, pacman.linearSpeed().y(), EPSILON);
+		assertEquals(0.0, ship.linearSpeed().x(), EPSILON);
+		assertEquals(0.0, ship.linearSpeed().y(), EPSILON);
 		assertEquals(0.0, stunt.actionDuration(), EPSILON);
 	}
 
@@ -70,9 +70,9 @@ class GALIntegrationTest {
 	void turnExecStartsAngularMovement() {
 		Turn turn = new Turn(90, 1.0);
 
-		assertTrue(turn.exec(pacman));
+		assertTrue(turn.exec(ship));
 
-		assertEquals(90.0, pacman.angularSpeed(), EPSILON);
+		assertEquals(90.0, ship.angularSpeed(), EPSILON);
 		assertTrue(stunt.actionDuration() > 0.0);
 	}
 
@@ -82,8 +82,8 @@ class GALIntegrationTest {
 
 		stunt.tick(1000.0);
 
-		assertEquals(90.0, pacman.orientation(), EPSILON);
-		assertEquals(0.0, pacman.angularSpeed(), EPSILON);
+		assertEquals(90.0, ship.orientation(), EPSILON);
+		assertEquals(0.0, ship.angularSpeed(), EPSILON);
 		assertEquals(0.0, stunt.actionDuration(), EPSILON);
 	}
 
@@ -96,7 +96,7 @@ class GALIntegrationTest {
 
 		Transition transition = new Transition(source, e -> true, e -> true, target);
 
-		assertTrue(transition.exec(pacman));
+		assertTrue(transition.exec(ship));
 		assertEquals(target, bot.state());
 	}
 
@@ -110,7 +110,7 @@ class GALIntegrationTest {
 
 		Transition transition = new Transition(source, e -> true, e -> true, target);
 
-		assertFalse(transition.exec(pacman));
+		assertFalse(transition.exec(ship));
 		assertEquals(other, bot.state());
 	}
 
@@ -127,7 +127,7 @@ class GALIntegrationTest {
 
 		assertNull(bot.state());
 
-		assertTrue(automaton.step(pacman));
+		assertTrue(automaton.step(ship));
 		assertEquals(target, bot.state());
 	}
 
@@ -145,7 +145,7 @@ class GALIntegrationTest {
 
 		bot.set(automaton);
 
-		assertTrue(automaton.step(pacman));
+		assertTrue(automaton.step(ship));
 		assertEquals(firstTarget, bot.state());
 	}
 
@@ -165,6 +165,6 @@ class GALIntegrationTest {
 		model.tick(0.1);
 
 		assertEquals(target, bot.state());
-		assertTrue(pacman.linearSpeed().x() > 0.0);
+		assertTrue(ship.linearSpeed().x() > 0.0);
 	}
 }
