@@ -26,6 +26,7 @@ import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
 import game.gradius.entity.Ship;
 import game.gradius.graphics.CannonAvatar;
+import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
@@ -59,7 +60,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(38, 41);
+		Game game = new Game(30, 30);
 		Model model = new Model(game.grid);
 
 		// =========================

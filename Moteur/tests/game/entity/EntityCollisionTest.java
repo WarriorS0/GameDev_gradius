@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import game.Game;
+import game.gradius.entity.Enemy;
+import game.gradius.entity.Obstacle;
+import game.gradius.entity.Ship;
 
 class EntityCollisionTest {
 
@@ -18,21 +21,21 @@ class EntityCollisionTest {
 	// Helpers de test
 	// =========================
 
-	private static class TestPacMan extends PacMan {
+	private static class TestShip1 extends Ship {
 		void putAt(int x, int y) {
 			super.setPosition(super.grid.new Position(x, y));
 			super.setBounding();
 		}
 	}
 
-	private static class TestGum extends Gum {
+	private static class TestShip2 extends Ship {
 		void putAt(int x, int y) {
 			super.setPosition(super.grid.new Position(x, y));
 			super.setBounding();
 		}
 	}
 
-	private static class TestBoss extends Boss {
+	private static class TestEnemy extends Enemy {
 		void putAt(int x, int y) {
 			super.setPosition(super.grid.new Position(x, y));
 			super.setBounding();
@@ -49,27 +52,27 @@ class EntityCollisionTest {
 	// =========================
 
 	@Test
-	void pacmanAndGumSameCellIntersect() {
-		TestPacMan pacman = new TestPacMan();
-		TestGum gum = new TestGum();
+	void ship1AndShip2SameCellIntersect() {
+		TestShip1 ship1 = new TestShip1();
+		TestShip2 ship2 = new TestShip2();
 
-		pacman.putAt(10, 10);
-		gum.putAt(10, 10);
+		ship1.putAt(10, 10);
+		ship2.putAt(10, 10);
 
-		assertTrue(pacman.intersects(gum));
-		assertTrue(gum.intersects(pacman));
+		assertTrue(ship1.intersects(ship2));
+		assertTrue(ship2.intersects(ship1));
 	}
 
 	@Test
-	void pacmanAndGumFarAwayDoNotIntersect() {
-		TestPacMan pacman = new TestPacMan();
-		TestGum gum = new TestGum();
+	void ship1AndShip2FarAwayDoNotIntersect() {
+		TestShip1 ship1 = new TestShip1();
+		TestShip2 ship2 = new TestShip2();
 
-		pacman.putAt(10, 10);
-		gum.putAt(5, 5);
+		ship1.putAt(10, 10);
+		ship2.putAt(5, 5);
 
-		assertFalse(pacman.intersects(gum));
-		assertFalse(gum.intersects(pacman));
+		assertFalse(ship1.intersects(ship2));
+		assertFalse(ship2.intersects(ship1));
 	}
 
 	// =========================
@@ -77,14 +80,14 @@ class EntityCollisionTest {
 	// =========================
 
 	@Test
-	void pacmanAndObstacleSameCellIntersect() {
-		TestPacMan pacman = new TestPacMan();
-		pacman.putAt(10, 10);
+	void ship1AndObstacleSameCellIntersect() {
+		TestShip1 ship1 = new TestShip1();
+		ship1.putAt(10, 10);
 
 		Obstacle obstacle = new Obstacle(10, 10);
 
-		assertTrue(pacman.intersects(obstacle));
-		assertTrue(obstacle.intersects(pacman));
+		assertTrue(ship1.intersects(obstacle));
+		assertTrue(obstacle.intersects(ship1));
 	}
 
 	// =========================
@@ -92,28 +95,28 @@ class EntityCollisionTest {
 	// =========================
 
 	@Test
-	void bossAndObstacleOnHorizontalArmIntersect() {
-		TestBoss boss = new TestBoss();
-		boss.putAt(20, 20);
+	void EnemyAndObstacleOnHorizontalArmIntersect() {
+		TestEnemy en = new TestEnemy();
+		en.putAt(20, 20);
 
 		// Le Boss non tourné a une branche horizontale vers la droite.
 		Obstacle obstacle = new Obstacle(21, 20);
 
-		assertTrue(boss.intersects(obstacle));
-		assertTrue(obstacle.intersects(boss));
+		assertTrue(en.intersects(obstacle));
+		assertTrue(obstacle.intersects(en));
 	}
 
 	@Test
-	void bossTurnedNinetyDegreesAndObstacleOnNewArmIntersect() {
-		TestBoss boss = new TestBoss();
-		boss.putAt(20, 20);
+	void EnemyTurnedNinetyDegreesAndObstacleOnNewArmIntersect() {
+		TestEnemy en = new TestEnemy();
+		en.putAt(20, 20);
 
-		boss.rotate(90);
+		en.rotate(90);
 
 		// Après rotation de 90°, la branche qui partait à droite part vers le bas.
 		Obstacle obstacle = new Obstacle(20, 21);
 
-		assertTrue(boss.intersects(obstacle));
-		assertTrue(obstacle.intersects(boss));
+		assertTrue(en.intersects(obstacle));
+		assertTrue(obstacle.intersects(en));
 	}
 }
