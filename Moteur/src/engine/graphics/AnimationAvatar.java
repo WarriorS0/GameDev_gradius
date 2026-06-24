@@ -68,9 +68,7 @@ public abstract class AnimationAvatar extends RessourceAvatar {
 			return;
 		}
 
-		if (showCollisionBox) {
-			super.paint(g);
-		}
+		super.paint(g); // check if need to show debug collision boxes
 
 		BufferedImage frame = frames[frameIndex];
 

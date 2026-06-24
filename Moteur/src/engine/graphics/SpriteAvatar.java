@@ -42,9 +42,7 @@ public abstract class SpriteAvatar extends RessourceAvatar {
 			return;
 		}
 
-		if (showCollisionBox) {
-			super.paint(g);
-		}
+		super.paint(g); // check if need to show debug collision boxes
 
 		ISU.Coord coord = entity().center();
 		ISU.Dimension size = entity().size();

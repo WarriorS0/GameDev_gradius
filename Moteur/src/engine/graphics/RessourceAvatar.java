@@ -2,6 +2,7 @@ package engine.graphics;
 
 import engine.entity.Entity;
 import oop.graphics.BufferedImage;
+import oop.graphics.Graphics;
 
 /**
  * intermediary "private" class, not supposed to be created outside of this
@@ -12,16 +13,25 @@ import oop.graphics.BufferedImage;
  */
 abstract class RessourceAvatar extends ShapeAvatar {
 
-	public static boolean debugCollision = true;
+	public static boolean debugCollision = false;
 
 	protected BufferedImage image;
 	protected String imagePath;
-	protected boolean showCollisionBox;
 
 	protected RessourceAvatar(Entity entity, String imagePath, int multX, int multY) {
 		super(entity, multX, multY);
 		this.imagePath = imagePath;
-		this.showCollisionBox = debugCollision;
+	}
+	
+	public static void toggleDebug() {
+		debugCollision=!debugCollision;
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		if (debugCollision) {
+			super.paint(g);
+		}
 	}
 
 	/**
