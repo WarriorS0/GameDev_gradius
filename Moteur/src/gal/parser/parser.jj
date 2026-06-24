@@ -110,7 +110,9 @@ TOKEN: {
   | "Closest" 
   | "Got"
   | "Pushed" 
-  | "Struck" 
+  | "Struck"
+  | "Life"
+  | "Timer"
   > 
 }
 

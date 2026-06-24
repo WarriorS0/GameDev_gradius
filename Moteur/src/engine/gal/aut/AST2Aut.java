@@ -9,12 +9,22 @@ import engine.gal.actions.GALAction;
 import engine.gal.actions.iGALAction;
 import engine.gal.actions.Move;
 import engine.gal.actions.Turn;
+import engine.gal.actions.Get;
+import engine.gal.actions.Hit;
+import engine.gal.actions.Protect;
+import engine.gal.actions.Explode;
+import engine.gal.actions.Throw;
+import engine.gal.actions.SequenceAction;
+
 
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
 import engine.gal.condition.AtStep;
 import engine.gal.condition.Conjunction;
 import engine.gal.condition.KeyCondition;
+import engine.gal.condition.Struck;
+import engine.gal.condition.Life;
+import engine.gal.condition.Timer;
 
 import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
@@ -127,8 +137,30 @@ public class AST2Aut {
 					return new KeyCondition(keyName);
 				}
 				throw new IllegalArgumentException("Key condition requires 1 parameter");
+				
+			case "struck":
+				if (call.parameters.size() >= 1) {
+					Category category = Category.canonical(call.parameters.get(0).toString());
+					return new Struck(category);
+				}
+				return new Struck();
+			case "life":
+				if (call.parameters.size() >= 1) {
+					Parameter p = call.parameters.get(0);
+
+					if (p instanceof IntValue) {
+						return new Life(((IntValue) p).value);
+					}
+
+					return new Life(Integer.parseInt(p.toString()));
+				}
+
+				throw new IllegalArgumentException("Life condition requires 1 parameter");
+				
+			case "timer":
+				return new Timer();
 			default:
-				return GALCondition.TRUE;
+				return GALCondition.FALSE;
 			}
 		}
 
@@ -154,15 +186,29 @@ public class AST2Aut {
 			}
 		}
 
-		return GALCondition.TRUE;
+		return GALCondition.FALSE;
+	}
+	
+	private iGALAction convertAction(gal.ast.Actions astAction) {
+	    if (astAction == null || astAction.actions.isEmpty()) {
+	        return GALAction.NOTHING;
+	    }
+
+	    List<iGALAction> actions = new ArrayList<>();
+
+	    for (gal.ast.FunCall call : astAction.actions) {
+	        actions.add(convertSingleAction(call));
+	    }
+
+	    if (actions.size() == 1) {
+	        return actions.get(0);
+	    }
+
+	    return new SequenceAction(actions);
 	}
 
-	private iGALAction convertAction(gal.ast.Actions astAction) {
-		if (astAction == null || astAction.actions.isEmpty()) {
-			return GALAction.NOTHING;
-		}
-
-		gal.ast.FunCall call = astAction.actions.getFirst();
+	private iGALAction convertSingleAction(gal.ast.FunCall call) {
+		
 		String actionName = call.name;
 
 		if (actionName == null) {
@@ -206,11 +252,48 @@ public class AST2Aut {
 			return new Turn(0);
 
 		case "hit":
-			// need to implement Hit
-			return GALAction.NOTHING;
+			if (call.parameters.size() >= 1) {
+				Parameter p = call.parameters.get(0);
 
-		default:
+				if (p instanceof IntValue) {
+					return new Hit(((IntValue) p).value);
+				}
+
+				return new Hit(Integer.parseInt(p.toString()));
+			}
+
+			return new Hit(1);
+		case "rest":
 			return GALAction.NOTHING;
+		case "get":
+			if (call.parameters.size() >= 1) {
+				Category category = Category.canonical(call.parameters.get(0).toString());
+				return new Get(category);
+			}
+			return new Get(null);
+		case "protect":
+			if (call.parameters.size() >= 1) {
+				Parameter p = call.parameters.get(0);
+
+				if (p instanceof IntValue) {
+					return new Protect(((IntValue) p).value);
+				}
+
+				return new Protect(Double.parseDouble(p.toString()));
+			}
+
+			throw new IllegalArgumentException("Protect action requires 1 parameter");
+		case "explode":
+			return new Explode();
+		case "throw":
+			if (call.parameters.size() >= 1) {
+				Direction direction = Direction.canonical(call.parameters.get(0).toString());
+				return new Throw(direction);
+			}
+
+			return new Throw();
+		default:
+			throw new IllegalArgumentException("Unsupported GAL action: " + actionName);
 		}
 	}
 }

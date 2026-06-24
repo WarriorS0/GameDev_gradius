@@ -1,9 +1,45 @@
-Ship(Life) {
+Ship(Alive) {
 
-  * (Life)
-  | Key(FU) ? Move(N) :(Life)
-  | Key(FD) ? Move(S) :(Life)
-  | Key(FL) ? Move(W) :(Life)
-  | Key(FR) ? Move(E) :(Life)
-  | True    ?         :(Life)
+  // Normal state: the ship can move, shoot, collect upgrades and take damage.
+  * (Alive)
+  | Struck(Power)     ? Get(Power) :(Alive)
+  | Struck(Adversary) ? Hit(1)     :(LifeCheck)
+  | Struck(Obstacle)  ? Hit(1)     :(LifeCheck)
+  | Key(SPACE) & Key(FU) ? Throw(F); Move(N) :(Alive)
+  | Key(SPACE) & Key(FD) ? Throw(F); Move(S) :(Alive)
+  | Key(SPACE) & Key(FL) ? Throw(F); Move(W) :(Alive)
+  | Key(SPACE) & Key(FR) ? Throw(F); Move(E) :(Alive)
+  | Key(SPACE)        ? Throw(F)   :(Alive)
+  | Key(FU)           ? Move(N)    :(Alive)
+  | Key(FD)           ? Move(S)    :(Alive)
+  | Key(FL)           ? Move(W)    :(Alive)
+  | Key(FR)           ? Move(E)    :(Alive)
+  | True              ? Rest       :(Alive)
+
+  // After a hit, decide if the ship dies or becomes temporarily invincible.
+  * (LifeCheck)
+  | Life(0) ? Explode       :(Dead)
+  | True    ? Protect(2000) :(Invincible)
+
+  // Invincible state: enemies and obstacles no longer damage the ship.
+  // The ship can still move, shoot and collect upgrades.
+  * (Invincible)
+  | Timer	          ? Rest       :(Alive)
+  | Struck(Power)     ? Get(Power) :(Invincible)
+  | Struck(Adversary) ? Rest       :(Invincible)
+  | Struck(Obstacle)  ? Rest       :(Invincible)
+  | Key(SPACE) & Key(FU) ? Throw(F); Move(N) :(Invincible)
+  | Key(SPACE) & Key(FD) ? Throw(F); Move(S) :(Invincible)
+  | Key(SPACE) & Key(FL) ? Throw(F); Move(W) :(Invincible)
+  | Key(SPACE) & Key(FR) ? Throw(F); Move(E) :(Invincible)
+  | Key(SPACE)        ? Throw(F)   :(Invincible)
+  | Key(FU)           ? Move(N)    :(Invincible)
+  | Key(FD)           ? Move(S)    :(Invincible)
+  | Key(FL)           ? Move(W)    :(Invincible)
+  | Key(FR)           ? Move(E)    :(Invincible)
+  | True              ? Rest       :(Invincible)
+
+  // Final state: the ship is dead and no longer acts.
+  * (Dead)
+  | True ? Rest :(Dead)
 }
