@@ -187,11 +187,7 @@ public class MainPaintTest implements Runnable {
 		// View
 		// =========================
 
-		ViewPort vp = new ViewPort(0, 0, 120, 120);
-		vp.rail(10, 0);
-
-		model.setViewPort(vp);
-		View view = new View(vp);
+		View view = game.view;
 
 		view.add(new ShipAvatar(ship));
 		view.add(new CannonAvatar(topCannon));
