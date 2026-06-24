@@ -3,6 +3,7 @@ package engine.graphics;
 import java.util.logging.Level;
 
 import engine.entity.Entity;
+import engine.geometry.ISU;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
@@ -67,19 +68,24 @@ public abstract class AnimationAvatar extends RessourceAvatar {
 			return;
 		}
 
-		BufferedImage img = frames[frameIndex];
+		if (showCollisionBox) {
+			super.paint(g);
+		}
 
-		int width = Math.max(1, this.cmToPixel(entity().size().x()));
-		int height = Math.max(1, this.cmToPixel(entity().size().y()));
+		BufferedImage frame = frames[frameIndex];
 
-		int xCenter = this.cmToPixel(entity().center().x());
-		int yCenter = this.cmToPixel(entity().center().y());
+		ISU.Coord coord = entity().center();
+		ISU.Dimension size = entity().size();
+
+		int width = Math.max(1, this.cmToPixel(size.x())) * multX;
+		int height = Math.max(1, this.cmToPixel(size.y())) * multY;
+
+		int xCenter = this.cmToPixel(coord.x());
+		int yCenter = this.cmToPixel(coord.y());
 
 		int xTopLeft = xCenter - width / 2;
 		int yTopLeft = yCenter - height / 2;
 
-		g.drawImage(img, xTopLeft, yTopLeft, width, height);
-
-		super.paint(g);
+		g.drawImage(frame, xTopLeft, yTopLeft, width, height);
 	}
 }
