@@ -1,7 +1,9 @@
 package game.graphics;
 
 import java.awt.Dimension;
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import engine.controller.Controller;
@@ -42,19 +44,57 @@ import oop.tasks.Task;
 
 public class MainPaintTest implements Runnable {
 
-	private static final Logger logger = LoggerManager.getLogger(MainPaintTest.class.getName());
-	private static final int FPS = 30;
-	private static final boolean FPS_LOGGING = true;
+	private static final Logger logger;
+	private static final boolean LOGGING;
+	private static final boolean FINER;
+	private static final int FPS;
+	private static final boolean FPS_LOGGING;
+	
+	private static final DecimalFormat dfIndex;
+	private static final DecimalFormat dfTime;
 
-	public static final int WIDTH = 640;
-	public static final int HEIGHT = 640;
+	private static final boolean SHOULD_DO_PAINT_PROFILING;
+	private static final boolean SHOULD_DO_PAINT_PROFILING_LOGGING;
+	public static final int WIDTH;
+	public static final int HEIGHT;
+
+	static {
+		// CONSTANTS
+		logger = LoggerManager.getLogger(MainPaintTest.class.getName());
+		LOGGING = logger.getLevel() != Level.OFF;
+		FINER = logger.isLoggable(Level.FINER);
+		dfIndex = new DecimalFormat("00");
+		dfTime = new DecimalFormat("####00");
+
+		FPS = 30;
+		FPS_LOGGING = true;
+
+		SHOULD_DO_PAINT_PROFILING = true;
+		// to log, you need to activate logging to at least finer in jul logging
+		// property file on top of this
+		SHOULD_DO_PAINT_PROFILING_LOGGING = false;
+
+		WIDTH = 640;
+		HEIGHT = 640;
+
+	}
 
 	public static void main(String[] args) throws Exception {
+		// RUNNING
 		Runnable r = new MainPaintTest();
 		Dimension windowSize = new Dimension(WIDTH, HEIGHT);
 		Runtime.boot(windowSize, r);
 		Runtime.shutdown();
 	}
+
+	public final int NB_LAST_TIME_PAINT_SAVED = 96;
+	private final int[] ARRAY_LAST_TIME_PAINT_SAVED = new int[NB_LAST_TIME_PAINT_SAVED];
+	private int indexArrayTimePaint = 0;
+	private int paintingTime = -1;
+	private int sumTime = -1;
+	private int minTime = 214748367;// big numbuh
+	private int avgTime = -1;
+	private int maxTime = -1;
 
 	@Override
 	public void run() throws Exception {
@@ -130,15 +170,20 @@ public class MainPaintTest implements Runnable {
 		Hud hud = new Hud();
 
 		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode.",
-				new PixelCoordinate(10, 10), Colors.white, false);
+				new PixelCoordinate(6, 12), Colors.white, false);
 		hud.add(labelDebug);
 		StringBuilder sb = new StringBuilder();
 		sb.append("FPS");
 		Label labelFPS = new Label(
-				() -> String.format("FPS %d { min: %d ; avg: %d ; max: %d (of the last %ds)", fpsC.getFps(),
-						fpsC.getMinFps(), fpsC.getAvgFps(), fpsC.getMaxFps(), fpsC.NB_LAST_FPS_SAVED),
-				new PixelCoordinate(10, 20), Colors.white, false);
+				() -> String.format("FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ", fpsC.getFormattedFps(),
+						fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(), fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
+				new PixelCoordinate(12, 24), Colors.white, false);
 		hud.add(labelFPS);
+		Label labelPaintTime = new Label(
+				() -> String.format("PaintTime: %dms { min: %d ; avg: %d ; max: %d (from the last %d paints) }", paintingTime,
+						minTime, avgTime, maxTime, NB_LAST_TIME_PAINT_SAVED),
+				new PixelCoordinate(12, 36), Colors.white, false);
+		hud.add(labelPaintTime);
 		FollowerLabel flShip = new FollowerLabel(() -> ship.debugInfo(), Colors.white, ship, 0, 10);
 		flShip.setView(view);
 		hud.add(flShip);
@@ -160,6 +205,8 @@ public class MainPaintTest implements Runnable {
 
 			@Override
 			public void paint(Canvas canvas, Graphics g) {
+				long startTimePaiting = System.currentTimeMillis();
+
 				int windowWidth = canvas.getWidth();
 				int windowHeight = canvas.getHeight();
 
@@ -170,6 +217,11 @@ public class MainPaintTest implements Runnable {
 				view.paint(g);
 
 				fpsC.countFrame();
+
+				long endTimePainting = System.currentTimeMillis();
+
+				if (SHOULD_DO_PAINT_PROFILING)
+					paintProfiling(startTimePaiting, endTimePainting);
 			}
 
 			@Override
@@ -185,6 +237,7 @@ public class MainPaintTest implements Runnable {
 		// Appuyer sur tab fait appraître/disparaître le label de fps.
 		km.bind(VirtualKeyCodes.VK_TAB, () -> {
 			labelFPS.setVisibility(!labelFPS.isVisible());
+			labelPaintTime.setVisibility(!labelPaintTime.isVisible());
 			flShip.setVisibility(!flShip.isVisible());
 		});
 
@@ -225,6 +278,59 @@ public class MainPaintTest implements Runnable {
 
 		} catch (Exception e) {
 			throw new RuntimeException("Cannot load GAL automaton from: " + galFilePath, e);
+		}
+	}
+
+	private void paintProfiling(long startTimePaiting, long endTimePainting) {
+		long elapsedTimePainting = endTimePainting - startTimePaiting;
+		paintingTime = (int) elapsedTimePainting;
+		sumTime = -1;
+		minTime = 214748367;// big numbuh
+		avgTime = -1;
+		maxTime = -1;
+
+		this.ARRAY_LAST_TIME_PAINT_SAVED[this.indexArrayTimePaint++] = paintingTime;
+		this.indexArrayTimePaint %= this.NB_LAST_TIME_PAINT_SAVED;
+		for (int i = 0; i < this.NB_LAST_TIME_PAINT_SAVED; i++) {
+			int localTime = this.ARRAY_LAST_TIME_PAINT_SAVED[i];
+			sumTime += localTime;
+			avgTime = sumTime / NB_LAST_TIME_PAINT_SAVED;
+			if (localTime < minTime)
+				minTime = localTime;
+			if (localTime > maxTime)
+				maxTime = localTime;
+		}
+		if (LOGGING && FINER && SHOULD_DO_PAINT_PROFILING_LOGGING) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Paiting profiling \n");
+			sb.append("   START: ");
+			sb.append(startTimePaiting);
+			sb.append(" ; END: ");
+			sb.append(endTimePainting);
+			sb.append(" ; ELAPSED: ");
+			sb.append(elapsedTimePainting);
+			sb.append('\n');
+			sb.append("   time: ");
+			sb.append(paintingTime);
+			sb.append(" ; min: ");
+			sb.append(minTime);
+			sb.append(" ; avg: ");
+			sb.append(avgTime);
+			sb.append(" ; max: ");
+			sb.append(maxTime);
+			sb.append(" ; sum: ");
+			sb.append(sumTime);
+			for (int i = 0; i < this.NB_LAST_TIME_PAINT_SAVED; i++) {
+				if (i % 8 == 0) {
+					sb.append("\n   ");
+				}
+				sb.append("[");
+				sb.append(dfIndex.format(i));
+				sb.append(":");
+				sb.append(dfTime.format(this.ARRAY_LAST_TIME_PAINT_SAVED[i]));
+				sb.append("]");
+			}
+			logger.log(Level.FINER, sb.toString());
 		}
 	}
 }
