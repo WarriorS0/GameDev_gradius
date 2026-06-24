@@ -9,7 +9,7 @@ import game.gradius.stunt.ProjectileStunt;
 import engine.entity.Entity;
 import engine.gal.arguments.Direction;
 
-public class ProjectileSpawner {
+public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 
 	private final Model model;
 	private final View view;
@@ -39,6 +39,7 @@ public class ProjectileSpawner {
 		return projectile;
 	}
 	
+	@Override
 	public Projectile spawnFrom(Entity source, Direction direction, double intensity) {
 		if (source == null || source.center() == null) {
 			throw new IllegalArgumentException("source must be placed");

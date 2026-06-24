@@ -19,7 +19,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	private boolean turning;
 	private double finalAngle;
 	
-	private Object projectileSpawner;
+	private ThrowSpawner projectileSpawner;
 
 	public GALStunt(Model model, Entity entity) {
 		super(model, entity);
@@ -255,12 +255,12 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	
 	//FIRE
 	
-	public void setProjectileSpawner(Object projectileSpawner) {
-		this.projectileSpawner = projectileSpawner;
+	public void setProjectileSpawner(ThrowSpawner projectileSpawner) {
+	    this.projectileSpawner = projectileSpawner;
 	}
 
-	public Object projectileSpawner() {
-		return projectileSpawner;
+	public ThrowSpawner projectileSpawner() {
+	    return projectileSpawner;
 	}
 	
 	@Override

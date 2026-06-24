@@ -14,6 +14,7 @@ import engine.gal.actions.Hit;
 import engine.gal.actions.Protect;
 import engine.gal.actions.Explode;
 import engine.gal.actions.Throw;
+import engine.gal.actions.SequenceAction;
 
 
 import engine.gal.condition.GALCondition;
@@ -187,13 +188,27 @@ public class AST2Aut {
 
 		return GALCondition.FALSE;
 	}
-
+	
 	private iGALAction convertAction(gal.ast.Actions astAction) {
-		if (astAction == null || astAction.actions.isEmpty()) {
-			return GALAction.NOTHING;
-		}
+	    if (astAction == null || astAction.actions.isEmpty()) {
+	        return GALAction.NOTHING;
+	    }
 
-		gal.ast.FunCall call = astAction.actions.getFirst();
+	    List<iGALAction> actions = new ArrayList<>();
+
+	    for (gal.ast.FunCall call : astAction.actions) {
+	        actions.add(convertSingleAction(call));
+	    }
+
+	    if (actions.size() == 1) {
+	        return actions.get(0);
+	    }
+
+	    return new SequenceAction(actions);
+	}
+
+	private iGALAction convertSingleAction(gal.ast.FunCall call) {
+		
 		String actionName = call.name;
 
 		if (actionName == null) {
@@ -278,7 +293,7 @@ public class AST2Aut {
 
 			return new Throw();
 		default:
-			return GALAction.NOTHING;
+			throw new IllegalArgumentException("Unsupported GAL action: " + actionName);
 		}
 	}
 }

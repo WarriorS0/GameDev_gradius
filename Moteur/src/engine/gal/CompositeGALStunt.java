@@ -53,20 +53,18 @@ public class CompositeGALStunt extends GALStunt {
 
 	@Override
 	public void setLinearSpeed(Vector linearSpeed) {
-	    this.targetDirection = linearSpeed;
+		this.targetDirection = linearSpeed;
 
-	    Vector realSpeed = game.Game.game().isu.new Vector(
-	            baseLinearSpeed.x() + linearSpeed.x(),
-	            baseLinearSpeed.y() + linearSpeed.y()
-	    );
+		Vector realSpeed = game.Game.game().isu.new Vector(baseLinearSpeed.x() + linearSpeed.x(),
+				baseLinearSpeed.y() + linearSpeed.y());
 
-	    entity.setLinearSpeed(realSpeed);
+		entity.setLinearSpeed(realSpeed);
 
-	    for (Entity subEntity : subEntities) {
-	    	if (!subEntity.dead()) {
-	    		subEntity.setLinearSpeed(game.Game.game().isu.new Vector(0.0, 0.0));
-	    	}
-	    }
+		for (Entity subEntity : subEntities) {
+			if (!subEntity.dead()) {
+				subEntity.setLinearSpeed(game.Game.game().isu.new Vector(0.0, 0.0));
+			}
+		}
 	}
 
 	@Override
@@ -79,33 +77,19 @@ public class CompositeGALStunt extends GALStunt {
 			}
 		}
 	}
-	
+
 	public void setBaseLinearSpeed(double x_cmPer_s, double y_cmPer_s) {
-	    this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
-	    setLinearSpeed(targetDirection);
+		this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
+		setLinearSpeed(targetDirection);
 	}
-	
+
 	@Override
 	public boolean startThrowing(Direction direction, double intensity) {
 		if (projectileSpawner() == null) {
 			return false;
 		}
 
-		Object spawner = projectileSpawner();
-
-		try {
-			var spawnMethod = spawner.getClass().getMethod(
-					"spawnFrom",
-					Entity.class,
-					Direction.class,
-					double.class
-			);
-
-			spawnMethod.invoke(spawner, entity, direction, intensity);
-			return true;
-		} catch (ReflectiveOperationException e) {
-			throw new RuntimeException("Cannot throw projectile", e);
-		}
+		projectileSpawner().spawnFrom(entity, direction, intensity);
+		return true;
 	}
-
 }
