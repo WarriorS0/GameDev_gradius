@@ -34,6 +34,7 @@ import game.gradius.graphics.ObstacleAvatar;
 import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.ShipAvatar;
+import game.gradius.stunt.ProjectileStunt;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
@@ -135,6 +136,8 @@ public class MainPaintTest implements Runnable {
 		shipStunt.setMaxLinearSpeed(20.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 		shipStunt.setBaseLinearSpeed(10.0, 0.0);
+		
+		model.setStunt(projectile, new ProjectileStunt(model, projectile));
 
 		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");
 		shipBot.set(shipAutomaton);

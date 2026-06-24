@@ -19,6 +19,7 @@ public class Projectile extends Entity {
 
 		place(center);
 		setLinearSpeed(speed);
+		
 	}
 
 	@Override
