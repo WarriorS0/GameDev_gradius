@@ -91,14 +91,25 @@ public class MainPaintTest implements Runnable {
 		Runtime.shutdown();
 	}
 
-	public final int NB_LAST_TIME_PAINT_SAVED = 96;
-	private final int[] ARRAY_LAST_TIME_PAINT_SAVED = new int[NB_LAST_TIME_PAINT_SAVED];
-	private int indexArrayTimePaint = 0;
-	private int paintingTime = -1;
-	private int sumTime = -1;
-	private int minTime = 214748367;// big numbuh
-	private int avgTime = -1;
-	private int maxTime = -1;
+	public final int NB_LAST_TIME_PAINT_SAVED;
+	private final int[] ARRAY_LAST_TIME_PAINT_SAVED;
+	private int indexArrayTimePaint;
+	private int paintingTime;
+	private int sumTime;
+	private int minTime;
+	private int avgTime;
+	private int maxTime;
+
+	private MainPaintTest() {
+		NB_LAST_TIME_PAINT_SAVED = 96;
+		ARRAY_LAST_TIME_PAINT_SAVED = new int[NB_LAST_TIME_PAINT_SAVED];
+		indexArrayTimePaint = 0;
+		paintingTime = -1;
+		sumTime = -1;
+		minTime = 214748367;// big numbuh
+		avgTime = -1;
+		maxTime = -1;
+	}
 
 	@Override
 	public void run() throws Exception {
@@ -108,7 +119,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(32, 32);
+		Game game = new Game(38, 41);
 		Model model = game.model;
 
 		// =========================
@@ -122,10 +133,10 @@ public class MainPaintTest implements Runnable {
 
 		Category.setInteraction(Category.Team, Category.Adversary, true);
 		Category.setInteraction(Category.Adversary, Category.Team, true);
-		
+
 		Category.setInteraction(Category.Team, Category.Power, true);
 		Category.setInteraction(Category.Power, Category.Team, true);
-		
+
 		Category.setInteraction(Category.Projectile, Category.Obstacle, true);
 		Category.setInteraction(Category.Obstacle, Category.Projectile, true);
 
@@ -144,11 +155,9 @@ public class MainPaintTest implements Runnable {
 
 		ship.attachCannon(topCannon);
 		ship.attachCannon(bottomCannon);
-		
+
 		Power power = new Power();
 		Obstacle obstacle = new Obstacle(30, 20);
-		
-		
 
 		// D'abord ajouter les entities au model
 		model.add(ship);
@@ -166,7 +175,6 @@ public class MainPaintTest implements Runnable {
 		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 		shipStunt.setBaseLinearSpeed(10.0, 0.0);
-		
 
 		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");
 		shipBot.set(shipAutomaton);
@@ -176,7 +184,7 @@ public class MainPaintTest implements Runnable {
 		// =========================
 
 		ViewPort vp = new ViewPort(0, 0, 120, 120);
-		vp.rail(10, 0); 
+		vp.rail(10, 0);
 
 		model.setViewPort(vp);
 		View view = new View(vp);
@@ -186,17 +194,13 @@ public class MainPaintTest implements Runnable {
 		view.add(new CannonAvatar(bottomCannon));
 		view.add(new PowerAvatar(power));
 		view.add(new ObstacleAvatar(obstacle));
-		
+
 		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
 		shipStunt.setProjectileSpawner(projectileSpawner);
 
 		projectileSpawner.spawn(
-				game.isu.new Coord(
-						ship.center().x() + 3 * game.cmPerCell,
-						ship.center().y() - 2*game.cmPerCell
-				),
-				game.isu.new Vector(30.0, 0.0)
-		);
+				game.isu.new Coord(ship.center().x() + 3 * game.cmPerCell, ship.center().y() - 2 * game.cmPerCell),
+				game.isu.new Vector(30.0, 0.0));
 
 		MapView mapView = new MapView();
 		view.setBackground(mapView::paint);
@@ -204,6 +208,18 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
+
+		FollowerLabel flShip = new FollowerLabel(() -> ship.debugInfo(), Colors.white, ship, 0, 10);
+		flShip.setView(view);
+		hud.add(flShip);
+
+//		FollowerLabel fbTopCannon = new FollowerLabel(() -> topCannon.debugInfo(), Colors.white, topCannon, 0, 10);
+//		fbTopCannon.setView(view);
+//		hud.add(fbTopCannon);
+//		FollowerLabel fbBottomCannon = new FollowerLabel(() -> bottomCannon.debugInfo(), Colors.white, bottomCannon, 0,
+//				10);
+//		fbBottomCannon.setView(view);
+//		hud.add(fbBottomCannon);
 
 		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode.",
 				new PixelCoordinate(6, 12), Colors.white, false);
@@ -228,16 +244,6 @@ public class MainPaintTest implements Runnable {
 						model.getFormattedMaxTickTime(), model.NB_LAST_TICK_TIME_SAVED),
 				new PixelCoordinate(12, 48), Colors.white, false);
 		hud.add(labelTickTime);
-		FollowerLabel flShip = new FollowerLabel(() -> ship.debugInfo(), Colors.white, ship, 0, 10);
-		flShip.setView(view);
-		hud.add(flShip);
-//		FollowerLabel fbTopCannon = new FollowerLabel(() -> topCannon.debugInfo(), Colors.white, topCannon, 0, 10);
-//		fbTopCannon.setView(view);
-//		hud.add(fbTopCannon);
-//		FollowerLabel fbBottomCannon = new FollowerLabel(() -> bottomCannon.debugInfo(), Colors.white, bottomCannon, 0,
-//				10);
-//		fbBottomCannon.setView(view);
-//		hud.add(fbBottomCannon);
 
 		view.setHUD(hud);
 
@@ -270,7 +276,7 @@ public class MainPaintTest implements Runnable {
 
 			@Override
 			public void revoked(Canvas canvas) {
-				System.exit(0);
+				System.exit(0); //safe exit
 			}
 		});
 
