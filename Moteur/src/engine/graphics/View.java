@@ -15,17 +15,16 @@ public class View {
 
 	private List<Avatar> avatars;
 	private long lastTime;
-	
 
 	private final ViewPort vp;
 	private int canvasX, canvasY, canvasW, canvasH;
-	
-	private Hud hud; //optionnal
+
+	private Hud hud; // optionnal
 
 	/**
 	 * When true, the view zooms out to show the whole map and draws a rectangle
-	 * where the real view port currently is. The real view port keeps following
-	 * its target; only the rendering changes.
+	 * where the real view port currently is. The real view port keeps following its
+	 * target; only the rendering changes.
 	 */
 	private boolean debugViewPort = false;
 
@@ -54,13 +53,13 @@ public class View {
 	}
 
 	/**
-	 * Colour of the view-port rectangle drawn in debug mode.
+	 * Color of the view-port rectangle drawn in debug mode.
 	 */
 	private Color viewPortDebugColor = Colors.green;
 
 	/**
-	 * Optional background drawn in world space (cm), before the avatars, so it
-	 * goes through the same camera transform. May be null.
+	 * Optional background drawn in world space (cm), before the avatars, so it goes
+	 * through the same camera transform. May be null.
 	 */
 	private WorldBackground background;
 
@@ -81,7 +80,7 @@ public class View {
 	public void setBackground(WorldBackground background) {
 		this.background = background;
 	}
-	
+
 	/**
 	 * Attache un HUD à la vue ; il sera dessiné par-dessus la scène.
 	 *
@@ -90,14 +89,13 @@ public class View {
 	public void setHUD(Hud hud) {
 		this.hud = hud;
 	}
-	
 
 	public View(ViewPort vp) {
 		this.vp = Objects.requireNonNull(vp, "view port cannot be null");
 		this.avatars = new ArrayList<>();
 		this.lastTime = System.currentTimeMillis();
 	}
-	
+
 	/**
 	 * @return the view port driving this view
 	 */
@@ -135,27 +133,58 @@ public class View {
 	}
 
 	/**
-	 * @return the cm -> device pixel factor on the x axis for the current canvas
+	 * @return left edge of the extent rendered this frame, in cm: the real view
+	 *         port origin normally, or 0 in the whole-map debug overview
+	 */
+	private double renderOriginX() {
+		return debugViewPort ? 0 : vp.originX();
+	}
+
+	/**
+	 * @return top edge of the extent rendered this frame, in cm
+	 */
+	private double renderOriginY() {
+		return debugViewPort ? 0 : vp.originY();
+	}
+
+	/**
+	 * @return width of the extent rendered this frame, in cm
+	 */
+	private double renderWidth() {
+		return debugViewPort ? Game.game().width_cm : vp.width_cm();
+	}
+
+	/**
+	 * @return height of the extent rendered this frame, in cm
+	 */
+	private double renderHeight() {
+		return debugViewPort ? Game.game().height_cm : vp.height_cm();
+	}
+
+	/**
+	 * @return the cm -> device pixel factor on the x axis for the current frame
 	 */
 	private double scaleX() {
-		return canvasW / vp.width_cm();
+		return canvasW / renderWidth();
 	}
 
 	/**
-	 * @return the cm -> device pixel factor on the y axis for the current canvas
+	 * @return the cm -> device pixel factor on the y axis for the current frame
 	 */
 	private double scaleY() {
-		return canvasH / vp.height_cm();
+		return canvasH / renderHeight();
 	}
 
 	/**
-	 * Projects a world coordinate (cm) to screen pixels, using the same transform
-	 * as the scene: the point is unfolded around the view port origin so the
-	 * toric seam is handled, then translated and scaled into the canvas area.
+	 * Projects a world coordinate (cm) to screen pixels, using the same extent as
+	 * the scene currently rendered (the real view port, or the whole map in debug
+	 * overview). On a toric axis the point is unfolded around the rendered origin
+	 * only when the extent is a sub-window of the world; when the whole axis is
+	 * shown, the raw coordinate is already in range and must not be unfolded.
 	 *
 	 * @param worldPoint a coordinate in the world, in cm (must not be null)
 	 * @return the screen position in pixels, or null if the point lies outside the
-	 *         view port (caller should then skip drawing)
+	 *         rendered extent (caller should then skip drawing)
 	 */
 	public PixelCoordinate worldToScreen(ISU.Coord worldPoint) {
 		Objects.requireNonNull(worldPoint, "world point cannot be null");
@@ -166,67 +195,74 @@ public class View {
 
 		Game game = Game.game();
 
-		// Unfold around the origin so a point across the toric seam is handled.
-		double wx = game.isu.euclideanX(vp.originX(), worldPoint.x());
-		double wy = game.isu.euclideanY(vp.originY(), worldPoint.y());
+		double originX = renderOriginX();
+		double originY = renderOriginY();
+		double rw = renderWidth();
+		double rh = renderHeight();
 
-		// Outside the view port rectangle: not visible on the canvas.
-		if (wx < vp.originX() || wx > vp.originX() + vp.width_cm()
-				|| wy < vp.originY() || wy > vp.originY() + vp.height_cm()) {
+		boolean subWindowX = rw < game.width_cm;
+		boolean subWindowY = rh < game.height_cm;
+
+		double wx = subWindowX ? game.isu.euclideanX(originX, worldPoint.x()) : worldPoint.x();
+		double wy = subWindowY ? game.isu.euclideanY(originY, worldPoint.y()) : worldPoint.y();
+
+		// Tout ce qui est en dehors du viewport ne doit pas être affiché
+		if (wx < originX || wx > originX + rw || wy < originY || wy > originY + rh) {
 			return null;
 		}
 
-		int px = (int) Math.round(canvasX + (wx - vp.originX()) * scaleX());
-		int py = (int) Math.round(canvasY + (wy - vp.originY()) * scaleY());
+		int px = (int) Math.round(canvasX + (wx - originX) * scaleX());
+		int py = (int) Math.round(canvasY + (wy - originY) * scaleY());
 
 		return new PixelCoordinate(px, py);
 	}
 
 	public void paint(Graphics g) {
 		Objects.requireNonNull(g, "graphics cannot be null");
-		 
+
 		if (canvasW <= 0 || canvasH <= 0) {
 			return;
 		}
- 
+
 		long currentTime = System.currentTimeMillis();
 		double delta_t = (currentTime - lastTime) / 1000.0;
 		lastTime = currentTime;
- 
+
 		Game game = Game.game();
 
-		// Choose what the camera shows this frame: the real view port normally,
-		// or the whole map when the view-port debug overview is on.
-		double renderOriginX = debugViewPort ? 0 : vp.originX();
-		double renderOriginY = debugViewPort ? 0 : vp.originY();
-		double renderWidth = debugViewPort ? game.width_cm : vp.width_cm();
-		double renderHeight = debugViewPort ? game.height_cm : vp.height_cm();
+		// Source unique de vérité pour l'étendue rendue partagée avec
+
+		// worldToScreen afin que les Labels se projettent exactement sur ce qui est
+		// affiché.
+		double renderOriginX = renderOriginX();
+		double renderOriginY = renderOriginY();
+		double renderWidth = renderWidth();
+		double renderHeight = renderHeight();
 
 		// Total cm -> device pixel factor on each axis for the chosen extent.
-		double sx = canvasW / renderWidth;
-		double sy = canvasH / renderHeight;
- 
-		// Clip so only the drawing area is painted.
+		double sx = scaleX();
+		double sy = scaleY();
+
+		// Clip pour avoir l'effet de caméra, seule la partie du canvas dans le viewport
+		// est affichée.
 		Object savedTransform = g.getTransform();
 		g.setClip(canvasX, canvasY, canvasW, canvasH);
- 
-		// Update every avatar animation once per frame.
+
+		// Met à jour l'animation des Avatars à chaque frames
 		for (Avatar avatar : avatars) {
 			avatar.updateAnimation(delta_t);
 		}
- 
+
 		// Base pass.
 		paintScene(g, savedTransform, renderOriginX, renderOriginY, sx, sy, 0, 0);
- 
-		// Toric wrap-around: if the rendered extent straddles the seam of a toric
-		// axis, replay the scene shifted by one world period so entities that
-		// belong to the other side of the seam are drawn into the gap.
+
+		// Toric wrap-around
 		double worldW = game.width_cm;
 		double worldH = game.height_cm;
- 
+
 		boolean wrapX = game.torusOnXaxis && renderOriginX + renderWidth > worldW;
 		boolean wrapY = game.torusOnYaxis && renderOriginY + renderHeight > worldH;
- 
+
 		if (wrapX) {
 			paintScene(g, savedTransform, renderOriginX, renderOriginY, sx, sy, worldW, 0);
 		}
@@ -237,33 +273,41 @@ public class View {
 			paintScene(g, savedTransform, renderOriginX, renderOriginY, sx, sy, worldW, worldH);
 		}
 
-		// In debug overview, outline where the real view port currently is.
+		// En mode debug, dessine une rectangle là ou est le viewport
 		if (debugViewPort) {
 			paintViewPortRect(g, savedTransform, renderOriginX, renderOriginY, sx, sy);
 		}
- 
-		// Restore the canvas transform, then draw the HUD in screen pixels.
+
 		g.setTransform(savedTransform);
- 
+
+		// hud is optionnal, on dessine uniquement si présent (càd non null)
 		if (hud != null) {
 			hud.draw(g);
 		}
 	}
-	
+
+	/**
+	 * Paint the scene
+	 * 
+	 * @param g
+	 * @param baseTransform
+	 * @param renderOriginX
+	 * @param renderOriginY
+	 * @param sx
+	 * @param sy
+	 * @param worldShiftX_cm
+	 * @param worldShiftY_cm
+	 */
 	private void paintScene(Graphics g, Object baseTransform, double renderOriginX, double renderOriginY, double sx,
 			double sy, double worldShiftX_cm, double worldShiftY_cm) {
 		g.setTransform(baseTransform);
- 
-		// translate first: bring (origin - shift) cm to the drawing area corner;
-		// scale second: cm -> device pixels.
+
 		double txPix = canvasX - (renderOriginX - worldShiftX_cm) * sx;
 		double tyPix = canvasY - (renderOriginY - worldShiftY_cm) * sy;
- 
-		// Graphics.translate works in integer pixels, so the scroll offset is
-		// rounded; the sub-pixel remainder is below display resolution.
+
 		g.translate((int) Math.round(txPix), (int) Math.round(tyPix));
 		g.scale(sx / Game.game().pixelPerCm, sy / Game.game().pixelPerCm);
- 
+
 		if (background != null) {
 			background.paint(g);
 		}
@@ -296,8 +340,6 @@ public class View {
 		double vw = vp.width_cm();
 		double vh = vp.height_cm();
 
-		// The view port may straddle the toric seam; draw it and, if it overflows,
-		// a wrapped copy one period earlier so both halves are visible.
 		drawRectCm(g, renderOriginX, renderOriginY, vp.originX(), vp.originY(), vw, vh, sx, sy);
 
 		if (game.torusOnXaxis && vp.originX() + vw > game.width_cm) {
@@ -313,6 +355,17 @@ public class View {
 	/**
 	 * Draws a rectangle given in world cm into the current render frame, in device
 	 * pixels (the canvas transform is assumed reset to baseTransform).
+	 * 
+	 * 
+	 * @param g             graphism object
+	 * @param renderOriginX origin x
+	 * @param renderOriginY origin y
+	 * @param rectX_cm      x position of ract
+	 * @param rectY_cm      y position of ract
+	 * @param w_cm          width
+	 * @param h_cm          height
+	 * @param sx            screen x
+	 * @param sy            screen y
 	 */
 	private void drawRectCm(Graphics g, double renderOriginX, double renderOriginY, double rectX_cm, double rectY_cm,
 			double w_cm, double h_cm, double sx, double sy) {

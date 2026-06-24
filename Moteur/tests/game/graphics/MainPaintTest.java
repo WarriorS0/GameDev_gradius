@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.util.List;
 import java.util.logging.Logger;
 
+import engine.controller.Controller;
 import engine.controller.KeyManager;
 import engine.entity.Entity;
 import engine.gal.CompositeGALStunt;
@@ -17,17 +18,21 @@ import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
+import engine.move.ViewPort;
 import gal.ast.AST;
 import gal.parser.Parser;
 import game.Game;
+import game.gradius.entity.Cannon;
+import game.gradius.entity.CannonSlot;
+import game.gradius.entity.Laser;
+import game.gradius.entity.Ship;
 import game.gradius.graphics.CannonAvatar;
+import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
-import game.graduis.entity.Cannon;
-import game.graduis.entity.CannonSlot;
-import game.graduis.entity.Ship;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
+import oop.graphics.VirtualKeyCodes;
 import oop.tasks.Runnable;
 import oop.tasks.Runtime;
 import oop.tasks.Task;
@@ -56,8 +61,8 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(38, 41);
-		Model model = new Model(game.grid);
+		Game game = new Game(30, 30);
+		Model model = game.model;
 
 		// =========================
 		// Category interactions
@@ -81,6 +86,7 @@ public class MainPaintTest implements Runnable {
 		Cannon topCannon = new Cannon(CannonSlot.TOP);
 		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);
 
+		
 		topCannon.placeRelativeTo(ship);
 		bottomCannon.placeRelativeTo(ship);
 
@@ -99,7 +105,7 @@ public class MainPaintTest implements Runnable {
 				List.of(topCannon, bottomCannon)
 		);
 
-		shipStunt.setMaxLinearSpeed(20.0);
+		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 
 		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");
@@ -109,13 +115,17 @@ public class MainPaintTest implements Runnable {
 		// View
 		// =========================
 
-		View view = new View();
+		ViewPort vp = new ViewPort(0, 0, 120, 120);
+		vp.follow(ship);
+		model.setViewPort(vp);
+		View view = new View(vp);
 
 		view.add(new ShipAvatar(ship));
 		view.add(new CannonAvatar(topCannon));
 		view.add(new CannonAvatar(bottomCannon));
 
 		MapView mapView = new MapView();
+		view.setBackground(mapView::paint);
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
@@ -136,18 +146,7 @@ public class MainPaintTest implements Runnable {
 				g.setColor(Colors.black);
 				g.fillRect(0, 0, windowWidth, windowHeight);
 
-				double totalWidthPixels = game.grid.width() * game.cmPerCell * game.pixelPerCm;
-				double totalHeightPixels = game.grid.height() * game.cmPerCell * game.pixelPerCm;
-
-				double scale = Math.min(windowWidth / totalWidthPixels, windowHeight / totalHeightPixels);
-
-				int offsetX = (int) Math.round((windowWidth - totalWidthPixels * scale) / 2.0);
-				int offsetY = (int) Math.round((windowHeight - totalHeightPixels * scale) / 2.0);
-
-				g.translate(offsetX, offsetY);
-				g.scale(scale, scale);
-
-				mapView.paint(g);
+				view.setCanvasArea(0, 0, windowWidth, windowHeight);
 				view.paint(g);
 
 				fpsC.countFrame();
@@ -159,8 +158,11 @@ public class MainPaintTest implements Runnable {
 			}
 		});
 
-		// Le KeyManager est nécessaire pour que le clavier soit capté.
+		// Le KeyManager capte le clavier, mais il faut aussi lui donner
+		// un Controller relié au stunt du vaisseau.
 		KeyManager km = new KeyManager();
+		km.addDelegate(new Controller(shipStunt));
+		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());
 		canvas.set(km);
 
 		/*

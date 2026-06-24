@@ -1,18 +1,17 @@
-package game.graduis.entity;
+package game.gradius.entity;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Category;
 import engine.shape.Rect;
 import game.Game;
 
-public class Ship extends Entity {
-
-	public Ship() {
-		super("Ship");
+public class Laser extends Entity{
+	public Laser() {
+		super("Laser");
 
 		double cell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(4.0 * cell, 2.0 * cell));
+		setSize(isu.new Dimension(2.0 * cell, 1.0 * cell));
 		setStep(isu.new Dimension(cell, cell));
 		category(Category.Team);
 
@@ -25,4 +24,5 @@ public class Ship extends Entity {
 
 		addBounding(new Rect(center(), size(), orientation()));
 	}
+
 }

@@ -5,33 +5,37 @@ import engine.geometry.ISU;
 import game.Game;
 
 /**
- * A camera onto the world, defined in the model in ISU (cm).
+ * Une "caméra" sur le monde.
  *
- * The view port is a rectangle on the map: an origin (top-left corner, in cm)
- * and a size (width and height, in cm). The {@link engine.graphics.View} reads
- * it to build its transform (translate then scale) and to clip the canvas so
- * that only what lies inside the view port is shown.
+ * La fenêtre de vue est un rectangle sur la carte : elle est définie par une
+ * origine (coin supérieur gauche, en cm) et des dimensions (largeur et hauteur,
+ * en cm). La classe View l'utilise pour construire sa transformation
+ * (translation puis mise à l'échelle) et pour délimiter la zone d'affichage
+ * (clipping) de sorte que seul le contenu situé à l'intérieur de la fenêtre de
+ * vue soit visible.
  *
- * Three modes are supported:
+ * Il y a trois modes:
  * <ul>
- * <li>FREE: the origin is set explicitly and does not move on its own;</li>
- * <li>FOLLOW: the origin is recomputed every tick so that a target entity stays
- * at the center of the view port (within the limits allowed by the clamp);</li>
- * <li>RAIL: the origin scrolls at a constant speed in cm per second, typically
- * left to right for a horizontal shoot-them-up.</li>
+ * <li>FREE : l'origine est définie explicitement et ne se déplace pas
+ * d'elle-même ;</li>
+ * <li>FOLLOW : l'origine est recalculée à chaque tick à jour afin qu'une entité
+ * cible reste au centre de la fenêtre de vue;</li>
+ * <li>RAIL : l'origine défile à une vitesse constante (en cm par seconde).</li>
  * </ul>
  *
- * Toric constraints follow the world geometry:
+ * Les contraintes toriques dépendent de la géométrie du monde :
  * <ul>
- * <li>on a toric axis the origin is free (it wraps with the world), but the
- * view port must stay strictly smaller than the world (no tiling);</li>
- * <li>on a non-toric axis the view port is kept entirely inside the world.</li>
+ * <li>sur un axe torique, l'origine est libre (elle se « reboucle » avec le
+ * monde), mais la fenêtre de vue doit rester strictement plus petite que le
+ * monde (pas de mosaïque, "tiles") ;</li>
+ * <li>sur un axe non torique, la fenêtre de vue est maintenue entièrement à
+ * l'intérieur du monde.</li>
  * </ul>
  */
 public class ViewPort {
 
 	/**
-	 * The camera behaviour.
+	 * Comportement du viewmport, cad de la caméra
 	 */
 	public enum Mode {
 		FREE, FOLLOW, RAIL
@@ -48,7 +52,7 @@ public class ViewPort {
 	private Mode mode;
 
 	/**
-	 * Target entity in FOLLOW mode, null otherwise.
+	 * The targeted entity in FOLLOW mode, null otherwise.
 	 */
 	private Entity followed;
 
@@ -279,13 +283,10 @@ public class ViewPort {
 			return false;
 		}
 
-		// Unfold the entity coordinates around the view port origin so the
-		// comparison is correct even across the toric seam.
 		double ex = isu.euclideanX(originX_cm, e.center().x());
 		double ey = isu.euclideanY(originY_cm, e.center().y());
 
-		return ex >= originX_cm && ex <= originX_cm + width_cm
-				&& ey >= originY_cm && ey <= originY_cm + height_cm;
+		return ex >= originX_cm && ex <= originX_cm + width_cm && ey >= originY_cm && ey <= originY_cm + height_cm;
 	}
 
 	// =========================
@@ -324,10 +325,18 @@ public class ViewPort {
 	// World helpers
 	// =========================
 
+	/**
+	 * 
+	 * @return Game.game().width_cm
+	 */
 	private static double worldWidth() {
 		return Game.game().width_cm;
 	}
 
+	/**
+	 * 
+	 * @return Game.game().height_cm
+	 */
 	private static double worldHeight() {
 		return Game.game().height_cm;
 	}

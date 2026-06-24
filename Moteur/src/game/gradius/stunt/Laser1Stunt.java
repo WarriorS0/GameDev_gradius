@@ -1,4 +1,4 @@
-package game.move;
+package game.gradius.stunt;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -10,13 +10,13 @@ import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;
 
-public class BasicStunt extends Stunt {
-
+public class Laser1Stunt extends Stunt {
+	
 	private static Logger logger = LoggerManager.getLogger(BasicStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public BasicStunt(Model model, Entity entity) {
+	public Laser1Stunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}

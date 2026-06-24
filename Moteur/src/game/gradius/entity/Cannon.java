@@ -1,4 +1,4 @@
-package game.graduis.entity;
+package game.gradius.entity;
 
 import engine.entity.Entity;
 import engine.gal.arguments.Category;
@@ -35,7 +35,7 @@ public class Cannon extends Entity {
 		double cell = Game.game().cmPerCell;
 
 		double dx = 0.65 * cell;
-		double dy = slot.isTop() ? -0.75 * cell : 0.75 * cell;
+		double dy = slot.isTop() ? -2 * cell : 2 * cell;
 
 		place(isu.new Coord(anchor.center().x() + dx, anchor.center().y() + dy));
 	}
