@@ -208,7 +208,7 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
-		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight()-20), 20, ship);
+		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight() - 20), 20, ship);
 		health.setVisibility(true);
 		hud.add(health);
 
@@ -304,7 +304,7 @@ public class MainPaintTest implements Runnable {
 			labelTickTime.setVisibility(showDebugValues);
 			flShipDebugMoves.setVisibility(showDebugValues);
 			flShipDebugBehavior.setVisibility(showDebugValues);
-			AnimationAvatar.debugCollision=showDebugValues;
+			AnimationAvatar.debugCollision = showDebugValues;
 		});
 
 		MouseManager mm = new MouseManager();

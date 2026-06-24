@@ -20,7 +20,7 @@ public class View {
 	private int canvasX, canvasY, canvasW, canvasH;
 
 	private Hud hud; // optionnal
-	
+
 	private boolean hasBeenInitialized = false;
 
 	/**
@@ -213,7 +213,7 @@ public class View {
 
 		return new PixelCoordinate(px, py);
 	}
-	
+
 	private void initSprites(Graphics g) {
 		for (Avatar avatar : avatars) {
 			avatar.initImage(g);
@@ -226,10 +226,10 @@ public class View {
 		if (canvasW <= 0 || canvasH <= 0) {
 			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
 		}
-		
-		if(!hasBeenInitialized) {
+
+		if (!hasBeenInitialized) {
 			initSprites(g);
-			this.hasBeenInitialized=true;
+			this.hasBeenInitialized = true;
 		}
 
 		Game game = Game.game();
@@ -312,8 +312,7 @@ public class View {
 		if (background != null) {
 			background.paint(g);
 		}
-		
-		
+
 		long currentTime = System.currentTimeMillis();
 		double delta_t = (currentTime - lastTime) / 1000.0;
 		lastTime = currentTime;

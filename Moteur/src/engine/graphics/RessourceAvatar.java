@@ -22,9 +22,9 @@ abstract class RessourceAvatar extends ShapeAvatar {
 		super(entity, multX, multY);
 		this.imagePath = imagePath;
 	}
-	
+
 	public static void toggleDebug() {
-		debugCollision=!debugCollision;
+		debugCollision = !debugCollision;
 	}
 
 	@Override
