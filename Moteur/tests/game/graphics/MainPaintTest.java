@@ -90,6 +90,8 @@ public class MainPaintTest implements Runnable {
 		Runtime.boot(windowSize, r);
 		Runtime.shutdown();
 	}
+	
+	private boolean showDebugValues;
 
 	public final int NB_LAST_TIME_PAINT_SAVED;
 	private final int[] ARRAY_LAST_TIME_PAINT_SAVED;
@@ -101,6 +103,7 @@ public class MainPaintTest implements Runnable {
 	private int maxTime;
 
 	private MainPaintTest() {
+		showDebugValues=false;
 		NB_LAST_TIME_PAINT_SAVED = 96;
 		ARRAY_LAST_TIME_PAINT_SAVED = new int[NB_LAST_TIME_PAINT_SAVED];
 		indexArrayTimePaint = 0;
@@ -289,11 +292,12 @@ public class MainPaintTest implements Runnable {
 
 		// Appuyer sur tab fait apparaître/disparaître le label de fps.
 		km.bind(VirtualKeyCodes.VK_TAB, () -> {
-			labelFPS.setVisibility(!labelFPS.isVisible());
-			labelPaintTime.setVisibility(!labelPaintTime.isVisible());
-			labelTickTime.setVisibility(!labelTickTime.isVisible());
-			flShipDebugMoves.setVisibility(!flShipDebugMoves.isVisible());
-			flShipDebugBehavior.setVisibility(!flShipDebugBehavior.isVisible());
+			showDebugValues=!showDebugValues;
+			labelFPS.setVisibility(showDebugValues);
+			labelPaintTime.setVisibility(showDebugValues);
+			labelTickTime.setVisibility(showDebugValues);
+			flShipDebugMoves.setVisibility(showDebugValues);
+			flShipDebugBehavior.setVisibility(showDebugValues);
 		});
 
 		MouseManager mm = new MouseManager();
