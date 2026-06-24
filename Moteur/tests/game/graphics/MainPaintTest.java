@@ -148,6 +148,7 @@ public class MainPaintTest implements Runnable {
 		view.add(new ObstacleAvatar(obstacle));
 		
 		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
+		shipStunt.setProjectileSpawner(projectileSpawner);
 
 		projectileSpawner.spawn(
 				game.isu.new Coord(
