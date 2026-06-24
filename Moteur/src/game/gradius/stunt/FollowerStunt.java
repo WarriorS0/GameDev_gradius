@@ -47,7 +47,7 @@ public class FollowerStunt extends Stunt {
 
 	@Override
 	protected void tick(double d) {
-		myHistory.addLast(new MovementState(entity.center(), entity.orientation()));
+		myHistory.addLast(new MovementState(entity.center().mkCopy(), entity.orientation()));
 		
 		if(leaderHistory.size() > tickDelay) {
 			MovementState target = leaderHistory.getFirst();

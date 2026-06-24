@@ -45,7 +45,7 @@ public class TestDemoDragon implements Runnable {
 		Game game = new Game(30, 30);
 		Model model = game.model;
 		
-		Dragon dragon = new Dragon(0);
+		Dragon dragon = new Dragon(1);
 		dragon.place(game.grid.new Position(20,20));
 		View view = game.view;
 		

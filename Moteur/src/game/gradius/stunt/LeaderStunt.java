@@ -35,6 +35,6 @@ public class LeaderStunt extends Stunt {
 
 	@Override
 	protected void tick(double d) {
-		history.addLast(new MovementState(entity.center(), entity.orientation()));
+		history.addLast(new MovementState(entity.center().mkCopy(), entity.orientation()));
 	}
 }
