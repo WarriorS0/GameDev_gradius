@@ -190,7 +190,7 @@ public class View {
 		Objects.requireNonNull(worldPoint, "world point cannot be null");
 
 		if (canvasW <= 0 || canvasH <= 0) {
-			return null;
+			throw new RuntimeException("canvasW <= 0 ou canvasH <= 0");
 		}
 
 		Game game = Game.game();
@@ -206,11 +206,6 @@ public class View {
 		double wx = subWindowX ? game.isu.euclideanX(originX, worldPoint.x()) : worldPoint.x();
 		double wy = subWindowY ? game.isu.euclideanY(originY, worldPoint.y()) : worldPoint.y();
 
-		// Tout ce qui est en dehors du viewport ne doit pas être affiché
-		if (wx < originX || wx > originX + rw || wy < originY || wy > originY + rh) {
-			return null;
-		}
-
 		int px = (int) Math.round(canvasX + (wx - originX) * scaleX());
 		int py = (int) Math.round(canvasY + (wy - originY) * scaleY());
 
@@ -221,7 +216,7 @@ public class View {
 		Objects.requireNonNull(g, "graphics cannot be null");
 
 		if (canvasW <= 0 || canvasH <= 0) {
-			return;
+			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
 		}
 
 		long currentTime = System.currentTimeMillis();

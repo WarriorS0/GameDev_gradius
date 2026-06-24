@@ -15,7 +15,7 @@ public class AvatarTerrain extends Avatar {
 	private BufferedImage freeCell;
 
 	public AvatarTerrain() {
-		super(null);
+		this(null);
 	}
 
 	public AvatarTerrain(Entity entity) {
@@ -49,7 +49,7 @@ public class AvatarTerrain extends Avatar {
 
 		Grid grid = game.grid;
 
-		int cellSize = Math.max(1, (int) Math.round(game.cmPerCell * game.pixelPerCm));
+		int cellSize = Math.max(1, this.cmToPixel(game.cmPerCell));
 
 		for (int x = 0; x < grid.width(); x++) {
 			for (int y = 0; y < grid.height(); y++) {

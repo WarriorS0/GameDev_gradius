@@ -24,8 +24,8 @@ public class MouseManager implements Canvas.MouseListener {
 
 	static {
 		logger = LoggerManager.getLogger(KeyManager.class.getName());
-		LOGGING = (logger.getLevel() != Level.OFF);
-		FINE = (logger.getLevel() == Level.FINE);
+		LOGGING = logger.getLevel() != Level.OFF;
+		FINE = logger.isLoggable(Level.FINE);
 	}
 
 	private final Set<Canvas.MouseListener> delegates;

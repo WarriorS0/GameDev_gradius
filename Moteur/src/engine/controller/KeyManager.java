@@ -21,8 +21,8 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 	private static final Map<Integer, Boolean> down = new HashMap<>();
 	static {
 		logger = LoggerManager.getLogger(KeyManager.class.getName());
-		LOGGING = (logger.getLevel() != Level.OFF);
-		INFO = (logger.getLevel() == Level.INFO);
+		LOGGING = logger.getLevel() != Level.OFF;
+		INFO = logger.isLoggable(Level.INFO);
 	}
 
 	public KeyManager() {
