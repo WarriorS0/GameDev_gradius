@@ -420,7 +420,7 @@ public abstract class Entity {
 		sb.append(this.angularSpeed);
 		sb.append("\n");
 		sb.append("State:");
-		if (this.bot != null)
+		if (this.bot != null && bot.state() != null)
 			sb.append(this.bot.state().mode());
 		return sb.toString();
 	}

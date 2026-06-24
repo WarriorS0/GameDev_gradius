@@ -15,9 +15,9 @@ public class Bot {
 	private Entity impactor;
 
 	/**
-	 * @apiNote 0 <= health <= 100
+	 * @apiNote 0 <= life <= 3
 	 */
-	private int healthPercent;
+	private int life;
 	
 	private double timer_ms;
 
@@ -29,7 +29,7 @@ public class Bot {
 		}
 
 		this.entity = entity;
-		this.healthPercent = 3;
+		this.life = 3;
 		this.timer_ms = 0.0;
 	}
 
@@ -79,8 +79,8 @@ public class Bot {
 
 	// HEALTH
 
-	public int healthPercent() {
-		return healthPercent;
+	public int life() {
+		return life;
 	}
 
 	public void healthPercent(int healthPercent) {
@@ -88,7 +88,7 @@ public class Bot {
 			throw new IllegalArgumentException("healthPercent must be in [0, 100]");
 		}
 
-		this.healthPercent = healthPercent;
+		this.life= healthPercent;
 	}
 
 	public Entity impactor() {

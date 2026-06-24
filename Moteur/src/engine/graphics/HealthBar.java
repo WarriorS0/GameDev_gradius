@@ -20,8 +20,8 @@ public class HealthBar implements HudElement {
 		this.coord = coord;
 		this.width = width;
 		this.height = height;
-		this.hp = e.bot().healthPercent();
-		this.totalhp = e.bot().healthPercent();
+		this.hp = e.bot().life();
+		this.totalhp = e.bot().life();
 		this.entity = e;
 		this.scale = scale;
 	}
@@ -31,7 +31,7 @@ public class HealthBar implements HudElement {
 	@Override
 	public void draw(Graphics g) {
 		//int hpwidth = 10;
-		hp = entity.bot().healthPercent();
+		hp = entity.bot().life();
 		g.setColor(Colors.white);
 		for (int i = 0; i < totalhp; i++) {
 			if (hp > i) {
