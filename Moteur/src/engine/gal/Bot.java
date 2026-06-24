@@ -12,11 +12,14 @@ public class Bot {
 	private GALStunt stunt;
 
 	private State state;
+	private Entity impactor;
 
 	/**
 	 * @apiNote 0 <= health <= 100
 	 */
 	private int healthPercent;
+	
+	private double timer_ms;
 
 	// CONSTRUCTOR
 
@@ -26,7 +29,8 @@ public class Bot {
 		}
 
 		this.entity = entity;
-		this.healthPercent = 100;
+		this.healthPercent = 3;
+		this.timer_ms = 0.0;
 	}
 
 	// ENTITY
@@ -87,6 +91,10 @@ public class Bot {
 		this.healthPercent = healthPercent;
 	}
 
+	public Entity impactor() {
+		return impactor;
+	}
+
 	// TICK & COLLISION & COMPLETED
 
 	/**
@@ -94,6 +102,7 @@ public class Bot {
 	 * @param elapsed_ms
 	 */
 	public void tick(double elapsed_ms) {
+		updateTimer(elapsed_ms);
 		stepAutomaton();
 	}
 
@@ -104,7 +113,10 @@ public class Bot {
 	 * @param elapsed_ms
 	 */
 	public void collision(Entity impactor, double elapsed_ms) {
+		updateTimer(elapsed_ms);
+		this.impactor = impactor;
 		stepAutomaton();
+		this.impactor = null;
 	}
 
 	/**
@@ -120,5 +132,29 @@ public class Bot {
 		}
 
 		return automaton.step(entity);
+	}
+	
+	// TIMER
+
+	public void startTimer(double duration_ms) {
+		if (duration_ms < 0.0) {
+			throw new IllegalArgumentException("duration_ms cannot be negative");
+		}
+
+		this.timer_ms = duration_ms;
+	}
+
+	public boolean timerExpired() {
+		return timer_ms <= 0.0;
+	}
+
+	private void updateTimer(double elapsed_ms) {
+		if (elapsed_ms < 0.0) {
+			throw new IllegalArgumentException("elapsed_ms cannot be negative");
+		}
+
+		if (timer_ms > 0.0) {
+			timer_ms = Math.max(0.0, timer_ms - elapsed_ms);
+		}
 	}
 }

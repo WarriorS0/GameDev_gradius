@@ -14,6 +14,10 @@ public class Direction {
 	public static final Direction S; // South
 	public static final Direction E; // East
 	public static final Direction W; // West
+	public static final Direction NE; // North-East
+	public static final Direction NW; // North-West
+	public static final Direction SE; // South-East
+	public static final Direction SW; // South-West
 	
 	private static Map<String, Direction> directions = new HashMap<>();
 
@@ -31,6 +35,10 @@ public class Direction {
 		W = new Direction("West");
 		F = new Direction("Forward");
 		B = new Direction("Backward");
+		NE = new Direction("NorthEast");
+		NW = new Direction("NorthWest");
+		SE = new Direction("SouthEast");
+		SW = new Direction("SouthWest");
 
 		register(H, "H", "Here");
 		register(N, "N", "North");
@@ -39,6 +47,10 @@ public class Direction {
 		register(W, "W", "West");
 		register(F, "F", "Forward", "Front");
 		register(B, "B", "Backward", "Back");
+		register(NE, "NE", "NorthEast", "Northeast");
+		register(NW, "NW", "NorthWest", "Northwest");
+		register(SE, "SE", "SouthEast", "Southeast");
+		register(SW, "SW", "SouthWest", "Southwest");
 	}
 
 	private static void register(Direction direction, String... names) {
@@ -93,9 +105,10 @@ public class Direction {
 	// PREDICATE
 
 	public boolean isAbsolute() {
-		return this == N || this == S || this == E || this == W;
+		return this == N || this == S || this == E || this == W
+				|| this == NE || this == NW || this == SE || this == SW;
 	}
-
+	
 	public boolean isRelative() {
 		return this == F || this == B;
 	}
@@ -110,14 +123,26 @@ public class Direction {
 		if (this == E) {
 			return 0;
 		}
+		if (this == SE) {
+			return 45;
+		}
 		if (this == S) {
 			return 90;
+		}
+		if (this == SW) {
+			return 135;
 		}
 		if (this == W) {
 			return 180;
 		}
+		if (this == NW) {
+			return 225;
+		}
 		if (this == N) {
 			return 270;
+		}
+		if (this == NE) {
+			return 315;
 		}
 
 		throw new IllegalStateException("Direction has no absolute angle: " + name);

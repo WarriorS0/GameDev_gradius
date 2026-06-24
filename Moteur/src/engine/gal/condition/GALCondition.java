@@ -10,6 +10,7 @@ public abstract class GALCondition implements iGALCondition {
 	protected Category category;
 
 	public static final True TRUE = new True();
+	public static final False FALSE = new False();
 
 	protected GALCondition(Direction direction, Category category) {
 		this.direction = direction;

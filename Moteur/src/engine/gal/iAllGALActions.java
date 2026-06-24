@@ -30,5 +30,14 @@ public interface iAllGALActions {
 	 * @param intensity = in [0,1] ≃ % of the maximal angular speed
 	 */
 	boolean startTurning(int angle_deg, double intensity);
+	
+	// THROW
+
+	/**
+	 * @apiNote asks for throwing / firing in the given direction.
+	 * @param direction direction of the throw
+	 * @param intensity in [0,1]
+	 */
+	boolean startThrowing(Direction direction, double intensity);
 
 }

@@ -13,8 +13,11 @@ import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
+import engine.graphics.HealthBar;
 import engine.graphics.Hud;
+import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
+import engine.graphics.FollowerLabel;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
@@ -26,9 +29,14 @@ import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
 import game.gradius.entity.Laser;
 import game.gradius.entity.Ship;
+import game.gradius.entity.Power;
+import game.gradius.entity.Obstacle;
+import game.gradius.graphics.ObstacleAvatar;
+import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
+import game.gradius.spawn.ProjectileSpawner;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
@@ -61,8 +69,8 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(30, 30);
-		Model model = game.model;
+		Game game = new Game(38, 41);
+		Model model = new Model(game.grid);
 
 		// =========================
 		// Category interactions
@@ -75,6 +83,15 @@ public class MainPaintTest implements Runnable {
 
 		Category.setInteraction(Category.Team, Category.Adversary, true);
 		Category.setInteraction(Category.Adversary, Category.Team, true);
+		
+		Category.setInteraction(Category.Team, Category.Power, true);
+		Category.setInteraction(Category.Power, Category.Team, true);
+		
+		Category.setInteraction(Category.Projectile, Category.Obstacle, true);
+		Category.setInteraction(Category.Obstacle, Category.Projectile, true);
+
+		Category.setInteraction(Category.Projectile, Category.Adversary, true);
+		Category.setInteraction(Category.Adversary, Category.Projectile, true);
 
 		// =========================
 		// Ship composite entity
@@ -86,14 +103,20 @@ public class MainPaintTest implements Runnable {
 		Cannon topCannon = new Cannon(CannonSlot.TOP);
 		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);
 
+		ship.attachCannon(topCannon);
+		ship.attachCannon(bottomCannon);
 		
-		topCannon.placeRelativeTo(ship);
-		bottomCannon.placeRelativeTo(ship);
+		Power power = new Power();
+		Obstacle obstacle = new Obstacle(30, 20);
+		
+		
 
 		// D'abord ajouter les entities au model
 		model.add(ship);
 		model.add(topCannon);
 		model.add(bottomCannon);
+		model.add(power);
+		model.add(obstacle);
 
 		// Ensuite seulement créer le bot / stunt GAL
 		GALBot shipBot = new GALBot(ship);
@@ -107,6 +130,8 @@ public class MainPaintTest implements Runnable {
 
 		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
+		shipStunt.setBaseLinearSpeed(10.0, 0.0);
+		
 
 		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");
 		shipBot.set(shipAutomaton);
@@ -116,13 +141,26 @@ public class MainPaintTest implements Runnable {
 		// =========================
 
 		ViewPort vp = new ViewPort(0, 0, 120, 120);
-		vp.follow(ship);
+		vp.rail(10, 0); 
 		model.setViewPort(vp);
 		View view = new View(vp);
 
 		view.add(new ShipAvatar(ship));
 		view.add(new CannonAvatar(topCannon));
 		view.add(new CannonAvatar(bottomCannon));
+		view.add(new PowerAvatar(power));
+		view.add(new ObstacleAvatar(obstacle));
+		
+		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
+		shipStunt.setProjectileSpawner(projectileSpawner);
+
+		projectileSpawner.spawn(
+				game.isu.new Coord(
+						ship.center().x() + 3 * game.cmPerCell,
+						ship.center().y() - 2*game.cmPerCell
+				),
+				game.isu.new Vector(30.0, 0.0)
+		);
 
 		MapView mapView = new MapView();
 		view.setBackground(mapView::paint);
@@ -130,6 +168,20 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
+		HealthBar health = new HealthBar(new PixelCoordinate(0, 0), 20, ship) ;
+		health.setVisibility(true);
+
+		FollowerLabel shipDebug = new FollowerLabel(
+				() -> ship.debugInfo(),
+				Colors.white,
+				ship,
+				0,
+				-40
+		);
+
+		shipDebug.setView(view);
+		hud.add(shipDebug);
+		hud.add(health);
 		view.setHUD(hud);
 
 		canvas.set(new Canvas.PaintListener() {
