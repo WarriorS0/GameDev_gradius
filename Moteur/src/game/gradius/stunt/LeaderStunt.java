@@ -16,6 +16,10 @@ public class LeaderStunt extends Stunt {
 		super(model, entity);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public LinkedList<MovementState> getHistory() {
+		return history;
+	}
 
 	@Override
 	protected void collision(Entity entity) {

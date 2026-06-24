@@ -336,7 +336,7 @@ public class ISU {
 			this.y_cm += v.y_cm;
 		}
 
-		void scale(double factor) {
+		public void scale(double factor) {
 			this.x_cm *= factor;
 			this.y_cm *= factor;
 		}

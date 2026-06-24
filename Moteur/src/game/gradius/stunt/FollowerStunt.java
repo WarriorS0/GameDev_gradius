@@ -11,7 +11,7 @@ import game.Game;
 
 public class FollowerStunt extends Stunt {
 	
-	static class MovementState {
+	public static class MovementState {
 		public final ISU.Coord position;
 	    public final double orientation;
 
@@ -25,7 +25,7 @@ public class FollowerStunt extends Stunt {
 	private final LinkedList<MovementState> myHistory = new LinkedList<>();
 	private final int tickDelay;
 
-	protected FollowerStunt(Model model, Entity entity, LinkedList<MovementState> leaderHistory, int tickDelay) {
+	public FollowerStunt(Model model, Entity entity, LinkedList<MovementState> leaderHistory, int tickDelay) {
 		super(model, entity);
 		this.leaderHistory = leaderHistory;
         this.tickDelay = tickDelay;
@@ -53,10 +53,16 @@ public class FollowerStunt extends Stunt {
 			MovementState target = leaderHistory.getFirst();
 			
 			ISU.Vector speedVector = entity.center().mkVectorToward(target.position);
+			speedVector.scale(1/d);
 			setLinearSpeed(speedVector);
 			
-			
-			// missing rotation
+			double targetAngleRad = Math.atan2(speedVector.x(), speedVector.y());
+			double currentAngleRad = Math.toRadians(entity.orientation());
+			double diffAngleRad = targetAngleRad - currentAngleRad;
+			diffAngleRad = Math.atan2(Math.sin(diffAngleRad), Math.cos(diffAngleRad));
+			double angularSpeedRad = diffAngleRad / d;
+			double angularSpeedDeg = Math.toDegrees(angularSpeedRad);
+			this.setAngularSpeed(angularSpeedDeg);
 			
 			leaderHistory.removeFirst();
 		} else {
