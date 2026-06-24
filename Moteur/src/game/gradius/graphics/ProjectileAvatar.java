@@ -1,24 +1,14 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.Avatar;
+import engine.graphics.ShapeAvatar;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 
-public class ProjectileAvatar extends Avatar {
+public class ProjectileAvatar extends ShapeAvatar {
 
 	public ProjectileAvatar(Entity entity) {
-		super(entity);
-	}
-
-	@Override
-	public void initImages(Graphics g) {
-		// Rien à charger pour ce test.
-	}
-
-	@Override
-	public void updateAnimation(double delta_t) {
-		// Pas d'animation pour l'instant.
+		super(entity,1,1);
 	}
 
 	@Override

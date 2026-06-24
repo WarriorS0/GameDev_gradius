@@ -20,6 +20,8 @@ public class View {
 	private int canvasX, canvasY, canvasW, canvasH;
 
 	private Hud hud; // optionnal
+	
+	private boolean hasBeenInitialized = false;
 
 	/**
 	 * When true, the view zooms out to show the whole map and draws a rectangle
@@ -211,6 +213,12 @@ public class View {
 
 		return new PixelCoordinate(px, py);
 	}
+	
+	private void initSprites(Graphics g) {
+		for (Avatar avatar : avatars) {
+			avatar.initImage(g);
+		}
+	}
 
 	public void paint(Graphics g) {
 		Objects.requireNonNull(g, "graphics cannot be null");
@@ -218,10 +226,11 @@ public class View {
 		if (canvasW <= 0 || canvasH <= 0) {
 			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
 		}
-
-		long currentTime = System.currentTimeMillis();
-		double delta_t = (currentTime - lastTime) / 1000.0;
-		lastTime = currentTime;
+		
+		if(!hasBeenInitialized) {
+			initSprites(g);
+			this.hasBeenInitialized=true;
+		}
 
 		Game game = Game.game();
 
@@ -243,11 +252,8 @@ public class View {
 		Object savedTransform = g.getTransform();
 		g.setClip(canvasX, canvasY, canvasW, canvasH);
 
-		// Met à jour l'animation des Avatars à chaque frames
-		for (Avatar avatar : avatars) {
-			avatar.updateAnimation(delta_t);
-		}
-
+		// Dessine les avatars //OLD// Met à jour l'animation des Avatars à chaque
+		// frames
 		// Base pass.
 		paintScene(g, savedTransform, renderOriginX, renderOriginY, sx, sy, 0, 0);
 
@@ -306,8 +312,13 @@ public class View {
 		if (background != null) {
 			background.paint(g);
 		}
-
+		
+		
+		long currentTime = System.currentTimeMillis();
+		double delta_t = (currentTime - lastTime) / 1000.0;
+		lastTime = currentTime;
 		for (Avatar avatar : avatars) {
+			avatar.updateAnimation(delta_t);
 			avatar.paint(g);
 		}
 	}
