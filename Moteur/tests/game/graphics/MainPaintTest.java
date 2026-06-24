@@ -70,7 +70,7 @@ public class MainPaintTest implements Runnable {
 		Canvas canvas = (Canvas) task.find("canvas");
 
 		Game game = new Game(38, 41);
-		Model model = new Model(game.grid);
+		Model model = game.model;
 
 		// =========================
 		// Category interactions
@@ -140,10 +140,7 @@ public class MainPaintTest implements Runnable {
 		// View
 		// =========================
 
-		ViewPort vp = new ViewPort(0, 0, 120, 120);
-		vp.rail(10, 0); 
-		model.setViewPort(vp);
-		View view = new View(vp);
+		View view = game.view;
 
 		view.add(new ShipAvatar(ship));
 		view.add(new CannonAvatar(topCannon));
