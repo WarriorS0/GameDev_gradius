@@ -25,7 +25,6 @@ import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
-import engine.move.ViewPort;
 import gal.ast.AST;
 import gal.parser.Parser;
 import game.Game;
