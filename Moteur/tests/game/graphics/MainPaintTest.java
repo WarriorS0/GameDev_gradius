@@ -108,7 +108,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(38, 41);
+		Game game = new Game(32, 32);
 		Model model = game.model;
 
 		// =========================
@@ -175,7 +175,7 @@ public class MainPaintTest implements Runnable {
 		// View
 		// =========================
 
-		ViewPort vp = new ViewPort(0, 0, 60, 60);
+		ViewPort vp = new ViewPort(0, 0, 120, 120);
 		vp.rail(10, 0); 
 
 		model.setViewPort(vp);
@@ -211,19 +211,19 @@ public class MainPaintTest implements Runnable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("FPS");
 		Label labelFPS = new Label(
-				() -> String.format("Test ! FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ",
+				() -> String.format(" FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ",
 						fpsC.getFormattedFps(), fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(),
 						fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
 				new PixelCoordinate(12, 24), Colors.white, false);
 		hud.add(labelFPS);
 		Label labelPaintTime = new Label(
-				() -> String.format("YUIO ! PaintTime: %sms { min: %s ; avg: %s ; max: %s (from the last %d paints) }",
+				() -> String.format(" PaintTime: %sms { min: %s ; avg: %s ; max: %s (from the last %d paints) }",
 						dfTime.format(paintingTime), dfTime.format(minTime), dfTime.format(avgTime),
 						dfTime.format(maxTime), NB_LAST_TIME_PAINT_SAVED),
 				new PixelCoordinate(12, 36), Colors.white, false);
 		hud.add(labelPaintTime);
 		Label labelTickTime = new Label(
-				() -> String.format("GHBN ! TickTime:  %sms { min: %s ; avg: %s ; max: %s (from the last %d ticks) }",
+				() -> String.format(" TickTime:  %sms { min: %s ; avg: %s ; max: %s (from the last %d ticks) }",
 						model.getFormattedTickTime(), model.getFormattedMinTickTime(), model.getFormattedAvgTickTime(),
 						model.getFormattedMaxTickTime(), model.NB_LAST_TICK_TIME_SAVED),
 				new PixelCoordinate(12, 48), Colors.white, false);
