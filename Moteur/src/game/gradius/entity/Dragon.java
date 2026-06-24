@@ -35,7 +35,7 @@ public class Dragon extends Entity {
 			
 			leaderHistory = bodyStunt.getMyHistory();
 		}
-		headStunt.setLinearSpeed(7);
+		headStunt.setLinearSpeed(isu.new Vector(7, 0));
 		place(isu.new Coord(0,0));
 	}
 	
