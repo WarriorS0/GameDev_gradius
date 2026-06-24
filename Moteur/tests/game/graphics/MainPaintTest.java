@@ -25,12 +25,14 @@ import gal.parser.Parser;
 import game.Game;
 import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
+import game.gradius.entity.Laser;
 import game.gradius.entity.Ship;
 import game.gradius.entity.Power;
 import game.gradius.entity.Obstacle;
 import game.gradius.graphics.ObstacleAvatar;
 import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
+import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.spawn.ProjectileSpawner;
 import oop.graphics.Canvas;
@@ -103,7 +105,7 @@ public class MainPaintTest implements Runnable {
 		ship.attachCannon(bottomCannon);
 		
 		Power power = new Power();
-		Obstacle obstacle = new Obstacle();
+		Obstacle obstacle = new Obstacle(30, 20);
 		
 		
 
@@ -124,7 +126,7 @@ public class MainPaintTest implements Runnable {
 				List.of(topCannon, bottomCannon)
 		);
 
-		shipStunt.setMaxLinearSpeed(20.0);
+		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 		shipStunt.setBaseLinearSpeed(10.0, 0.0);
 		

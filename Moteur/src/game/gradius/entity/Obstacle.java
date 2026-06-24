@@ -7,22 +7,25 @@ import game.Game;
 
 public class Obstacle extends Entity {
 
-	public Obstacle() {
+	public Obstacle(int x_ncell, int y_ncell) {
 		super("Obstacle");
 
-		double cell = Game.game().cmPerCell;
+		double cmPerCell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(cell, cell));
-		setStep(isu.new Dimension(cell, cell));
+		setSize(isu.new Dimension(cmPerCell, cmPerCell));
 		category(Category.Obstacle);
+		place(grid.new Position(x_ncell, y_ncell));
 
-		place(grid.new Position(25, grid.height() / 2));
 	}
 
 	@Override
 	protected void setBounding() {
 		clearBounding();
 
-		addBounding(new Rect(center(), size(), orientation()));
+		addBounding(new Rect(
+			center(),
+			size(),
+			orientation()
+		));
 	}
 }

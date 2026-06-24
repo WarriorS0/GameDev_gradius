@@ -9,7 +9,7 @@ import oop.graphics.Graphics;
 public class ShipAvatar extends Avatar {
 
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vic_viper.png";
-	private static final double ANIMATION_DURATION_MS = 120.0;
+	private static final double FRAME_DURATION_S = 0.1; //attention c 'est des secondes
 
 	private BufferedImage spriteSheet;
 	private BufferedImage[] frames;
@@ -44,8 +44,8 @@ public class ShipAvatar extends Avatar {
 
 		time += delta_t;
 
-		while (time >= ANIMATION_DURATION_MS) {
-			time -= ANIMATION_DURATION_MS;
+		while (time >= FRAME_DURATION_S) {
+			time -= FRAME_DURATION_S;
 			frameIndex = (frameIndex + 1) % frames.length;
 		}
 	}

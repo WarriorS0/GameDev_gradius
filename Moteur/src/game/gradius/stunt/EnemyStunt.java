@@ -1,4 +1,4 @@
-package game.move;
+package game.gradius.stunt;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -9,24 +9,21 @@ import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;
-import game.entity.Ghost;
 
-public class PacManStunt extends Stunt {
+public class EnemyStunt extends Stunt {
+
 	
-	private static Logger logger = LoggerManager.getLogger(PacManStunt.class.getName());
+
+	private static Logger logger = LoggerManager.getLogger(BasicStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
 
-	public PacManStunt(Model model, Entity entity) {
+	public EnemyStunt(Model model, Entity entity) {
 		super(model, entity);
 		model.setStunt(entity, this);
 	}
 
 	public void set(int orientation) {
-		if (entity.dead()) {
-			return;
-		}
-
 
 		double angle = normalizeAngle(orientation);
 
@@ -41,62 +38,29 @@ public class PacManStunt extends Stunt {
 		}
 	}
 
-	public void kill() {
-		entity.kill();
-		super.setLinearSpeed(Game.game().isu.new Vector(0, 0));
-		super.setAngularSpeed(0);
-	}
-
-	public void revive() {
-		entity.revive();
-	}
-
 	@Override
 	protected void collision(Entity other) {
-		if (other instanceof Ghost) {
-			kill();
-			logger.fine("PACMAN EST MORT");
-			return;
-		}
-
 		setLinearSpeed(Game.game().isu.new Vector(0, 0));
 		setAngularSpeed(0);
 
-		logger.finer("PACMAN COLLISION avec " + other.name());
+		logger.finer("ATTENTION COLLISION avec " + other.name());
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
-		for (Entity other : entities) {
-			if (other instanceof Ghost) {
-				kill();
-				logger.fine("PACMAN EST MORT");
-				return;
-			}
-		}
-
 		setLinearSpeed(Game.game().isu.new Vector(0, 0));
 		setAngularSpeed(0);
-		logger.finer("PACMAN COLLISION avec plusieurs entités");
+
+		logger.finer("ATTENTION COLLISION avec plusieurs entités");
 	}
 
 	@Override
 	public void setLinearSpeed(Vector linearSpeed) {
-		if (entity.dead()) {
-			super.setLinearSpeed(Game.game().isu.new Vector(0, 0));
-			return;
-		}
-
 		super.setLinearSpeed(linearSpeed);
 	}
 
 	@Override
 	public void setAngularSpeed(double angularSpeed) {
-		if (entity.dead()) {
-			super.setAngularSpeed(0);
-			return;
-		}
-
 		super.setAngularSpeed(angularSpeed);
 	}
 
@@ -109,10 +73,11 @@ public class PacManStunt extends Stunt {
 
 		return normalized;
 	}
-
+	
 	@Override
 	protected void tick(double d) {
 		// TODO Auto-generated method stub
 		
 	}
+
 }

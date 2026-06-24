@@ -5,20 +5,17 @@ import engine.graphics.Avatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
-import oop.graphics.Graphics.Colors;
 
-public class CannonAvatar extends Avatar {
+public class Laser1Avatar extends Avatar{
+	private static final String SPRITE_PATH = "src/game/gradius/graphics/small_enemies.png";
+	private static final double ANIMATION_DURATION_MS = 100.0;
 
-	private static final String SPRITE_PATH = "src/game/gradius/graphics/cannon_sprites.png";
-	private static final double FRAME_DURATION_S = 0.2; //attention c 'est des secondes
-	
-	
 	private BufferedImage spriteSheet;
 	private BufferedImage[] frames;
 	private double time;
 	private int frameIndex;
-	
-	public CannonAvatar(Entity entity) {
+
+	public Laser1Avatar(Entity entity) {
 		super(entity);
 	}
 
@@ -27,9 +24,8 @@ public class CannonAvatar extends Avatar {
 		spriteSheet = g.load(SPRITE_PATH);
 
 		frames = new BufferedImage[] {
-			spriteSheet.getSubimage(24, 19, 14, 5),
-			spriteSheet.getSubimage(42, 19, 14, 5),
-			spriteSheet.getSubimage(60, 19, 14, 5),
+			spriteSheet.getSubimage(126, 121, 10, 4),
+			spriteSheet.getSubimage(137, 121, 10, 4),
 		};
 
 		time = 0.0;
@@ -44,8 +40,8 @@ public class CannonAvatar extends Avatar {
 
 		time += delta_t;
 
-		while (time >= FRAME_DURATION_S) {
-			time -= FRAME_DURATION_S;
+		while (time >= ANIMATION_DURATION_MS) {
+			time -= ANIMATION_DURATION_MS;
 			frameIndex = (frameIndex + 1) % frames.length;
 		}
 	}
@@ -65,8 +61,8 @@ public class CannonAvatar extends Avatar {
 		Game game = Game.game();
 		double pixelPerCm = game.pixelPerCm;
 
-		int width = Math.max(1, (int) Math.round(entity().size().x() * pixelPerCm))*2;
-		int height = Math.max(1, (int) Math.round(entity().size().y() * pixelPerCm))*2;
+		int width = Math.max(1, (int) Math.round(entity().size().x() * pixelPerCm));
+		int height = Math.max(1, (int) Math.round(entity().size().y() * pixelPerCm));
 
 		int xCenter = (int) Math.round(entity().center().x() * pixelPerCm);
 		int yCenter = (int) Math.round(entity().center().y() * pixelPerCm);
@@ -76,4 +72,5 @@ public class CannonAvatar extends Avatar {
 
 		g.drawImage(img, xTopLeft, yTopLeft, width, height);
 	}
+
 }
