@@ -49,7 +49,7 @@ public class MainPaintTest implements Runnable {
 	private static final boolean FINER;
 	private static final int FPS;
 	private static final boolean FPS_LOGGING;
-	
+
 	private static final DecimalFormat dfIndex;
 	private static final DecimalFormat dfTime;
 
@@ -175,15 +175,23 @@ public class MainPaintTest implements Runnable {
 		StringBuilder sb = new StringBuilder();
 		sb.append("FPS");
 		Label labelFPS = new Label(
-				() -> String.format("FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ", fpsC.getFormattedFps(),
-						fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(), fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
+				() -> String.format("Test ! FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ",
+						fpsC.getFormattedFps(), fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(),
+						fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
 				new PixelCoordinate(12, 24), Colors.white, false);
 		hud.add(labelFPS);
 		Label labelPaintTime = new Label(
-				() -> String.format("PaintTime: %dms { min: %d ; avg: %d ; max: %d (from the last %d paints) }", paintingTime,
-						minTime, avgTime, maxTime, NB_LAST_TIME_PAINT_SAVED),
+				() -> String.format("YUIO ! PaintTime: %sms { min: %s ; avg: %s ; max: %s (from the last %d paints) }",
+						dfTime.format(paintingTime), dfTime.format(minTime), dfTime.format(avgTime),
+						dfTime.format(maxTime), NB_LAST_TIME_PAINT_SAVED),
 				new PixelCoordinate(12, 36), Colors.white, false);
 		hud.add(labelPaintTime);
+		Label labelTickTime = new Label(
+				() -> String.format("GHBN ! TickTime:  %sms { min: %s ; avg: %s ; max: %s (from the last %d ticks) }",
+						model.getFormattedTickTime(), model.getFormattedMinTickTime(), model.getFormattedAvgTickTime(),
+						model.getFormattedMaxTickTime(), model.NB_LAST_TICK_TIME_SAVED),
+				new PixelCoordinate(12, 48), Colors.white, false);
+		hud.add(labelTickTime);
 		FollowerLabel flShip = new FollowerLabel(() -> ship.debugInfo(), Colors.white, ship, 0, 10);
 		flShip.setView(view);
 		hud.add(flShip);
@@ -234,10 +242,11 @@ public class MainPaintTest implements Runnable {
 		// un Controller relié au stunt du vaisseau.
 		KeyManager km = new KeyManager();
 
-		// Appuyer sur tab fait appraître/disparaître le label de fps.
+		// Appuyer sur tab fait apparaître/disparaître le label de fps.
 		km.bind(VirtualKeyCodes.VK_TAB, () -> {
 			labelFPS.setVisibility(!labelFPS.isVisible());
 			labelPaintTime.setVisibility(!labelPaintTime.isVisible());
+			labelTickTime.setVisibility(!labelTickTime.isVisible());
 			flShip.setVisibility(!flShip.isVisible());
 		});
 
