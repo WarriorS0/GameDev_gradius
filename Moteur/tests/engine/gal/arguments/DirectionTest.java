@@ -40,4 +40,28 @@ class DirectionTest {
 	void relativeDirectionHasNoAbsoluteAngle() {
 		assertThrows(IllegalStateException.class, () -> Direction.F.toAngle());
 	}
+	
+	@Test
+	void diagonalDirectionsAreCanonical() {
+		assertSame(Direction.NE, Direction.canonical("NE"));
+		assertSame(Direction.NW, Direction.canonical("NW"));
+		assertSame(Direction.SE, Direction.canonical("SE"));
+		assertSame(Direction.SW, Direction.canonical("SW"));
+	}
+
+	@Test
+	void diagonalDirectionsAreAbsolute() {
+		assertTrue(Direction.NE.isAbsolute());
+		assertTrue(Direction.NW.isAbsolute());
+		assertTrue(Direction.SE.isAbsolute());
+		assertTrue(Direction.SW.isAbsolute());
+	}
+
+	@Test
+	void diagonalDirectionsHaveAngles() {
+		assertEquals(315, Direction.NE.toAngle());
+		assertEquals(225, Direction.NW.toAngle());
+		assertEquals(45, Direction.SE.toAngle());
+		assertEquals(135, Direction.SW.toAngle());
+	}
 }
