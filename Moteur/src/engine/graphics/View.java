@@ -12,8 +12,6 @@ import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 
 public class View {
-	
-	private boolean shouldFollowingLabelsDissapearOutsideOfViewport = false;
 
 	private List<Avatar> avatars;
 	private long lastTime;
@@ -218,7 +216,7 @@ public class View {
 		Objects.requireNonNull(g, "graphics cannot be null");
 
 		if (canvasW <= 0 || canvasH <= 0) {
-			return;
+			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
 		}
 
 		long currentTime = System.currentTimeMillis();

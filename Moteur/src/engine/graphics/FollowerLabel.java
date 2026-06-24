@@ -60,8 +60,8 @@ public class FollowerLabel extends Label {
 	 */
 	public void update() {
 		if (target == null || target.dead()) {
-			// setVisibility(false); // label will be deleted if targe is dead. target
-			// shouldn't be null in the first place
+			// setVisibility(false); // label will be deleted if targe is dead.
+			// target shouldn't be null in the first place
 			return;
 		}
 
@@ -83,7 +83,7 @@ public class FollowerLabel extends Label {
 				// Target is outside the view port: do not draw.
 				// TODO DUE TO THE BUG WITH THE GAME SIZE, LABEL DON'T SHOW CORRECTLY
 				// NOT A LABEL BUG, it's a viewport bug
-				//setVisibility(false);
+				// setVisibility(false);
 			}
 			return;
 		} else {
@@ -92,10 +92,6 @@ public class FollowerLabel extends Label {
 
 		this.pc.x = pos.x + offset.x;
 		this.pc.y = pos.y + offset.y;
-		
-		setVisibility(true);
-		System.out.println("this.pc.x "+this.pc.x);
-		System.out.println("this.pc.y "+this.pc.y);
 	}
 
 	public static PixelCoordinate getPosFromCoordAndOffset(PixelCoordinate position, PixelCoordinate offset) {
