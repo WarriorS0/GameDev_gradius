@@ -209,9 +209,12 @@ public class MainPaintTest implements Runnable {
 
 		Hud hud = new Hud();
 
-		FollowerLabel flShip = new FollowerLabel(() -> ship.debugInfo(), Colors.white, ship, 0, 10);
-		flShip.setView(view);
-		hud.add(flShip);
+		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), Colors.white, ship, 0, -25);
+		flShipDebugBehavior.setView(view);
+		hud.add(flShipDebugBehavior);
+		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), Colors.white, ship, 0, 20);
+		flShipDebugMoves.setView(view);
+		hud.add(flShipDebugMoves);
 
 //		FollowerLabel fbTopCannon = new FollowerLabel(() -> topCannon.debugInfo(), Colors.white, topCannon, 0, 10);
 //		fbTopCannon.setView(view);
@@ -289,7 +292,8 @@ public class MainPaintTest implements Runnable {
 			labelFPS.setVisibility(!labelFPS.isVisible());
 			labelPaintTime.setVisibility(!labelPaintTime.isVisible());
 			labelTickTime.setVisibility(!labelTickTime.isVisible());
-			flShip.setVisibility(!flShip.isVisible());
+			flShipDebugMoves.setVisibility(!flShipDebugMoves.isVisible());
+			flShipDebugBehavior.setVisibility(!flShipDebugBehavior.isVisible());
 		});
 
 		MouseManager mm = new MouseManager();
