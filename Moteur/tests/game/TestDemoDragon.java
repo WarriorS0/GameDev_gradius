@@ -1,9 +1,13 @@
 package game;
 
 import java.awt.Dimension;
+import java.util.logging.Logger;
 
+import engine.controller.Controller;
+import engine.controller.KeyManager;
 import engine.graphics.FpsManager;
 import engine.graphics.View;
+import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
 import engine.move.ViewPort;
@@ -12,6 +16,7 @@ import game.gradius.graphics.MapView;
 import game.graphics.MainPaintTest;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
+import oop.graphics.VirtualKeyCodes;
 import oop.graphics.Graphics.Colors;
 import oop.tasks.Runnable;
 import oop.tasks.Runtime;
@@ -19,6 +24,9 @@ import oop.tasks.Task;
 
 public class TestDemoDragon implements Runnable {
 	
+	private static final Logger logger = LoggerManager.getLogger(MainPaintTest.class.getName());
+	private static final int FPS = 30;
+	private static final boolean FPS_LOGGING = true;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 640;
 
@@ -37,17 +45,16 @@ public class TestDemoDragon implements Runnable {
 		Game game = new Game(30, 30);
 		Model model = game.model;
 		
-		Dragon dragon = new Dragon(5);
+		Dragon dragon = new Dragon(0);
+		dragon.place(game.grid.new Position(20,20));
+		View view = game.view;
 		
-		ViewPort vp = new ViewPort(0, 0, 120, 120);
-		vp.rail(10, 0); 
-		model.setViewPort(vp);
-		View view = new View(vp);
 		
 		MapView mapView = new MapView();
 		view.setBackground(mapView::paint);
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
+		
 		
 		canvas.set(new Canvas.PaintListener() {
 			@Override
@@ -65,7 +72,7 @@ public class TestDemoDragon implements Runnable {
 
 				view.setCanvasArea(0, 0, windowWidth, windowHeight);
 				view.paint(g);
-
+				
 				fpsC.countFrame();
 			}
 
@@ -74,6 +81,11 @@ public class TestDemoDragon implements Runnable {
 				System.exit(0);
 			}
 		});
+		
+		KeyManager km = new KeyManager();
+		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());
+		canvas.set(km);
+		
 		new Ticker(model);
 	}
 

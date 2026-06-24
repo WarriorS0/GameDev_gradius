@@ -17,8 +17,9 @@ public class DragonBodyAvatar extends Avatar {
 	private boolean deathAnimationFinished;
 	private BufferedImage current;
 	
-	protected DragonBodyAvatar(Entity entity) {
+	public DragonBodyAvatar(Entity entity) {
 		super(entity);
+		Game.game().view.add(this);
 	}
 	
 	@Override

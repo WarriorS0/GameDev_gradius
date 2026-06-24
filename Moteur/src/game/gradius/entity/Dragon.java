@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import engine.entity.Entity;
+import engine.geometry.Grid;
 import engine.geometry.ISU;
 import engine.move.Model;
 import game.Game;
@@ -35,16 +36,25 @@ public class Dragon extends Entity {
 			
 			leaderHistory = bodyStunt.getMyHistory();
 		}
-		headStunt.setLinearSpeed(isu.new Vector(7, 0));
+		//headStunt.setLinearSpeed(isu.new Vector(7, 0));
 		place(isu.new Coord(0,0));
 	}
 	
 	@Override
 	public void place(ISU.Coord center) {
-		super.place(isu.new Coord(0,0)); 
+		super.place(center); 
 		
 		for(Entity part: dragon_parts) {
 			part.place(center);
+		}
+	}
+	
+	@Override
+	public void place(Grid.Position pos) {
+		super.place(pos); 
+		
+		for(Entity part: dragon_parts) {
+			part.place(pos);
 		}
 	}
 
