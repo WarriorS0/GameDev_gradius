@@ -86,7 +86,7 @@ public class AST2Aut {
 
 	private iGALCondition convertExpression(gal.ast.Expression expr) {
 		if (expr == null) {
-			return GALCondition.TRUE;
+			throw new IllegalArgumentException("GAL expression cannot be null");
 		}
 
 		// --- CASE 1: Standard Condition (FunCall) ---
@@ -95,7 +95,7 @@ public class AST2Aut {
 			String condName = call.name;
 
 			if (condName == null) {
-				return GALCondition.TRUE;
+				throw new IllegalArgumentException("GAL condition name cannot be null");
 			}
 
 			switch (condName.toLowerCase()) {
@@ -103,33 +103,25 @@ public class AST2Aut {
 				return GALCondition.TRUE;
 
 			case "atstep":
-				if (call.parameters.size() >= 3) {
-					try {
-						String dirParam = call.parameters.get(0).toString();
-						String catParam = call.parameters.get(1).toString();
-
-						Direction dir = Direction.canonical(dirParam);
-						Category cat = Category.canonical(catParam);
-
-						// Check parameter type for the step value
-						int step = 1;
-						Parameter p2 = call.parameters.get(2);
-						if (p2 instanceof IntValue) {
-							step = ((IntValue) p2).value;
-						} else {
-							step = Integer.parseInt(p2.toString());
-						}
-
-						return new AtStep(dir, cat, step);
-
-					} catch (Exception e) {
-						throw e;
-					}
-				} else {
-					// AtStep requires 3 parameters (Direction, Category, nbStep) so we just do
-					// nothing
+				if (call.parameters.size() != 3) {
+					throw new IllegalArgumentException("AtStep condition requires 3 parameters: direction, category, step");
 				}
-				return GALCondition.TRUE;
+
+				String dirParam = call.parameters.get(0).toString();
+				String catParam = call.parameters.get(1).toString();
+
+				Direction dir = Direction.canonical(dirParam);
+				Category cat = Category.canonical(catParam);
+
+				Parameter p2 = call.parameters.get(2);
+				int step;
+				if (p2 instanceof IntValue) {
+					step = ((IntValue) p2).value;
+				} else {
+					step = Integer.parseInt(p2.toString());
+				}
+
+				return new AtStep(dir, cat, step);
 
 			case "key":
 				if (call.parameters.size() >= 1) {
@@ -160,7 +152,7 @@ public class AST2Aut {
 			case "timer":
 				return new Timer();
 			default:
-				return GALCondition.FALSE;
+				throw new IllegalArgumentException("Unsupported GAL condition: " + condName);
 			}
 		}
 
@@ -173,20 +165,21 @@ public class AST2Aut {
 				conjunction.add(convertExpression(binOp.right_operand));
 				return conjunction;
 			}
+			throw new UnsupportedOperationException("Unsupported GAL binary operator: " + binOp.operator);
 		}
 
 		// --- CASE 3: Negation (UnaryOp) ---
 		else if (expr instanceof gal.ast.UnaryOp) {
 			gal.ast.UnaryOp unOp = (gal.ast.UnaryOp) expr;
+
 			if ("!".equals(unOp.operator) || "not".equalsIgnoreCase(unOp.operator)) {
-				System.err.println("Fact: The engine class for Negation/Not is missing. Returning TRUE fallback.");
-				// iGALCondition subCondition = convertExpression(unOp.operand);
-				// need to implement Not
-				// return new engine.gal.condition.Not(subCondition);
+				throw new UnsupportedOperationException("GAL Not condition is not supported yet");
 			}
+
+			throw new UnsupportedOperationException("Unsupported GAL unary operator: " + unOp.operator);
 		}
 
-		return GALCondition.FALSE;
+		throw new UnsupportedOperationException("Unsupported GAL expression type: " + expr.getClass().getName());
 	}
 	
 	private iGALAction convertAction(gal.ast.Actions astAction) {
