@@ -16,6 +16,7 @@ import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
+import engine.graphics.HealthBar;
 import engine.graphics.Hud;
 import engine.graphics.Label;
 import engine.graphics.FollowerLabel;
@@ -90,7 +91,7 @@ public class MainPaintTest implements Runnable {
 		Runtime.boot(windowSize, r);
 		Runtime.shutdown();
 	}
-	
+
 	private boolean showDebugValues;
 
 	public final int NB_LAST_TIME_PAINT_SAVED;
@@ -103,7 +104,7 @@ public class MainPaintTest implements Runnable {
 	private int maxTime;
 
 	private MainPaintTest() {
-		showDebugValues=false;
+		showDebugValues = false;
 		NB_LAST_TIME_PAINT_SAVED = 96;
 		ARRAY_LAST_TIME_PAINT_SAVED = new int[NB_LAST_TIME_PAINT_SAVED];
 		indexArrayTimePaint = 0;
@@ -211,8 +212,12 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
+		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight()-20), 20, ship);
+		health.setVisibility(true);
+		hud.add(health);
 
-		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), Colors.white, ship, 0, -25);
+		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), Colors.white, ship, 0,
+				-25);
 		flShipDebugBehavior.setView(view);
 		hud.add(flShipDebugBehavior);
 		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), Colors.white, ship, 0, 20);
@@ -282,7 +287,7 @@ public class MainPaintTest implements Runnable {
 
 			@Override
 			public void revoked(Canvas canvas) {
-				System.exit(0); //safe exit
+				System.exit(0); // safe exit
 			}
 		});
 
@@ -292,7 +297,7 @@ public class MainPaintTest implements Runnable {
 
 		// Appuyer sur tab fait apparaître/disparaître le label de fps.
 		km.bind(VirtualKeyCodes.VK_TAB, () -> {
-			showDebugValues=!showDebugValues;
+			showDebugValues = !showDebugValues;
 			labelFPS.setVisibility(showDebugValues);
 			labelPaintTime.setVisibility(showDebugValues);
 			labelTickTime.setVisibility(showDebugValues);
