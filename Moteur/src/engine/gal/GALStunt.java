@@ -262,5 +262,10 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	public Object projectileSpawner() {
 		return projectileSpawner;
 	}
+	
+	@Override
+	public boolean startThrowing(Direction direction, double intensity) {
+		return false;
+	}
 
 }

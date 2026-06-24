@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.entity.Entity;
+import engine.gal.arguments.Direction;
 import engine.geometry.ISU.Vector;
 import engine.move.Model;
 
@@ -82,6 +83,29 @@ public class CompositeGALStunt extends GALStunt {
 	public void setBaseLinearSpeed(double x_cmPer_s, double y_cmPer_s) {
 	    this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
 	    setLinearSpeed(targetDirection);
+	}
+	
+	@Override
+	public boolean startThrowing(Direction direction, double intensity) {
+		if (projectileSpawner() == null) {
+			return false;
+		}
+
+		Object spawner = projectileSpawner();
+
+		try {
+			var spawnMethod = spawner.getClass().getMethod(
+					"spawnFrom",
+					Entity.class,
+					Direction.class,
+					double.class
+			);
+
+			spawnMethod.invoke(spawner, entity, direction, intensity);
+			return true;
+		} catch (ReflectiveOperationException e) {
+			throw new RuntimeException("Cannot throw projectile", e);
+		}
 	}
 
 }
