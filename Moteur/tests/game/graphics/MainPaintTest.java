@@ -13,7 +13,9 @@ import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
+import engine.graphics.HealthBar;
 import engine.graphics.Hud;
+import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
 import engine.graphics.FollowerLabel;
 import engine.logs.LoggerManager;
@@ -166,6 +168,8 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
+		HealthBar health = new HealthBar(new PixelCoordinate(0, 0), 20, ship) ;
+		health.setVisibility(true);
 
 		FollowerLabel shipDebug = new FollowerLabel(
 				() -> ship.debugInfo(),
@@ -177,7 +181,7 @@ public class MainPaintTest implements Runnable {
 
 		shipDebug.setView(view);
 		hud.add(shipDebug);
-
+		hud.add(health);
 		view.setHUD(hud);
 
 		canvas.set(new Canvas.PaintListener() {
