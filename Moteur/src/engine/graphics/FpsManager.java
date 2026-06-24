@@ -1,5 +1,6 @@
 package engine.graphics;
 
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,19 +17,36 @@ import oop.tasks.Task;
  */
 public class FpsManager {
 
-	private static final int A_SECOND = 1000;
-	private static final int MAX_FPS = 120;
-	private static final int MIN_RECOMMENDED_FPS = 30;
-	private static final int MAX_RECOMMENDED_FPS = 60;
-	private static final int MIN_FPS = 1;
+	private static final int A_SECOND;
+	private static final int MAX_FPS;
+	private static final int MIN_RECOMMENDED_FPS;
+	private static final int MAX_RECOMMENDED_FPS;
+	private static final int MIN_FPS;
+
+	public static final int DEFAULT_NB_LAST_FPS_SAVED;
+	public static final int DEFAULT_NB_LAST_TIME_PAINT_SAVED;
 
 	private static final boolean LOGGING;
 	private static final boolean INFO;
 	private static final Logger logger;
+
+	private static final DecimalFormat dfIndex;
+	private static final DecimalFormat dfFps;
 	static {
+		// Logger
 		logger = LoggerManager.getLogger(FpsManager.class.getName());
 		LOGGING = logger.getLevel() != Level.OFF;
 		INFO = logger.isLoggable(Level.INFO);
+		dfIndex = new DecimalFormat("00");
+		dfFps = new DecimalFormat("000");
+		// Constants
+		A_SECOND = 1000;
+		MAX_FPS = 120;
+		MIN_RECOMMENDED_FPS = 30;
+		MAX_RECOMMENDED_FPS = 60;
+		MIN_FPS = 1;
+		DEFAULT_NB_LAST_FPS_SAVED = 10;
+		DEFAULT_NB_LAST_TIME_PAINT_SAVED = 32;
 	}
 
 	public final int NB_LAST_FPS_SAVED;
@@ -36,16 +54,21 @@ public class FpsManager {
 	private int indexArrayFps;
 
 	private int sumFps;
-	protected int minFps;
-	protected int avgFps;
-	protected int maxFps;
+	private int minFps;
+	private int avgFps;
+	private int maxFps;
 
 	private final int UPDATE_FPS_COUNTER;
-	private int fpsLimit, tempFps, fps, time;
+	private int fpsLimit, tempFps, fps;
+	/**
+	 * not relate to paintTime. It's a different thing
+	 */
+	private int execTime;
 	public boolean shouldLogFps;
 	private final Task fpsTask;
 
-	public FpsManager(Task task, int limit, int update_timer, int nb_fps_for_avg, boolean shouldLogFps) {
+	public FpsManager(Task task, int limit, int update_timer, int nb_fps_for_avg, int nb_timevalues_for_avg,
+			boolean shouldLogFps) {
 		if (this.shouldLogFps && LOGGING)
 			logger.info("Creating new fps controller");
 		if (limit > MAX_FPS)
@@ -61,13 +84,13 @@ public class FpsManager {
 		this.maxFps = 0;
 		this.fpsLimit = limit;
 		this.UPDATE_FPS_COUNTER = update_timer;
-		this.time = 0;
+		this.execTime = 0;
 		this.shouldLogFps = shouldLogFps;
 		this.fpsTask = task;
 	}
 
 	public FpsManager(Task task, int limit, boolean shouldLogFps) {
-		this(task, limit, A_SECOND, 10, shouldLogFps);
+		this(task, limit, A_SECOND, DEFAULT_NB_LAST_FPS_SAVED, DEFAULT_NB_LAST_TIME_PAINT_SAVED, shouldLogFps);
 	}
 
 	/**
@@ -97,7 +120,7 @@ public class FpsManager {
 	public int getFps() {
 		return this.fps;
 	}
-	
+
 	public int getMinFps() {
 		return minFps;
 	}
@@ -108,6 +131,22 @@ public class FpsManager {
 
 	public int getMaxFps() {
 		return maxFps;
+	}
+	
+	public String getFormattedFps() {
+		return dfFps.format(this.fps);
+	}
+
+	public String getFormattedMinFps() {
+		return dfFps.format(this.minFps);
+	}
+
+	public String getFormattedAvgFps() {
+		return dfFps.format(this.avgFps);
+	}
+
+	public String getFormattedMaxFps() {
+		return dfFps.format(this.maxFps);
 	}
 
 	/**
@@ -131,21 +170,21 @@ public class FpsManager {
 				maxFps = localFps;
 		}
 		if (LOGGING && INFO && this.shouldLogFps) {
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sbFpsArray = new StringBuilder();
 			for (int i = 0; i < NB_LAST_FPS_SAVED; i++) {
-				sb.append("[");
-				sb.append(i);
-				sb.append(":");
-				sb.append(ARRAY_LAST_FPS_SAVED[i]);
-				sb.append("]");
+				sbFpsArray.append("[");
+				sbFpsArray.append(dfIndex.format(i));
+				sbFpsArray.append(":");
+				sbFpsArray.append(dfFps.format(ARRAY_LAST_FPS_SAVED[i]));
+				sbFpsArray.append("]");
 			}
 			logger.info(String.format(
-					"Execution time + Extended FPS \nExectime %ds | fps: %d { min: %d ; avg: %d ; max: %d (of the last %ds) }\n%s sum:%d",
-					this.time, this.fps, this.minFps, this.avgFps, this.maxFps, this.NB_LAST_FPS_SAVED, sb.toString(),
-					this.sumFps));
+					"Execution time %ds \nfps: %d { min: %d ; avg: %d ; max: %d ; sum: %d (of the last %ds) } \n%s",
+					this.execTime, this.fps, this.minFps, this.avgFps, this.maxFps, this.sumFps, this.NB_LAST_FPS_SAVED,
+					sbFpsArray.toString()));
 		}
 		this.tempFps = 0;
-		this.time++;
+		this.execTime++;
 		this.fpsTask.post(() -> checkFPS(), this.UPDATE_FPS_COUNTER);
 	}
 
