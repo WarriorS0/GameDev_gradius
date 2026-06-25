@@ -2,8 +2,6 @@ package engine.graphics.hud;
 
 import java.util.Objects;
 
-import engine.geometry.ISU;
-
 public class PixelCoordinate {
 	int x;
 	int y;
@@ -33,10 +31,6 @@ public class PixelCoordinate {
 	@Override
 	public String toString() {
 		return "PixCoord[" + x + "," + y + "]";
-	}
-
-	public static PixelCoordinate IsuCoordToPixelCoord(ISU.Coord c) {
-		return new PixelCoordinate((int) c.x(), (int) c.y());
 	}
 
 }

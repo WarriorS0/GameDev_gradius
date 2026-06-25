@@ -3,13 +3,13 @@ package game.gradius.spawn;
 import engine.graphics.View;
 import engine.geometry.ISU;
 import engine.move.Model;
+import game.gradius.entity.Cannon;
 import game.gradius.entity.Projectile;
 import game.gradius.graphics.ProjectileAvatar;
 import game.gradius.stunt.ProjectileStunt;
 import engine.entity.Entity;
-import engine.gal.arguments.Direction;
 import engine.gal.PowerReceiver;
-import game.gradius.entity.Cannon;
+import engine.gal.arguments.Direction;
 
 public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 

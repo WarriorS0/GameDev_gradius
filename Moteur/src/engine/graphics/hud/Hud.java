@@ -11,8 +11,8 @@ import oop.graphics.Graphics;
 
 /**
  * Unlike Avatars who requires entities, hud allow to display element without
- * the need for one Hud element will always be drawn on top of any entity (due
- * to the drawing order)
+ * the need for one. Hud element will always be drawn on top of any entity (due
+ * to the drawing order in View)
  */
 public class Hud {
 
@@ -25,8 +25,8 @@ public class Hud {
 		INFO = logger.isLoggable(Level.INFO);
 	}
 
-	private final List<HudElement> elements;
-	private final List<HudElement> toRemoveNext;
+	private final List<IHudElement> elements;
+	private final List<IHudElement> toRemoveNext;
 
 	/**
 	 * Creates a hud object
@@ -35,16 +35,16 @@ public class Hud {
 		if (LOGGING && INFO)
 			logger.info("Created new HUD");
 		this.elements = new LinkedList<>();
-		this.toRemoveNext= new LinkedList<>();
+		this.toRemoveNext = new LinkedList<>();
 	}
 
 	/**
-	 * Adds an element to the hud
-	 * 
-	 * @param e the hud element to add
-	 * @return true if sucessfully added, false if not
+	 * Ajoute un élément au HUD
+	 *
+	 * @param e l'élément de HUD à ajouter
+	 * @return true si l'ajout a réussi, false sinon
 	 */
-	public boolean add(HudElement e) {
+	public boolean add(IHudElement e) {
 		if (e == null)
 			return false;
 		if (LOGGING && INFO)
@@ -53,12 +53,12 @@ public class Hud {
 	}
 
 	/**
-	 * Removes an element from the hud.
+	 * Supprime un élément du HUD.
 	 *
-	 * @param e the element to remove
-	 * @return true if sucessfully removed, false if not
+	 * @param e l'élément à supprimer
+	 * @return true si la suppression a réussi, false sinon
 	 */
-	public boolean remove(HudElement e) {
+	public boolean remove(IHudElement e) {
 		if (e == null)
 			return false;
 		if (LOGGING && INFO)
@@ -72,28 +72,27 @@ public class Hud {
 		this.elements.clear();
 	}
 
-	public Iterator<HudElement> iterator() {
+	public Iterator<IHudElement> iterator() {
 		return this.elements.iterator();
 	}
 
 	/**
-	 * Draws all visible elements in order (oldest first, newest on top).
+	 * Dessine tous les éléments visibles dans l'ordre (le plus ancien en premier,
+	 * le plus récent au-dessus).
 	 *
-	 * @param graphics the graphics in raw canvas pixels
+	 * @param graphics les éléments graphiques en pixels bruts du canevas
 	 */
-	public void draw(Graphics graphics) {
-		for(HudElement e : elements) {
-			if (e instanceof FollowerLabel fl) {
-				if (fl.isTargetEntityStillAlive()) {
-					fl.update();
-				} else {
-					this.toRemoveNext.add(fl);
-				}
-			}
-			if (e.isVisible())
+	public void draw(Graphics graphics, int canvasWidth, int canvasHeigh) {
+		for (IHudElement e : elements) {
+			if (e.mustBeDeleted()) {
+				e.setVisibility(false);
+				this.toRemoveNext.add(e);
+			} else if (e.isVisible()) {
+				e.update(canvasWidth, canvasHeigh);
 				e.draw(graphics);
+			}
 		}
-		for(HudElement e : toRemoveNext) {
+		for (IHudElement e : toRemoveNext) {
 			this.elements.remove(e);
 		}
 		toRemoveNext.clear();
