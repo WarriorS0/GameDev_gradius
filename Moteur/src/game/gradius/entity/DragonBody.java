@@ -8,7 +8,7 @@ class DragonBody extends Entity {
 	public DragonBody() {
 		super("dragon_body");
 		
-		setSize(isu.new Dimension(5,3));
+		setSize(isu.new Dimension(8,8));
 		new DragonBodyAvatar(this);
 	}
 

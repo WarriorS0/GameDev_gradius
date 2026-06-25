@@ -5,7 +5,11 @@ import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.controller.KeyManager;
+import engine.graphics.AnimationAvatar;
 import engine.graphics.FpsManager;
+import engine.graphics.Hud;
+import engine.graphics.Label;
+import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
 import engine.logs.LoggerManager;
 import engine.move.Model;
@@ -29,6 +33,7 @@ public class TestDemoDragon implements Runnable {
 	private static final boolean FPS_LOGGING = true;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 640;
+	private boolean showDebugValues = false;
 
 	public static void main(String[] args) throws Exception {
 		Runnable r = new TestDemoDragon();
@@ -45,7 +50,7 @@ public class TestDemoDragon implements Runnable {
 		Game game = new Game(30, 30);
 		Model model = game.model;
 		
-		Dragon dragon = new Dragon(1);
+		Dragon dragon = new Dragon(6);
 		dragon.place(game.grid.new Position(20,20));
 		View view = game.view;
 		
@@ -54,6 +59,35 @@ public class TestDemoDragon implements Runnable {
 		view.setBackground(mapView::paint);
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
+		Hud hud = new Hud();
+		
+		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode.",
+				new PixelCoordinate(6, 12), Colors.white, false);
+		hud.add(labelDebug);
+		StringBuilder sb = new StringBuilder();
+		sb.append("FPS");
+		Label labelFPS = new Label(
+				() -> String.format(" FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ",
+						fpsC.getFormattedFps(), fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(),
+						fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
+				new PixelCoordinate(12, 24), Colors.white, false);
+		labelFPS.setVisibility(false);
+		hud.add(labelFPS);
+		Label labelPaintTime = new Label(() -> String.format(" FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ",
+						fpsC.getFormattedFps(), fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(),
+						fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
+				new PixelCoordinate(12, 24), Colors.white, false);
+		labelPaintTime.setVisibility(false); 
+		hud.add(labelPaintTime);
+		Label labelTickTime = new Label(
+				() -> String.format(" TickTime:  %sms { min: %s ; avg: %s ; max: %s (from the last %d ticks) }",
+						model.getFormattedTickTime(), model.getFormattedMinTickTime(), model.getFormattedAvgTickTime(),
+						model.getFormattedMaxTickTime(), model.NB_LAST_TICK_TIME_SAVED),
+				new PixelCoordinate(12, 48), Colors.white, false);
+		labelTickTime.setVisibility(false);
+		hud.add(labelTickTime);
+
+		view.setHUD(hud);
 		
 		
 		canvas.set(new Canvas.PaintListener() {
@@ -83,6 +117,13 @@ public class TestDemoDragon implements Runnable {
 		});
 		
 		KeyManager km = new KeyManager();
+		km.bind(VirtualKeyCodes.VK_TAB, () -> {
+			showDebugValues = !showDebugValues;
+			labelFPS.setVisibility(showDebugValues);
+			labelPaintTime.setVisibility(showDebugValues);
+			labelTickTime.setVisibility(showDebugValues);
+			AnimationAvatar.debugCollision = showDebugValues;
+		});
 		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());
 		canvas.set(km);
 		

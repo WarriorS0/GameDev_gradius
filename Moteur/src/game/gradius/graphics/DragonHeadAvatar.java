@@ -23,7 +23,7 @@ public class DragonHeadAvatar extends Avatar {
 	}
 	
 	@Override
-	public void initImages(Graphics g) {
+	public void initImage(Graphics g) {
 		sprites = g.load(SPRITE_PATH);
 		orientations = new BufferedImage[16];
 		orientations[0] = sprites.getSubimage(1, 1, 49, 49);
@@ -98,7 +98,7 @@ public class DragonHeadAvatar extends Avatar {
 	@Override
 	public void paint(Graphics g) {
 		if (sprites == null || orientations == null) {
-			initImages(g);
+			initImage(g);
 		}
 		if (entity().center() == null) {
 			return;

@@ -16,7 +16,7 @@ import game.gradius.stunt.LeaderStunt;
 public class Dragon extends Entity {
 	
 	private List<Entity> dragon_parts;
-	private final static int TICK_DELAY = 10;
+	private final static int TICK_DELAY = 30;
 	private final static Model model = Game.game().model;
 
 	public Dragon(int nb_segments) {
@@ -32,11 +32,12 @@ public class Dragon extends Entity {
 			FollowerStunt bodyStunt = new FollowerStunt(model, body, leaderHistory, TICK_DELAY);
 			model.add(body, bodyStunt);
 	
-			dragon_parts.add(new DragonBody());
+			dragon_parts.add(body);
 			
 			leaderHistory = bodyStunt.getMyHistory();
 		}
-		//headStunt.setLinearSpeed(isu.new Vector(7, 0));
+		headStunt.setAngularSpeed(45);
+		//headStunt.setLinearSpeed(isu.new Vector(0, 20));
 		place(isu.new Coord(0,0));
 	}
 	

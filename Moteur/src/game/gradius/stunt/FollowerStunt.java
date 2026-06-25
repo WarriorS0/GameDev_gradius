@@ -56,7 +56,7 @@ public class FollowerStunt extends Stunt {
 			speedVector.scale(1/d);
 			setLinearSpeed(speedVector);
 			
-			double targetAngleRad = Math.atan2(speedVector.x(), speedVector.y());
+			double targetAngleRad = Math.atan2(speedVector.y(), speedVector.x());
 			double currentAngleRad = Math.toRadians(entity.orientation());
 			double diffAngleRad = targetAngleRad - currentAngleRad;
 			diffAngleRad = Math.atan2(Math.sin(diffAngleRad), Math.cos(diffAngleRad));
