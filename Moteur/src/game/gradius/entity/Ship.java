@@ -1,6 +1,7 @@
 package game.gradius.entity;
 
 import engine.entity.Entity;
+import engine.gal.PowerReceiver;
 import engine.gal.arguments.Category;
 import engine.shape.Rect;
 import game.Game;
@@ -10,9 +11,10 @@ import java.util.List;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 
-public class Ship extends Entity {
+public class Ship extends Entity implements PowerReceiver{
 	
 	private final List<Cannon> cannons = new ArrayList<>();
+	private boolean powered;
 
 	public Ship() {
 		super("Ship");
@@ -40,10 +42,10 @@ public class Ship extends Entity {
 
 		if (!cannons.contains(cannon)) {
 			cannons.add(cannon);
+			cannon.attachTo(this);
 			cannon.placeRelativeTo(this);
 		}
 	}
-
 	public List<Cannon> cannons() {
 		return Collections.unmodifiableList(cannons);
 	}
@@ -98,4 +100,14 @@ public class Ship extends Entity {
 		super.translate(v);
 		syncCannons();
 	}
+
+	@Override
+    public void activatePower() {
+        this.powered = true;
+    }
+
+    @Override
+    public boolean hasPower() {
+        return powered;
+    }
 }
