@@ -1,4 +1,4 @@
-package engine.graphics;
+package engine.graphics.avatars;
 
 import java.util.logging.Level;
 
@@ -41,12 +41,13 @@ public class ShapeAvatar extends Avatar {
 		g.drawRect(xTopLeft, yTopLeft, width, height);
 	}
 
-	protected void updateAnimation(double delta_t) {
+	@Override
+	public void updateAnimation(double delta_t) {
 		// no animation
 	}
 
 	@Override
-	protected void initImage(Graphics g) {
+	public void initImage(Graphics g) {
 		if (LOGGING && INFO) {
 			logger.log(Level.INFO, "Init shape avatar");
 		}

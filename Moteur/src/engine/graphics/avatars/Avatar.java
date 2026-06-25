@@ -1,4 +1,4 @@
-package engine.graphics;
+package engine.graphics.avatars;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +61,7 @@ public abstract class Avatar {
 		return (int) Math.round(value * pixelPerCm);
 	}
 
-	protected abstract void updateAnimation(double delta_t);
+	public abstract void updateAnimation(double delta_t);
 
-	protected abstract void initImage(Graphics g);
+	public abstract void initImage(Graphics g);
 }

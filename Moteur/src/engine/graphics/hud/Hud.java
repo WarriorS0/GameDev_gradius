@@ -1,4 +1,4 @@
-package engine.graphics;
+package engine.graphics.hud;
 
 import java.util.LinkedList;
 import java.util.Iterator;

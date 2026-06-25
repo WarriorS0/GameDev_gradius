@@ -1,7 +1,7 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.AnimationAvatar;
+import engine.graphics.avatars.AnimationAvatar;
 import oop.graphics.Graphics;
 
 public abstract class EnemyAvatar extends AnimationAvatar {
