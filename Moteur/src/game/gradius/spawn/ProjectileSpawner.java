@@ -60,7 +60,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 				source.center().y()
 		);
 
-		double speedValue = 80.0 * intensity;
+		double speedValue = 130.0 * intensity;
 		ISU.Vector speed;
 
 		if (direction == Direction.N) {
