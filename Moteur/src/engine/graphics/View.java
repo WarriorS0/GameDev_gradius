@@ -20,7 +20,7 @@ public class View {
 	private int canvasX, canvasY, canvasW, canvasH;
 
 	private Hud hud; // optionnal
-	
+
 	private boolean hasBeenInitialized = false;
 
 	/**
@@ -55,24 +55,18 @@ public class View {
 	}
 
 	/**
-	 * Color of the view-port rectangle drawn in debug mode.
+	 * Color of the view-port rectangle drawn in debug mode, and of the view-port
+	 * border drawn in normal mode.
 	 */
 	private Color viewPortDebugColor = Colors.green;
 
 	/**
-	 * How the rendered extent is fitted into the canvas when their aspect ratios
-	 * differ. CONTAIN keeps everything visible and adds black bars (letterbox);
-	 * COVER fills the whole canvas and crops the overflow (the clip handles it).
+	 * Minimum margin, in pixels, always kept between the view port and the canvas
+	 * edges. The view port is never stretched; this margin guarantees a black band
+	 * all around even when the view port would otherwise fill the canvas, leaving
+	 * room to draw a border and HUD elements.
 	 */
-	public enum FitMode {
-		CONTAIN, COVER
-	}
-
-	/**
-	 * Fit policy used to avoid stretching: a single uniform scale is derived from
-	 * this. Change it here to switch between letterbox and fill behaviour.
-	 */
-	public static final FitMode FIT_MODE = FitMode.CONTAIN;
+	public static final int VIEWPORT_MARGIN_PX = 12;
 
 	/**
 	 * Optional background drawn in world space (cm), before the avatars, so it goes
@@ -179,16 +173,30 @@ public class View {
 	}
 
 	/**
+	 * Usable drawing width in pixels: the canvas minus the margins on both sides.
+	 */
+	private int usableW() {
+		return Math.max(1, canvasW - 2 * VIEWPORT_MARGIN_PX);
+	}
+
+	/**
+	 * Usable drawing height in pixels: the canvas minus the margins.
+	 */
+	private int usableH() {
+		return Math.max(1, canvasH - 2 * VIEWPORT_MARGIN_PX);
+	}
+
+	/**
 	 * Uniform cm -> device pixel factor for the current frame. The same scale is
-	 * used on both axes so images are never stretched; the policy (letterbox vs
-	 * fill) is set by {@link #FIT_MODE}.
+	 * used on both axes so the view port is letterboxed (never stretched): it is
+	 * fitted inside the usable area and the leftover space becomes black bands.
 	 *
 	 * @return the uniform scale
 	 */
 	private double scale() {
-		double fitX = canvasW / renderWidth();
-		double fitY = canvasH / renderHeight();
-		return FIT_MODE == FitMode.CONTAIN ? Math.min(fitX, fitY) : Math.max(fitX, fitY);
+		double fitX = usableW() / renderWidth();
+		double fitY = usableH() / renderHeight();
+		return Math.min(fitX, fitY);
 	}
 
 	/**
@@ -203,6 +211,20 @@ public class View {
 	 */
 	private double offsetY() {
 		return canvasY + (canvasH - renderHeight() * scale()) / 2.0;
+	}
+
+	/**
+	 * @return the screen rectangle actually occupied by the rendered extent, in
+	 *         pixels {x, y, width, height}. Drawing is clipped to this so nothing
+	 *         outside the view port leaks into the black bands.
+	 */
+	private int[] renderRectPx() {
+		double s = scale();
+		int x = (int) Math.round(offsetX());
+		int y = (int) Math.round(offsetY());
+		int w = (int) Math.round(renderWidth() * s);
+		int h = (int) Math.round(renderHeight() * s);
+		return new int[] { x, y, w, h };
 	}
 
 	/**
@@ -236,13 +258,19 @@ public class View {
 		double wx = subWindowX ? game.isu.euclideanX(originX, worldPoint.x()) : worldPoint.x();
 		double wy = subWindowY ? game.isu.euclideanY(originY, worldPoint.y()) : worldPoint.y();
 
+		// Outside the rendered extent: not visible on the canvas. Returning null
+		// lets callers (e.g. FollowerLabel) hide rather than draw in the black band.
+		if (wx < originX || wx > originX + rw || wy < originY || wy > originY + rh) {
+			return null;
+		}
+
 		double s = scale();
 		int px = (int) Math.round(offsetX() + (wx - originX) * s);
 		int py = (int) Math.round(offsetY() + (wy - originY) * s);
 
 		return new PixelCoordinate(px, py);
 	}
-	
+
 	private void initSprites(Graphics g) {
 		for (Avatar avatar : avatars) {
 			avatar.initImage(g);
@@ -255,10 +283,10 @@ public class View {
 		if (canvasW <= 0 || canvasH <= 0) {
 			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
 		}
-		
-		if(!hasBeenInitialized) {
+
+		if (!hasBeenInitialized) {
 			initSprites(g);
-			this.hasBeenInitialized=true;
+			this.hasBeenInitialized = true;
 		}
 
 		Game game = Game.game();
@@ -272,15 +300,19 @@ public class View {
 		double renderWidth = renderWidth();
 		double renderHeight = renderHeight();
 
-		// Uniform scale (no stretching); centering offsets handle letterbox/fill.
+		// Uniform scale (no stretching); centering offsets handle letterbox.
 		double s = scale();
 		double sx = s;
 		double sy = s;
 
-		// Clip pour avoir l'effet de caméra, seule la partie du canvas dans le viewport
-		// est affichée.
+		// Clip to the rectangle actually occupied by the view port, not the whole
+		// canvas. This is what enforces the camera: anything outside the view port
+		// (e.g. an entity that left it) falls in the black bands and is masked,
+		// instead of leaking because the canvas is larger than the view port.
+		int[] rect = renderRectPx();
+
 		Object savedTransform = g.getTransform();
-		g.setClip(canvasX, canvasY, canvasW, canvasH);
+		g.setClip(rect[0], rect[1], rect[2], rect[3]);
 
 		// Dessine les avatars //OLD// Met à jour l'animation des Avatars à chaque
 		// frames
@@ -304,12 +336,24 @@ public class View {
 			paintScene(g, savedTransform, renderOriginX, renderOriginY, sx, sy, worldW, worldH);
 		}
 
-		// En mode debug, dessine une rectangle là ou est le viewport
+		// En mode debug, dessine un rectangle là où est le viewport réel.
 		if (debugViewPort) {
 			paintViewPortRect(g, savedTransform, renderOriginX, renderOriginY, sx, sy);
 		}
 
+		// Restore transform, remove the clip, then draw the frame and HUD over the
+		// full canvas (including the black bands).
 		g.setTransform(savedTransform);
+		g.setClip(canvasX, canvasY, canvasW, canvasH);
+
+		// In normal mode, outline the view port edge so the player can tell where
+		// the game ends and the black letterbox bands begin.
+		if (!debugViewPort) {
+			Color previous = g.getColor();
+			g.setColor(viewPortDebugColor);
+			g.drawRect(rect[0], rect[1], rect[2], rect[3]);
+			g.setColor(previous);
+		}
 
 		// hud is optionnal, on dessine uniquement si présent (càd non null)
 		if (hud != null) {
@@ -342,8 +386,7 @@ public class View {
 		if (background != null) {
 			background.paint(g);
 		}
-		
-		
+
 		long currentTime = System.currentTimeMillis();
 		double delta_t = (currentTime - lastTime) / 1000.0;
 		lastTime = currentTime;
@@ -374,7 +417,7 @@ public class View {
 		g.setColor(viewPortDebugColor);
 
 		double vw = vp.width_cm();
-		double vh = vp.height_cm();
+		double vh = vp.height_cm() - 1; // -1 pour que le bas s'affiche correctement
 
 		drawRectCm(g, renderOriginX, renderOriginY, vp.originX(), vp.originY(), vw, vh, sx, sy);
 
@@ -396,8 +439,8 @@ public class View {
 	 * @param g             graphism object
 	 * @param renderOriginX origin x
 	 * @param renderOriginY origin y
-	 * @param rectX_cm      x position of ract
-	 * @param rectY_cm      y position of ract
+	 * @param rectX_cm      x position of rect
+	 * @param rectY_cm      y position of rect
 	 * @param w_cm          width
 	 * @param h_cm          height
 	 * @param sx            screen x
