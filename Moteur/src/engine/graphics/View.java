@@ -20,6 +20,8 @@ public class View {
 	private int canvasX, canvasY, canvasW, canvasH;
 
 	private Hud hud; // optionnal
+	
+	private boolean hasBeenInitialized = false;
 
 	/**
 	 * When true, the view zooms out to show the whole map and draws a rectangle
@@ -56,6 +58,21 @@ public class View {
 	 * Color of the view-port rectangle drawn in debug mode.
 	 */
 	private Color viewPortDebugColor = Colors.green;
+
+	/**
+	 * How the rendered extent is fitted into the canvas when their aspect ratios
+	 * differ. CONTAIN keeps everything visible and adds black bars (letterbox);
+	 * COVER fills the whole canvas and crops the overflow (the clip handles it).
+	 */
+	public enum FitMode {
+		CONTAIN, COVER
+	}
+
+	/**
+	 * Fit policy used to avoid stretching: a single uniform scale is derived from
+	 * this. Change it here to switch between letterbox and fill behaviour.
+	 */
+	public static final FitMode FIT_MODE = FitMode.CONTAIN;
 
 	/**
 	 * Optional background drawn in world space (cm), before the avatars, so it goes
@@ -162,17 +179,30 @@ public class View {
 	}
 
 	/**
-	 * @return the cm -> device pixel factor on the x axis for the current frame
+	 * Uniform cm -> device pixel factor for the current frame. The same scale is
+	 * used on both axes so images are never stretched; the policy (letterbox vs
+	 * fill) is set by {@link #FIT_MODE}.
+	 *
+	 * @return the uniform scale
 	 */
-	private double scaleX() {
-		return canvasW / renderWidth();
+	private double scale() {
+		double fitX = canvasW / renderWidth();
+		double fitY = canvasH / renderHeight();
+		return FIT_MODE == FitMode.CONTAIN ? Math.min(fitX, fitY) : Math.max(fitX, fitY);
 	}
 
 	/**
-	 * @return the cm -> device pixel factor on the y axis for the current frame
+	 * @return horizontal pixel offset that centers the scaled extent in the canvas
 	 */
-	private double scaleY() {
-		return canvasH / renderHeight();
+	private double offsetX() {
+		return canvasX + (canvasW - renderWidth() * scale()) / 2.0;
+	}
+
+	/**
+	 * @return vertical pixel offset that centers the scaled extent in the canvas
+	 */
+	private double offsetY() {
+		return canvasY + (canvasH - renderHeight() * scale()) / 2.0;
 	}
 
 	/**
@@ -206,10 +236,17 @@ public class View {
 		double wx = subWindowX ? game.isu.euclideanX(originX, worldPoint.x()) : worldPoint.x();
 		double wy = subWindowY ? game.isu.euclideanY(originY, worldPoint.y()) : worldPoint.y();
 
-		int px = (int) Math.round(canvasX + (wx - originX) * scaleX());
-		int py = (int) Math.round(canvasY + (wy - originY) * scaleY());
+		double s = scale();
+		int px = (int) Math.round(offsetX() + (wx - originX) * s);
+		int py = (int) Math.round(offsetY() + (wy - originY) * s);
 
 		return new PixelCoordinate(px, py);
+	}
+	
+	private void initSprites(Graphics g) {
+		for (Avatar avatar : avatars) {
+			avatar.initImage(g);
+		}
 	}
 
 	public void paint(Graphics g) {
@@ -218,10 +255,11 @@ public class View {
 		if (canvasW <= 0 || canvasH <= 0) {
 			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
 		}
-
-		long currentTime = System.currentTimeMillis();
-		double delta_t = (currentTime - lastTime) / 1000.0;
-		lastTime = currentTime;
+		
+		if(!hasBeenInitialized) {
+			initSprites(g);
+			this.hasBeenInitialized=true;
+		}
 
 		Game game = Game.game();
 
@@ -234,20 +272,18 @@ public class View {
 		double renderWidth = renderWidth();
 		double renderHeight = renderHeight();
 
-		// Total cm -> device pixel factor on each axis for the chosen extent.
-		double sx = scaleX();
-		double sy = scaleY();
+		// Uniform scale (no stretching); centering offsets handle letterbox/fill.
+		double s = scale();
+		double sx = s;
+		double sy = s;
 
 		// Clip pour avoir l'effet de caméra, seule la partie du canvas dans le viewport
 		// est affichée.
 		Object savedTransform = g.getTransform();
 		g.setClip(canvasX, canvasY, canvasW, canvasH);
 
-		// Met à jour l'animation des Avatars à chaque frames
-		for (Avatar avatar : avatars) {
-			avatar.updateAnimation(delta_t);
-		}
-
+		// Dessine les avatars //OLD// Met à jour l'animation des Avatars à chaque
+		// frames
 		// Base pass.
 		paintScene(g, savedTransform, renderOriginX, renderOriginY, sx, sy, 0, 0);
 
@@ -297,8 +333,8 @@ public class View {
 			double sy, double worldShiftX_cm, double worldShiftY_cm) {
 		g.setTransform(baseTransform);
 
-		double txPix = canvasX - (renderOriginX - worldShiftX_cm) * sx;
-		double tyPix = canvasY - (renderOriginY - worldShiftY_cm) * sy;
+		double txPix = offsetX() - (renderOriginX - worldShiftX_cm) * sx;
+		double tyPix = offsetY() - (renderOriginY - worldShiftY_cm) * sy;
 
 		g.translate((int) Math.round(txPix), (int) Math.round(tyPix));
 		g.scale(sx / Game.game().pixelPerCm, sy / Game.game().pixelPerCm);
@@ -306,8 +342,13 @@ public class View {
 		if (background != null) {
 			background.paint(g);
 		}
-
+		
+		
+		long currentTime = System.currentTimeMillis();
+		double delta_t = (currentTime - lastTime) / 1000.0;
+		lastTime = currentTime;
 		for (Avatar avatar : avatars) {
+			avatar.updateAnimation(delta_t);
 			avatar.paint(g);
 		}
 	}
@@ -364,8 +405,8 @@ public class View {
 	 */
 	private void drawRectCm(Graphics g, double renderOriginX, double renderOriginY, double rectX_cm, double rectY_cm,
 			double w_cm, double h_cm, double sx, double sy) {
-		int x = (int) Math.round(canvasX + (rectX_cm - renderOriginX) * sx);
-		int y = (int) Math.round(canvasY + (rectY_cm - renderOriginY) * sy);
+		int x = (int) Math.round(offsetX() + (rectX_cm - renderOriginX) * sx);
+		int y = (int) Math.round(offsetY() + (rectY_cm - renderOriginY) * sy);
 		int w = (int) Math.round(w_cm * sx);
 		int h = (int) Math.round(h_cm * sy);
 

@@ -1,11 +1,11 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.Avatar;
 import oop.graphics.BufferedImage;
+import engine.graphics.ShapeAvatar;
 import oop.graphics.Graphics;
 
-public class ProjectileAvatar extends Avatar {
+public class ProjectileAvatar extends ShapeAvatar {
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vic_viper.png";
 	private static final double ANIMATION_DURATION_MS = 125.0;
 
@@ -15,10 +15,10 @@ public class ProjectileAvatar extends Avatar {
 	private int frameIndex;
 
 	public ProjectileAvatar(Entity entity) {
-		super(entity);
+		super(entity, 1, 1);
 	}
 
-	@Override
+
 	public void initImages(Graphics g) {
 		spriteSheet = g.load(SPRITE_PATH);
 
@@ -44,6 +44,7 @@ public class ProjectileAvatar extends Avatar {
 			frameIndex = (frameIndex + 1) % frames.length;
 		}
 	}
+
 
 	@Override
 	public void paint(Graphics g) {
