@@ -24,8 +24,6 @@ public class View {
 
 	private Hud hud; // optionnal
 
-	private boolean hasBeenInitialized = false;
-
 	/**
 	 * When true, the view zooms out to show the whole map and draws a rectangle
 	 * where the real view port currently is. The real view port keeps following its
@@ -274,22 +272,11 @@ public class View {
 		return new PixelCoordinate(px, py);
 	}
 
-	private void initSprites(Graphics g) {
-		for (Avatar avatar : avatars) {
-			avatar.initImage(g);
-		}
-	}
-
 	public void paint(Graphics g) {
 		Objects.requireNonNull(g, "graphics cannot be null");
 
 		if (canvasW <= 0 || canvasH <= 0) {
 			throw new RuntimeException("canvasW <= 0 || canvasH <= 0");
-		}
-
-		if (!hasBeenInitialized) {
-			initSprites(g);
-			this.hasBeenInitialized = true;
 		}
 
 		Game game = Game.game();
@@ -394,6 +381,7 @@ public class View {
 		double delta_t = (currentTime - lastTime) / 1000.0;
 		lastTime = currentTime;
 		for (Avatar avatar : avatars) {
+			avatar.initImage(g); //on init image 
 			avatar.updateAnimation(delta_t);
 			avatar.paint(g);
 		}

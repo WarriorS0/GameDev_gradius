@@ -1,72 +1,19 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.avatars.ShapeAvatar;
-import oop.graphics.BufferedImage;
+import engine.graphics.avatars.AnimationAvatar;
 import oop.graphics.Graphics;
 
-public class ProjectileAvatar extends ShapeAvatar {
-	private static final String SPRITE_PATH = "src/game/gradius/graphics/vic_viper.png";
-	private static final double ANIMATION_DURATION_MS = 125.0;
-
-	private BufferedImage spriteSheet;
-	private BufferedImage[] frames;
-	private double time;
-	private int frameIndex;
+public class ProjectileAvatar extends AnimationAvatar {
 
 	public ProjectileAvatar(Entity entity) {
-		super(entity, 1, 1);
-	}
-
-
-	public void initImages(Graphics g) {
-		spriteSheet = g.load(SPRITE_PATH);
-
-		frames = new BufferedImage[] {
-			spriteSheet.getSubimage(126, 121, 10, 5),
-			spriteSheet.getSubimage(137, 121, 10, 5),
-		};
-
-		time = 0.0;
-		frameIndex = 0;
+		super(entity, "src/game/gradius/graphics/vic_viper.png", 1, 1);
 	}
 
 	@Override
-	public void updateAnimation(double delta_t) {
-		if (frames == null || frames.length == 0) {
-			return;
-		}
-
-		time += delta_t;
-
-		while (time >= ANIMATION_DURATION_MS) {
-			time -= ANIMATION_DURATION_MS;
-			frameIndex = (frameIndex + 1) % frames.length;
-		}
+	public void initImage(Graphics g) {
+		this.initImage(g,
+				new ImageSpriteRect[] { new ImageSpriteRect(126, 121, 10, 5), new ImageSpriteRect(137, 121, 10, 5) });
 	}
 
-
-	@Override
-	public void paint(Graphics g) {
-		if (spriteSheet == null || frames == null) {
-			initImages(g);
-		}
-
-		if (dead() || entity().center() == null) {
-			return;
-		}
-
-		BufferedImage img = frames[frameIndex];
-
-		int width = Math.max(1, this.cmToPixel(entity().size().x()));
-		int height = Math.max(1, this.cmToPixel(entity().size().y()));
-
-		int xCenter = this.cmToPixel(entity().center().x());
-		int yCenter = this.cmToPixel(entity().center().y());
-
-		int xTopLeft = xCenter - width / 2;
-		int yTopLeft = yCenter - height / 2;
-
-		g.drawImage(img, xTopLeft, yTopLeft, width, height);
-	}
 }

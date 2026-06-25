@@ -1,15 +1,12 @@
 package engine.graphics.hud;
 
-import java.util.function.Supplier;
-
 import engine.entity.Entity;
-import oop.graphics.Color;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 
 public class HealthBar implements HudElement {
 
-	private int x, y, width, height, hp, totalhp;
+	private int width, height, hp, totalhp;
 	private boolean visible = false;
 	private PixelCoordinate coord;
 	private Entity entity;
@@ -18,8 +15,6 @@ public class HealthBar implements HudElement {
 	public HealthBar(PixelCoordinate coord, int scale,Entity e) {
 		
 		this.coord = coord;
-		this.width = width;
-		this.height = height;
 		this.hp = e.bot().life();
 		this.totalhp = e.bot().life();
 		this.entity = e;

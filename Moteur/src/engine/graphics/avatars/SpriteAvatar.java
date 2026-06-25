@@ -20,6 +20,11 @@ public abstract class SpriteAvatar extends RessourceAvatar {
 	}
 
 	protected void initImage(Graphics g, int x, int y, int w, int h) {
+
+		if (hasBeenInitialized)
+			return;
+		hasBeenInitialized = true;
+
 		if (LOGGING && INFO) {
 			logger.log(Level.INFO, "Init sprite avatar");
 		}
