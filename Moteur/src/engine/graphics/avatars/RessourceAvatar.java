@@ -1,4 +1,4 @@
-package engine.graphics;
+package engine.graphics.avatars;
 
 import engine.entity.Entity;
 import oop.graphics.BufferedImage;

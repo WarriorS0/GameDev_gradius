@@ -1,5 +1,5 @@
 Egg(Spawn) {
 
   * (Spawn)
-  | True    ?     Spawn()    :(Spawn)
+  | True    ?     Throw(F)    :(Spawn)
 }

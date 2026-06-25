@@ -424,7 +424,7 @@ public abstract class Entity {
 	
 	public String debugInfoBehavior() {
 		StringBuilder sb = new StringBuilder();
-		if (this.bot != null) {
+		if (this.bot != null && bot.state() != null) {
 			sb.append("State:");
 			sb.append(this.bot.state().mode());
 //			sb.append(" | Action:");

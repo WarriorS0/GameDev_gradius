@@ -16,13 +16,13 @@ import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
-import engine.graphics.HealthBar;
-import engine.graphics.Hud;
-import engine.graphics.Label;
-import engine.graphics.AnimationAvatar;
-import engine.graphics.FollowerLabel;
-import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
+import engine.graphics.avatars.AnimationAvatar;
+import engine.graphics.hud.FollowerLabel;
+import engine.graphics.hud.HealthBar;
+import engine.graphics.hud.Hud;
+import engine.graphics.hud.Label;
+import engine.graphics.hud.PixelCoordinate;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
@@ -125,7 +125,8 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(128, 32);
+
+		Game game = new Game(256, 32);
 		Model model = game.model;
 
 		// =========================
