@@ -2,12 +2,12 @@ package game.gradius.graphics;
 
 import engine.entity.Entity;
 import engine.geometry.ISU;
-import engine.graphics.Avatar;
+import engine.graphics.avatars.SpriteAvatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
-public class DragonBodyAvatar extends Avatar {
+public class DragonBodyAvatar extends SpriteAvatar {
 	
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vulture_dragon.png";
 	private static final double DEATH_ANIMATION_DURATION_MS = 130.0;
@@ -18,7 +18,7 @@ public class DragonBodyAvatar extends Avatar {
 	private BufferedImage current;
 	
 	public DragonBodyAvatar(Entity entity) {
-		super(entity);
+		super(entity, "src/game/gradius/graphics/vulture_dragon.png", 1,1);
 		Game.game().view.add(this);
 	}
 	

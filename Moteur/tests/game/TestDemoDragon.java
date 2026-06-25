@@ -5,12 +5,12 @@ import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.controller.KeyManager;
-import engine.graphics.AnimationAvatar;
 import engine.graphics.FpsManager;
-import engine.graphics.Hud;
-import engine.graphics.Label;
-import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
+import engine.graphics.avatars.AnimationAvatar;
+import engine.graphics.hud.Hud;
+import engine.graphics.hud.Label;
+import engine.graphics.hud.PixelCoordinate;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;

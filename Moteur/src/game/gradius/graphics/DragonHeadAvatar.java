@@ -2,7 +2,7 @@ package game.gradius.graphics;
 
 import engine.entity.Entity;
 import engine.geometry.ISU;
-import engine.graphics.Avatar;
+import engine.graphics.avatars.Avatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
