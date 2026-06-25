@@ -3,6 +3,8 @@ package engine.move;
 import oop.tasks.Task;
 import oop.tasks.Runtime;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,12 +73,18 @@ public class Ticker implements Runnable {
 		this.task.post(this);
 		if (LOGGING && INFO)
 			logger.log(Level.INFO, "Started Ticker");
+		for (TickerListener l : listeners) {
+			l.starting();
+		}
 	}
 
 	public void stop() {
 		this.running = false;
 		if (LOGGING && INFO)
 			logger.log(Level.INFO, "Stopped Ticker");
+		for (TickerListener l : listeners) {
+			l.stopping();
+		}
 	}
 
 	public boolean isRunning() {
@@ -114,4 +122,33 @@ public class Ticker implements Runnable {
 			}
 		}
 	}
+
+	private Set<TickerListener> listeners;
+
+	/**
+	 * Pour détecter la pause
+	 */
+	public static interface TickerListener {
+		void starting();
+
+		void stopping();
+	}
+
+	public boolean addListener(TickerListener l) {
+		if (this.listeners == null)
+			this.listeners = new HashSet<>();
+		return this.listeners.add(l);
+	}
+
+	public boolean delListener(TickerListener l) {
+		if (this.listeners == null)
+			return true;
+		return this.listeners.remove(l);
+	}
+
+	public void clearListeners() {
+		if (this.listeners != null)
+			this.listeners.clear();
+	}
+
 }
