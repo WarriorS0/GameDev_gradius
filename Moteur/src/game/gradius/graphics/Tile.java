@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import engine.entity.Entity;
-import engine.graphics.Avatar;
 import engine.shape.Bounding;
 import game.Game;
 import oop.graphics.BufferedImage;
-import oop.graphics.Graphics;
 
 public abstract class Tile extends Entity{
 	List<Bande> l;
@@ -23,5 +21,9 @@ public abstract class Tile extends Entity{
 		l=new ArrayList<Bande>();
 		b=new ArrayList<Bounding>();
 		this.taille_x=max_x;
+	}
+	
+	public void set_entity_y(int y) {
+		super.place(Game.game().isu.new Coord(0,y));
 	}
 }

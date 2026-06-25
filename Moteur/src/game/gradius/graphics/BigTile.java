@@ -1,11 +1,10 @@
 package game.gradius.graphics;
 
-import oop.graphics.BufferedImage;
-import oop.graphics.Graphics;
 
 public class BigTile extends Tile {
-	public BigTile(int max_x) {
+	public BigTile(int max_x,int floor) {
 		super(max_x);
+		super.set_entity_y(floor);
 	}
 
 	@Override

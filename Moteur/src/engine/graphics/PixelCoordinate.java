@@ -5,8 +5,7 @@ import java.util.Objects;
 import engine.geometry.ISU;
 
 public class PixelCoordinate {
-	int x;
-	int y;
+	public int x,y;
 
 	public PixelCoordinate(int x, int y) {
 		this.x = x;

@@ -125,7 +125,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(38, 41);
+		Game game = new Game(128, 32);
 		Model model = game.model;
 
 		// =========================
@@ -165,7 +165,7 @@ public class MainPaintTest implements Runnable {
 		Power power = new Power();
 		Obstacle obstacle = new Obstacle(30, 20);
 		
-		BigTile tile=new BigTile(20);
+		BigTile tile=new BigTile(20,(int)model.viewPort().height_cm());
 
 		// D'abord ajouter les entities au model
 		model.add(ship);
