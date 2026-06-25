@@ -1,24 +1,14 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.Avatar;
+import engine.graphics.ShapeAvatar;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 
-public class PowerAvatar extends Avatar {
+public class PowerAvatar extends ShapeAvatar {
 
 	public PowerAvatar(Entity entity) {
-		super(entity);
-	}
-
-	@Override
-	public void initImages(Graphics g) {
-		// Rien à charger : avatar de test.
-	}
-
-	@Override
-	public void updateAnimation(double delta_t) {
-		// Pas d'animation pour l'instant.
+		super(entity,1,1);
 	}
 
 	@Override

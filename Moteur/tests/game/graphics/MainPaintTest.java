@@ -19,6 +19,7 @@ import engine.graphics.FpsManager;
 import engine.graphics.HealthBar;
 import engine.graphics.Hud;
 import engine.graphics.Label;
+import engine.graphics.AnimationAvatar;
 import engine.graphics.FollowerLabel;
 import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
@@ -207,16 +208,18 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
-		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight()-20), 20, ship);
+		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight() - 20), 20, ship);
 		health.setVisibility(true);
 		hud.add(health);
 
 		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), Colors.white, ship, 0,
 				-25);
 		flShipDebugBehavior.setView(view);
+		flShipDebugBehavior.setVisibility(false);
 		hud.add(flShipDebugBehavior);
 		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), Colors.white, ship, 0, 20);
 		flShipDebugMoves.setView(view);
+		flShipDebugMoves.setVisibility(false);
 		hud.add(flShipDebugMoves);
 
 //		FollowerLabel fbTopCannon = new FollowerLabel(() -> topCannon.debugInfo(), Colors.white, topCannon, 0, 10);
@@ -237,18 +240,21 @@ public class MainPaintTest implements Runnable {
 						fpsC.getFormattedFps(), fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(),
 						fpsC.getFormattedMaxFps(), fpsC.NB_LAST_FPS_SAVED),
 				new PixelCoordinate(12, 24), Colors.white, false);
+		labelFPS.setVisibility(false);
 		hud.add(labelFPS);
 		Label labelPaintTime = new Label(
 				() -> String.format(" PaintTime: %sms { min: %s ; avg: %s ; max: %s (from the last %d paints) }",
 						dfTime.format(paintingTime), dfTime.format(minTime), dfTime.format(avgTime),
 						dfTime.format(maxTime), NB_LAST_TIME_PAINT_SAVED),
 				new PixelCoordinate(12, 36), Colors.white, false);
+		labelPaintTime.setVisibility(false);
 		hud.add(labelPaintTime);
 		Label labelTickTime = new Label(
 				() -> String.format(" TickTime:  %sms { min: %s ; avg: %s ; max: %s (from the last %d ticks) }",
 						model.getFormattedTickTime(), model.getFormattedMinTickTime(), model.getFormattedAvgTickTime(),
 						model.getFormattedMaxTickTime(), model.NB_LAST_TICK_TIME_SAVED),
 				new PixelCoordinate(12, 48), Colors.white, false);
+		labelTickTime.setVisibility(false);
 		hud.add(labelTickTime);
 
 		view.setHUD(hud);
@@ -298,6 +304,7 @@ public class MainPaintTest implements Runnable {
 			labelTickTime.setVisibility(showDebugValues);
 			flShipDebugMoves.setVisibility(showDebugValues);
 			flShipDebugBehavior.setVisibility(showDebugValues);
+			AnimationAvatar.debugCollision = showDebugValues;
 		});
 
 		MouseManager mm = new MouseManager();
