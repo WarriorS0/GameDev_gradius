@@ -1,18 +1,40 @@
 package engine.move;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.Map;
 
 import engine.entity.Entity;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
+import engine.logs.LoggerManager;
 import game.Game;
 
 public class Model {
+
+	private static final Logger logger;
+	private static final boolean LOGGING;
+	private static final boolean FINER;
+	private static final boolean SHOULD_DO_TICK_PROFILING_LOGGING;
+
+	private static final DecimalFormat dfIndex;
+	private static final DecimalFormat dfTime;
+
+	static {
+		// STATIC CONSTANTS INITIALIZATION
+		logger = LoggerManager.getLogger(Model.class.getName());
+		LOGGING = logger.getLevel() != Level.OFF;
+		FINER = logger.isLoggable(Level.FINER);
+		SHOULD_DO_TICK_PROFILING_LOGGING = true;
+		dfIndex = new DecimalFormat("00");
+		dfTime = new DecimalFormat("####00");
+	}
 
 	// =========================
 	// Fields
@@ -20,15 +42,28 @@ public class Model {
 
 	// private final Grid grid;
 	private final ISU isu;
+	private final boolean SHOULD_DO_TICK_PROFILING;
 
 	public final List<Entity> entities;
 
 	private final Map<Entity, Stunt> stunts;
+	
+	private final Physics phy;
 
 	public double delta_t;
 
 	private ViewPort viewPort;
 	private final Set<Entity> cullable = new HashSet<>();
+
+	// fields for tick time profiling
+	public final int NB_LAST_TICK_TIME_SAVED = 96;
+	private final int[] ARRAY_LAST_TICK_TIME_SAVED = new int[NB_LAST_TICK_TIME_SAVED];
+	private int indexArrayTickTime = 0;
+	private int tickTime = -1;
+	private int sumTime = -1;
+	private int minTime = 214748367;// big numbuh
+	private int avgTime = -1;
+	private int maxTime = -1;
 
 	// =========================
 	// Constructor
@@ -48,6 +83,9 @@ public class Model {
 		this.stunts = new HashMap<>();
 
 		this.delta_t = 0.0;
+		this.SHOULD_DO_TICK_PROFILING = true;
+
+		phy = new Physics();
 	}
 
 	// =========================
@@ -126,9 +164,9 @@ public class Model {
 	// =========================
 
 	public void tick(double delta_t) {
-		this.delta_t = delta_t;
+		long startTickTime = System.currentTimeMillis();
 
-		Physics phy = new Physics();
+		this.delta_t = delta_t;
 
 		for (Entity entity : new LinkedList<>(entities)) {
 
@@ -138,17 +176,20 @@ public class Model {
 
 			Stunt stunt = stunts.get(entity);
 
-
 			if (stunt != null) {
 				stunt.tick(delta_t);
 			}
-
 
 			if (entity.dead()) {
 				continue;
 			}
 
 			phy.move(entity);
+
+			long endTickTime = System.currentTimeMillis();
+
+			if (SHOULD_DO_TICK_PROFILING)
+				tickProfiling(startTickTime, endTickTime);
 		}
 
 		if (viewPort != null) {
@@ -174,7 +215,7 @@ public class Model {
 	// Physics
 	// =========================
 
-	class Physics {
+	final class Physics {
 
 		public ISU.Vector delta(Entity entity) {
 			ISU.Vector speed = entity.linearSpeed();
@@ -266,5 +307,103 @@ public class Model {
 				otherStunt.collision(entity);
 			}
 		}
+
+	}
+
+	// =========================
+	// Profiling
+	// =========================
+
+	/**
+	 * Je confirme que le tickProfiling fonctionne, je l'ai testé dans tous les
+	 * sens. Si ça affiche que des 0 c'est que notre tick est très rapide pour le
+	 * moment. À voir si ça reste le cas plus on ajoutera de contenu et d'entités.
+	 * 
+	 * @param startTickTime
+	 * @param endTickTime
+	 */
+	private void tickProfiling(long startTickTime, long endTickTime) {
+		long elapsedTickTime = endTickTime - startTickTime;
+		tickTime = (int) elapsedTickTime;
+		sumTime = -1;
+		minTime = 214748367;// big numbuh
+		avgTime = -1;
+		maxTime = -1;
+
+		this.ARRAY_LAST_TICK_TIME_SAVED[this.indexArrayTickTime++] = tickTime;
+		this.indexArrayTickTime %= this.NB_LAST_TICK_TIME_SAVED;
+		for (int i = 0; i < this.NB_LAST_TICK_TIME_SAVED; i++) {
+			int localTime = this.ARRAY_LAST_TICK_TIME_SAVED[i];
+			sumTime += localTime;
+			avgTime = sumTime / NB_LAST_TICK_TIME_SAVED;
+			if (localTime < minTime)
+				minTime = localTime;
+			if (localTime > maxTime)
+				maxTime = localTime;
+		}
+		if (LOGGING && FINER && SHOULD_DO_TICK_PROFILING_LOGGING) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Paiting profiling \n");
+			sb.append("   START: ");
+			sb.append(startTickTime);
+			sb.append(" ; END: ");
+			sb.append(endTickTime);
+			sb.append(" ; ELAPSED: ");
+			sb.append(elapsedTickTime);
+			sb.append('\n');
+			sb.append("   time: ");
+			sb.append(tickTime);
+			sb.append(" ; min: ");
+			sb.append(minTime);
+			sb.append(" ; avg: ");
+			sb.append(avgTime);
+			sb.append(" ; max: ");
+			sb.append(maxTime);
+			sb.append(" ; sum: ");
+			sb.append(sumTime);
+			for (int i = 0; i < this.NB_LAST_TICK_TIME_SAVED; i++) {
+				if (i % 8 == 0) {
+					sb.append("\n   ");
+				}
+				sb.append("[");
+				sb.append(dfIndex.format(i));
+				sb.append(":");
+				sb.append(dfTime.format(this.ARRAY_LAST_TICK_TIME_SAVED[i]));
+				sb.append("]");
+			}
+			logger.log(Level.FINER, sb.toString());
+		}
+	}
+
+	public int getTickTime() {
+		return this.tickTime;
+	}
+
+	public int getMinTickTime() {
+		return this.minTime;
+	}
+
+	public int getAvgTickTime() {
+		return this.avgTime;
+	}
+
+	public int getMaxTickTime() {
+		return this.maxTime;
+	}
+
+	public String getFormattedTickTime() {
+		return dfTime.format(this.tickTime);
+	}
+
+	public String getFormattedMinTickTime() {
+		return dfTime.format(this.minTime);
+	}
+
+	public String getFormattedAvgTickTime() {
+		return dfTime.format(this.avgTime);
+	}
+
+	public String getFormattedMaxTickTime() {
+		return dfTime.format(this.maxTime);
 	}
 }

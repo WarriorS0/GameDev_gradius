@@ -8,13 +8,13 @@ import oop.graphics.Graphics;
 
 public class Label implements HudElement {
 
-	public final static String DEFAULT_FONT;
+	public final static String DEFAULT_FONT_NAME;
 	public final static int DEFAULT_FONT_SIZE;
 	public final static int DEFAULT_FONT_STYLE;
 
 	static {
-		DEFAULT_FONT = "SansSerif";
-		DEFAULT_FONT_SIZE = 8;
+		DEFAULT_FONT_NAME = "Monospaced";
+		DEFAULT_FONT_SIZE = 12;
 		DEFAULT_FONT_STYLE = Font.PLAIN;
 	}
 
@@ -35,11 +35,11 @@ public class Label implements HudElement {
 	public Color color;
 
 	public Label(String text, PixelCoordinate pc, Color color, boolean centeredText) {
-		this(text, pc, true, DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
+		this(text, pc, true, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
 	}
 
 	public Label(Supplier<String> text, PixelCoordinate pc, Color color, boolean centeredText) {
-		this(text, pc, true, DEFAULT_FONT, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
+		this(text, pc, true, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
 	}
 
 	public Label(String text, PixelCoordinate pc, boolean visible, String fontName, int fontSize, int fontStyle,
@@ -61,6 +61,7 @@ public class Label implements HudElement {
 
 	@Override
 	public void draw(Graphics g) {
+
 		g.setColor(color);
 		Font f = g.getFont(fontName, fontStyle, fontSize);
 		g.setFont(f);

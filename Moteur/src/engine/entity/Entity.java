@@ -410,7 +410,7 @@ public abstract class Entity {
 		this.bot = bot;
 	}
 
-	public String debugInfo() {
+	public String debugInfoMove() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.center().toStringRounded());
 		sb.append("\n");
@@ -419,9 +419,18 @@ public abstract class Entity {
 		sb.append(" ; aSpeed:");
 		sb.append(this.angularSpeed);
 		sb.append("\n");
-		sb.append("State:");
-		if (this.bot != null && bot.state() != null)
+		return sb.toString();
+	}
+	
+	public String debugInfoBehavior() {
+		StringBuilder sb = new StringBuilder();
+		if (this.bot != null && bot.state() != null) {
+			sb.append("State:");
 			sb.append(this.bot.state().mode());
+//			sb.append(" | Action:");
+//			sb.append(this.bot.state().mode());
+		}
+		
 		return sb.toString();
 	}
 

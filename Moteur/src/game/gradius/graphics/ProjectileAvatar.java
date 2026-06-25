@@ -1,25 +1,14 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.Avatar;
-import game.Game;
+import engine.graphics.ShapeAvatar;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 
-public class ProjectileAvatar extends Avatar {
+public class ProjectileAvatar extends ShapeAvatar {
 
 	public ProjectileAvatar(Entity entity) {
-		super(entity);
-	}
-
-	@Override
-	public void initImages(Graphics g) {
-		// Rien à charger pour ce test.
-	}
-
-	@Override
-	public void updateAnimation(double delta_t) {
-		// Pas d'animation pour l'instant.
+		super(entity,1,1);
 	}
 
 	@Override
@@ -28,13 +17,11 @@ public class ProjectileAvatar extends Avatar {
 			return;
 		}
 
-		double pixelPerCm = Game.game().pixelPerCm;
+		int width = Math.max(1, this.cmToPixel(entity().size().x()));
+		int height = Math.max(1, this.cmToPixel(entity().size().y()));
 
-		int width = Math.max(1, (int) Math.round(entity().size().x() * pixelPerCm));
-		int height = Math.max(1, (int) Math.round(entity().size().y() * pixelPerCm));
-
-		int xCenter = (int) Math.round(entity().center().x() * pixelPerCm);
-		int yCenter = (int) Math.round(entity().center().y() * pixelPerCm);
+		int xCenter = this.cmToPixel(entity().center().x());
+		int yCenter = this.cmToPixel(entity().center().y());
 
 		int xTopLeft = xCenter - width / 2;
 		int yTopLeft = yCenter - height / 2;
