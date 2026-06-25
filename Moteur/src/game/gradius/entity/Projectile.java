@@ -13,7 +13,7 @@ public class Projectile extends Entity {
 
 		double cell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(0.4 * cell, 0.2 * cell));
+		setSize(isu.new Dimension( 0.8 * cell, 0.6 * cell));
 		setStep(isu.new Dimension(cell, cell));
 		category(Category.Projectile);
 
