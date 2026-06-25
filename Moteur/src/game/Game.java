@@ -2,6 +2,9 @@ package game;
 
 import engine.geometry.Grid;
 import engine.geometry.ISU;
+import engine.graphics.View;
+import engine.move.Model;
+import engine.move.ViewPort;
 
 import java.io.PrintStream;
 
@@ -27,6 +30,8 @@ public class Game {
 
 	public final Grid grid; // permet la création de coordonnées en unités ncell
 	public final ISU isu; // permet la création de coordonnées en unités cm
+	public final Model model;
+	public final View view;
 	// public final Picture pict; // permet la création de coordonnées en unités
 	// pixel, ne sera
 	// utilisé qu'à
@@ -47,7 +52,13 @@ public class Game {
 		Game.game = this;
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
-		// this.pict = new Picture();
+		this.model = new Model(grid);
+		ViewPort vp = new ViewPort(0, 0, w_ncell / 4 * cmPerCell, h_ncell * cmPerCell); // Toute la hauteur, mais 1/4 du
+																						// la longueur, car notre jeu
+																						// sera rès long mais pas haut.
+		vp.rail(10, 0);
+		model.setViewPort(vp);
+		this.view = new View(vp);
 
 	}
 
@@ -76,8 +87,11 @@ public class Game {
 		Game.game = this;
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
-		// this.pict = new Picture();
-
+		this.model = new Model(grid);
+		ViewPort vp = new ViewPort(0, 0, w_cm / 2, h_cm);
+		vp.rail(10, 0);
+		model.setViewPort(vp);
+		this.view = new View(vp);
 	}
 
 	// GETTER

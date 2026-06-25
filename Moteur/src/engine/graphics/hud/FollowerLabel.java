@@ -1,9 +1,10 @@
-package engine.graphics;
+package engine.graphics.hud;
 
 import java.util.function.Supplier;
 
 import engine.entity.Entity;
 import engine.geometry.ISU;
+import engine.graphics.View;
 import game.Game;
 import oop.graphics.Color;
 
@@ -15,12 +16,15 @@ import oop.graphics.Color;
  */
 public class FollowerLabel extends Label {
 
+	private final static boolean FOLLOWING_LABEL_SHOULD_STAY = false;
+
 	protected Entity target;
 
 	/**
 	 * Offset added in screen pixels, after projection (e.g. a few pixels up).
 	 */
 	protected PixelCoordinate offset;
+	private PixelCoordinate pos;
 
 	/**
 	 * Half a cell in cm, used to anchor on the entity center.
@@ -28,8 +32,8 @@ public class FollowerLabel extends Label {
 	private final double cell;
 
 	/**
-	 * The view providing the world -> screen projection. May be null until set,
-	 * in which case the label keeps its last screen position.
+	 * The view providing the world -> screen projection. May be null until set, in
+	 * which case the label keeps its last screen position.
 	 */
 	private View view;
 
@@ -38,6 +42,7 @@ public class FollowerLabel extends Label {
 		this.target = target;
 		this.offset = new PixelCoordinate(offX, offY);
 		this.cell = Game.game().cmPerCell;
+		this.pos = new PixelCoordinate(0, 0);
 	}
 
 	/**
@@ -56,13 +61,14 @@ public class FollowerLabel extends Label {
 	 */
 	public void update() {
 		if (target == null || target.dead()) {
-			setVisibility(false);
+			// setVisibility(false); // label will be deleted if targe is dead.
+			// target shouldn't be null in the first place
 			return;
 		}
 
 		if (view == null) {
 			// No projection available yet: nothing reliable to draw.
-			setVisibility(false);
+			// setVisibility(false); //no view shoudn't append
 			return;
 		}
 
@@ -74,17 +80,31 @@ public class FollowerLabel extends Label {
 		PixelCoordinate screen = view.worldToScreen(center);
 
 		if (screen == null) {
-			// Target is outside the view port: do not draw.
-			setVisibility(false);
+			if (!FOLLOWING_LABEL_SHOULD_STAY) {
+				// Target is outside the view port: do not draw.
+				// TODO DUE TO THE BUG WITH THE GAME SIZE, LABEL DON'T SHOW CORRECTLY
+				// NOT A LABEL BUG, it's a viewport bug
+				// setVisibility(false);
+			}
 			return;
+		} else {
+			pos = screen;
 		}
 
-		setVisibility(true);
-		this.pc.x = screen.x + offset.x;
-		this.pc.y = screen.y + offset.y;
+		this.pc.x = pos.x + offset.x;
+		this.pc.y = pos.y + offset.y;
 	}
 
 	public static PixelCoordinate getPosFromCoordAndOffset(PixelCoordinate position, PixelCoordinate offset) {
 		return new PixelCoordinate(position.x + offset.x, position.y + offset.y);
+	}
+
+	/**
+	 * getter to check if the target entity is still alive
+	 * 
+	 * @return true if target entity is still alive
+	 */
+	public boolean isTargetEntityStillAlive() {
+		return this.target.alive();
 	}
 }

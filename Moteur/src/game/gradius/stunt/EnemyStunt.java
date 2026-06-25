@@ -28,13 +28,13 @@ public class EnemyStunt extends Stunt {
 		double angle = normalizeAngle(orientation);
 
 		if (angle >= 45.0 && angle < 135.0) {
-			setLinearSpeed(Game.game().isu.new Vector(0, DEFAULT_SPEED));
-		} else if (angle >= 135.0 && angle < 225.0) {
-			setLinearSpeed(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
-		} else if (angle >= 225.0 && angle < 315.0) {
 			setLinearSpeed(Game.game().isu.new Vector(0, -DEFAULT_SPEED));
-		} else {
+		} else if (angle >= 135.0 && angle < 225.0) {
 			setLinearSpeed(Game.game().isu.new Vector(DEFAULT_SPEED, 0));
+		} else if (angle >= 225.0 && angle < 315.0) {
+			setLinearSpeed(Game.game().isu.new Vector(0, DEFAULT_SPEED));
+		} else {
+			setLinearSpeed(Game.game().isu.new Vector(-DEFAULT_SPEED, 0));
 		}
 	}
 

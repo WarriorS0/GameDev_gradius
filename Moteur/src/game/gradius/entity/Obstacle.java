@@ -1,6 +1,7 @@
 package game.gradius.entity;
 
 import engine.entity.Entity;
+import engine.gal.arguments.Category;
 import engine.shape.Rect;
 import game.Game;
 
@@ -12,7 +13,9 @@ public class Obstacle extends Entity {
 		double cmPerCell = Game.game().cmPerCell;
 
 		setSize(isu.new Dimension(cmPerCell, cmPerCell));
+		category(Category.Obstacle);
 		place(grid.new Position(x_ncell, y_ncell));
+
 	}
 
 	@Override

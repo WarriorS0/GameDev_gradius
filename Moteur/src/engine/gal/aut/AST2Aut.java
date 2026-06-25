@@ -9,12 +9,22 @@ import engine.gal.actions.GALAction;
 import engine.gal.actions.iGALAction;
 import engine.gal.actions.Move;
 import engine.gal.actions.Turn;
+import engine.gal.actions.Get;
+import engine.gal.actions.Hit;
+import engine.gal.actions.Protect;
+import engine.gal.actions.Explode;
+import engine.gal.actions.Throw;
+import engine.gal.actions.SequenceAction;
+
 
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
 import engine.gal.condition.AtStep;
 import engine.gal.condition.Conjunction;
 import engine.gal.condition.KeyCondition;
+import engine.gal.condition.Struck;
+import engine.gal.condition.Life;
+import engine.gal.condition.Timer;
 
 import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
@@ -76,7 +86,7 @@ public class AST2Aut {
 
 	private iGALCondition convertExpression(gal.ast.Expression expr) {
 		if (expr == null) {
-			return GALCondition.TRUE;
+			throw new IllegalArgumentException("GAL expression cannot be null");
 		}
 
 		// --- CASE 1: Standard Condition (FunCall) ---
@@ -85,7 +95,7 @@ public class AST2Aut {
 			String condName = call.name;
 
 			if (condName == null) {
-				return GALCondition.TRUE;
+				throw new IllegalArgumentException("GAL condition name cannot be null");
 			}
 
 			switch (condName.toLowerCase()) {
@@ -93,33 +103,25 @@ public class AST2Aut {
 				return GALCondition.TRUE;
 
 			case "atstep":
-				if (call.parameters.size() >= 3) {
-					try {
-						String dirParam = call.parameters.get(0).toString();
-						String catParam = call.parameters.get(1).toString();
-
-						Direction dir = Direction.canonical(dirParam);
-						Category cat = Category.canonical(catParam);
-
-						// Check parameter type for the step value
-						int step = 1;
-						Parameter p2 = call.parameters.get(2);
-						if (p2 instanceof IntValue) {
-							step = ((IntValue) p2).value;
-						} else {
-							step = Integer.parseInt(p2.toString());
-						}
-
-						return new AtStep(dir, cat, step);
-
-					} catch (Exception e) {
-						throw e;
-					}
-				} else {
-					// AtStep requires 3 parameters (Direction, Category, nbStep) so we just do
-					// nothing
+				if (call.parameters.size() != 3) {
+					throw new IllegalArgumentException("AtStep condition requires 3 parameters: direction, category, step");
 				}
-				return GALCondition.TRUE;
+
+				String dirParam = call.parameters.get(0).toString();
+				String catParam = call.parameters.get(1).toString();
+
+				Direction dir = Direction.canonical(dirParam);
+				Category cat = Category.canonical(catParam);
+
+				Parameter p2 = call.parameters.get(2);
+				int step;
+				if (p2 instanceof IntValue) {
+					step = ((IntValue) p2).value;
+				} else {
+					step = Integer.parseInt(p2.toString());
+				}
+
+				return new AtStep(dir, cat, step);
 
 			case "key":
 				if (call.parameters.size() >= 1) {
@@ -127,8 +129,30 @@ public class AST2Aut {
 					return new KeyCondition(keyName);
 				}
 				throw new IllegalArgumentException("Key condition requires 1 parameter");
+				
+			case "struck":
+				if (call.parameters.size() >= 1) {
+					Category category = Category.canonical(call.parameters.get(0).toString());
+					return new Struck(category);
+				}
+				return new Struck();
+			case "life":
+				if (call.parameters.size() >= 1) {
+					Parameter p = call.parameters.get(0);
+
+					if (p instanceof IntValue) {
+						return new Life(((IntValue) p).value);
+					}
+
+					return new Life(Integer.parseInt(p.toString()));
+				}
+
+				throw new IllegalArgumentException("Life condition requires 1 parameter");
+				
+			case "timer":
+				return new Timer();
 			default:
-				return GALCondition.TRUE;
+				throw new IllegalArgumentException("Unsupported GAL condition: " + condName);
 			}
 		}
 
@@ -141,28 +165,43 @@ public class AST2Aut {
 				conjunction.add(convertExpression(binOp.right_operand));
 				return conjunction;
 			}
+			throw new UnsupportedOperationException("Unsupported GAL binary operator: " + binOp.operator);
 		}
 
 		// --- CASE 3: Negation (UnaryOp) ---
 		else if (expr instanceof gal.ast.UnaryOp) {
 			gal.ast.UnaryOp unOp = (gal.ast.UnaryOp) expr;
+
 			if ("!".equals(unOp.operator) || "not".equalsIgnoreCase(unOp.operator)) {
-				System.err.println("Fact: The engine class for Negation/Not is missing. Returning TRUE fallback.");
-				// iGALCondition subCondition = convertExpression(unOp.operand);
-				// need to implement Not
-				// return new engine.gal.condition.Not(subCondition);
+				throw new UnsupportedOperationException("GAL Not condition is not supported yet");
 			}
+
+			throw new UnsupportedOperationException("Unsupported GAL unary operator: " + unOp.operator);
 		}
 
-		return GALCondition.TRUE;
+		throw new UnsupportedOperationException("Unsupported GAL expression type: " + expr.getClass().getName());
+	}
+	
+	private iGALAction convertAction(gal.ast.Actions astAction) {
+	    if (astAction == null || astAction.actions.isEmpty()) {
+	        return GALAction.NOTHING;
+	    }
+
+	    List<iGALAction> actions = new ArrayList<>();
+
+	    for (gal.ast.FunCall call : astAction.actions) {
+	        actions.add(convertSingleAction(call));
+	    }
+
+	    if (actions.size() == 1) {
+	        return actions.get(0);
+	    }
+
+	    return new SequenceAction(actions);
 	}
 
-	private iGALAction convertAction(gal.ast.Actions astAction) {
-		if (astAction == null || astAction.actions.isEmpty()) {
-			return GALAction.NOTHING;
-		}
-
-		gal.ast.FunCall call = astAction.actions.getFirst();
+	private iGALAction convertSingleAction(gal.ast.FunCall call) {
+		
 		String actionName = call.name;
 
 		if (actionName == null) {
@@ -206,11 +245,48 @@ public class AST2Aut {
 			return new Turn(0);
 
 		case "hit":
-			// need to implement Hit
-			return GALAction.NOTHING;
+			if (call.parameters.size() >= 1) {
+				Parameter p = call.parameters.get(0);
 
-		default:
+				if (p instanceof IntValue) {
+					return new Hit(((IntValue) p).value);
+				}
+
+				return new Hit(Integer.parseInt(p.toString()));
+			}
+
+			return new Hit(1);
+		case "rest":
 			return GALAction.NOTHING;
+		case "get":
+			if (call.parameters.size() >= 1) {
+				Category category = Category.canonical(call.parameters.get(0).toString());
+				return new Get(category);
+			}
+			return new Get(null);
+		case "protect":
+			if (call.parameters.size() >= 1) {
+				Parameter p = call.parameters.get(0);
+
+				if (p instanceof IntValue) {
+					return new Protect(((IntValue) p).value);
+				}
+
+				return new Protect(Double.parseDouble(p.toString()));
+			}
+
+			throw new IllegalArgumentException("Protect action requires 1 parameter");
+		case "explode":
+			return new Explode();
+		case "throw":
+			if (call.parameters.size() >= 1) {
+				Direction direction = Direction.canonical(call.parameters.get(0).toString());
+				return new Throw(direction);
+			}
+
+			return new Throw();
+		default:
+			throw new IllegalArgumentException("Unsupported GAL action: " + actionName);
 		}
 	}
 }

@@ -1,6 +1,6 @@
-package engine.graphics;
+package engine.graphics.hud;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -21,11 +21,12 @@ public class Hud {
 	private static Logger logger;
 	static {
 		logger = LoggerManager.getLogger(Hud.class.getName());
-		LOGGING = (logger.getLevel() != Level.OFF);
-		INFO = (logger.isLoggable(Level.INFO));
+		LOGGING = logger.getLevel() != Level.OFF;
+		INFO = logger.isLoggable(Level.INFO);
 	}
 
 	private final List<HudElement> elements;
+	private final List<HudElement> toRemoveNext;
 
 	/**
 	 * Creates a hud object
@@ -33,7 +34,8 @@ public class Hud {
 	public Hud() {
 		if (LOGGING && INFO)
 			logger.info("Created new HUD");
-		this.elements = new ArrayList<>();
+		this.elements = new LinkedList<>();
+		this.toRemoveNext= new LinkedList<>();
 	}
 
 	/**
@@ -63,12 +65,14 @@ public class Hud {
 			logger.info(String.format("Removed %s from the HUD", e.toString()));
 		return elements.remove(e);
 	}
-	
+
 	public void clear() {
+		if (LOGGING && INFO)
+			logger.info("Cleared all elements from HUD");
 		this.elements.clear();
 	}
-	
-	public Iterator<HudElement> iterator(){
+
+	public Iterator<HudElement> iterator() {
 		return this.elements.iterator();
 	}
 
@@ -78,14 +82,20 @@ public class Hud {
 	 * @param graphics the graphics in raw canvas pixels
 	 */
 	public void draw(Graphics graphics) {
-		for (HudElement e : elements) {
+		for(HudElement e : elements) {
 			if (e instanceof FollowerLabel fl) {
-				fl.update();
+				if (fl.isTargetEntityStillAlive()) {
+					fl.update();
+				} else {
+					this.toRemoveNext.add(fl);
+				}
 			}
 			if (e.isVisible())
 				e.draw(graphics);
 		}
-
+		for(HudElement e : toRemoveNext) {
+			this.elements.remove(e);
+		}
+		toRemoveNext.clear();
 	}
-
 }

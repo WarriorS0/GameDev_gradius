@@ -278,13 +278,22 @@ public class ViewPort {
 		if (e == null) {
 			throw new IllegalArgumentException("entity cannot be null");
 		}
+		return this.isVisible(e.center());
+	}
 
-		if (e.center() == null) {
+	public boolean isVisible(ISU.Coord coord) {
+
+		if (coord == null) {
 			return false;
 		}
 
-		double ex = isu.euclideanX(originX_cm, e.center().x());
-		double ey = isu.euclideanY(originY_cm, e.center().y());
+		return this.isVisible(coord.x(), coord.y());
+	}
+
+	public boolean isVisible(double x, double y) {
+
+		double ex = isu.euclideanX(originX_cm, x);
+		double ey = isu.euclideanY(originY_cm, y);
 
 		return ex >= originX_cm && ex <= originX_cm + width_cm && ey >= originY_cm && ey <= originY_cm + height_cm;
 	}
