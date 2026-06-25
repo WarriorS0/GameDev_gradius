@@ -123,7 +123,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(38, 41);
+		Game game = new Game(256, 48);
 		Model model = game.model;
 
 		// =========================

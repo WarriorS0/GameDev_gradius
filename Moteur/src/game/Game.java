@@ -53,7 +53,9 @@ public class Game {
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
 		this.model = new Model(grid);
-		ViewPort vp = new ViewPort(0, 0, w_ncell/2 * cmPerCell, h_ncell * cmPerCell);
+		ViewPort vp = new ViewPort(0, 0, w_ncell / 4 * cmPerCell, h_ncell * cmPerCell); // Toute la hauteur, mais 1/4 du
+																						// la longueur, car notre jeu
+																						// sera rès long mais pas haut.
 		vp.rail(10, 0);
 		model.setViewPort(vp);
 		this.view = new View(vp);
@@ -86,7 +88,7 @@ public class Game {
 		this.isu = new ISU(this);
 		this.grid = new Grid(this);
 		this.model = new Model(grid);
-		ViewPort vp = new ViewPort(0, 0, w_cm/2, h_cm);
+		ViewPort vp = new ViewPort(0, 0, w_cm / 2, h_cm);
 		vp.rail(10, 0);
 		model.setViewPort(vp);
 		this.view = new View(vp);
