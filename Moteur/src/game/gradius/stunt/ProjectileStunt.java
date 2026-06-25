@@ -5,6 +5,7 @@ import java.util.List;
 import engine.entity.Entity;
 import engine.move.Model;
 import engine.move.Stunt;
+import game.gradius.entity.Enemy;
 
 public class ProjectileStunt extends Stunt {
 
@@ -15,11 +16,19 @@ public class ProjectileStunt extends Stunt {
 	@Override
 	protected void collision(Entity entity) {
 		this.entity.kill();
+		if(entity instanceof Enemy) {
+			entity.kill();
+		}
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
 		this.entity.kill();
+		for(Entity en : entities) {
+			if(en instanceof Enemy) {
+				en.kill();
+			}
+		}
 	}
 
 	@Override

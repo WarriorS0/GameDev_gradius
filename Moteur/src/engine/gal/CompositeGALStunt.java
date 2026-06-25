@@ -13,6 +13,9 @@ public class CompositeGALStunt extends GALStunt {
 
 	private final List<Entity> subEntities;
 	private Vector baseLinearSpeed;
+	private double elapsed;
+	private double last_time;
+	private static double expected_time = 200;
 
 	public CompositeGALStunt(Model model, Entity mainEntity, List<Entity> subEntities) {
 		super(model, mainEntity);
@@ -82,14 +85,20 @@ public class CompositeGALStunt extends GALStunt {
 		this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
 		setLinearSpeed(targetDirection);
 	}
+	
+	
 
 	@Override
 	public boolean startThrowing(Direction direction, double intensity) {
 		if (projectileSpawner() == null) {
 			return false;
 		}
-
-		projectileSpawner().spawnFrom(entity, direction, intensity);
+		double current_time = System.currentTimeMillis();
+		elapsed = current_time - last_time;
+		if(elapsed > expected_time) {
+			projectileSpawner().spawnFrom(entity, direction, intensity);
+			last_time = current_time;
+		}
 		return true;
 	}
 }
