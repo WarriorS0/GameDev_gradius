@@ -8,6 +8,7 @@ import game.Game;
 public class Cannon extends Entity {
 
 	private final CannonSlot slot;
+	private Ship owner;
 
 	public Cannon(CannonSlot slot) {
 		super(slot.name() + "Cannon");
@@ -25,6 +26,18 @@ public class Cannon extends Entity {
 
 	public CannonSlot slot() {
 		return slot;
+	}
+	
+	public void attachTo(Ship owner) {
+		if (owner == null) {
+			throw new IllegalArgumentException("owner cannot be null");
+		}
+
+		this.owner = owner;
+	}
+
+	public Ship owner() {
+		return owner;
 	}
 
 	public void placeRelativeTo(Entity anchor) {

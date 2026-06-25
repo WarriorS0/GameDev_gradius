@@ -413,12 +413,11 @@ public abstract class Entity {
 	public String debugInfoMove() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(this.center().toStringRounded());
-		sb.append("\n");
-		sb.append("lSpeed:");
+		sb.append("{lSpeed:");
 		sb.append(this.linearSpeed.toStringRounded());
-		sb.append(" ; aSpeed:");
+		sb.append(";aSpeed:");
 		sb.append(this.angularSpeed);
-		sb.append("\n");
+		sb.append("}");
 		return sb.toString();
 	}
 	

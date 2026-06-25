@@ -18,7 +18,15 @@ public class Direction {
 	public static final Direction NW; // North-West
 	public static final Direction SE; // South-East
 	public static final Direction SW; // South-West
-	
+	public static final Direction NNE; // North-North-East
+	public static final Direction ENE; // East-North-East
+	public static final Direction ESE; // East-South-East
+	public static final Direction SSE; // South-South-East
+	public static final Direction SSW; // South-South-West
+	public static final Direction WSW; // West-South-West
+	public static final Direction WNW; // West-North-West
+	public static final Direction NNW; // North-North-West
+
 	private static Map<String, Direction> directions = new HashMap<>();
 
 	// STATIC INITIALIZATION
@@ -39,6 +47,14 @@ public class Direction {
 		NW = new Direction("NorthWest");
 		SE = new Direction("SouthEast");
 		SW = new Direction("SouthWest");
+		NNE = new Direction("NorthNorthEast");
+		ENE = new Direction("EastNorthEast");
+		ESE = new Direction("EastSouthEast");
+		SSE = new Direction("SouthSouthEast");
+		SSW = new Direction("SouthSouthWest");
+		WSW = new Direction("WestSouthWest");
+		WNW = new Direction("WestNorthWest");
+		NNW = new Direction("NorthNorthWest");
 
 		register(H, "H", "Here");
 		register(N, "N", "North");
@@ -51,6 +67,14 @@ public class Direction {
 		register(NW, "NW", "NorthWest", "Northwest");
 		register(SE, "SE", "SouthEast", "Southeast");
 		register(SW, "SW", "SouthWest", "Southwest");
+		register(NNE, "NNE", "NorthNorthEast", "Northnortheast");
+		register(ENE, "NNE", "EastNorthEast", "Eastnortheast");
+		register(ESE, "NNE", "EastSouthEast", "Eastsoutheast");
+		register(SSE, "NNE", "SouthSouthEast", "Southsoutheast");
+		register(SSW, "NNE", "SouthSouthWest", "Southsouthwest");
+		register(WSW, "NNE", "WestSouthWest", "Westsouthwest");
+		register(WNW, "NNE", "WestNorthWest", "Westnorthwest");
+		register(NNW, "NNE", "NorthNorthWest", "Northnorthwest");
 	}
 
 	private static void register(Direction direction, String... names) {
@@ -75,7 +99,6 @@ public class Direction {
 	 *          name.</LI>
 	 *          </UL>
 	 */
-	
 
 	// FACTORY
 
@@ -105,10 +128,11 @@ public class Direction {
 	// PREDICATE
 
 	public boolean isAbsolute() {
-		return this == N || this == S || this == E || this == W
-				|| this == NE || this == NW || this == SE || this == SW;
+		return this == N || this == S || this == E || this == W || this == NE || this == NW || this == SE || this == SW
+				|| this == NNE || this == ENE || this == ESE || this == SSE || this == SSW || this == WSW || this == WNW
+				|| this == NNW;
 	}
-	
+
 	public boolean isRelative() {
 		return this == F || this == B;
 	}
@@ -119,30 +143,54 @@ public class Direction {
 
 	// CONVERSION
 
-	public int toAngle() {
+	public double toAngle() {
 		if (this == E) {
 			return 0;
+		}
+		if (this == ESE) {
+			return 22.5;
 		}
 		if (this == SE) {
 			return 45;
 		}
+		if (this == SSE) {
+			return 67.5;
+		}
 		if (this == S) {
 			return 90;
+		}
+		if (this == SSW) {
+			return 112.5;
 		}
 		if (this == SW) {
 			return 135;
 		}
+		if (this == WSW) {
+			return 157.5;
+		}
 		if (this == W) {
 			return 180;
+		}
+		if (this == WNW) {
+			return 202.5;
 		}
 		if (this == NW) {
 			return 225;
 		}
+		if (this == NNW) {
+			return 247.5;
+		}
 		if (this == N) {
 			return 270;
 		}
+		if (this == NNE) {
+			return 292.5;
+		}
 		if (this == NE) {
 			return 315;
+		}
+		if (this == ENE) {
+			return 337.5;
 		}
 
 		throw new IllegalStateException("Direction has no absolute angle: " + name);

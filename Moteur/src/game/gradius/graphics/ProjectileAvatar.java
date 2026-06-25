@@ -1,72 +1,41 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.avatars.ShapeAvatar;
-import oop.graphics.BufferedImage;
+import engine.graphics.avatars.AnimationAvatar;
+import game.gradius.entity.Projectile;
 import oop.graphics.Graphics;
 
-public class ProjectileAvatar extends ShapeAvatar {
-	private static final String SPRITE_PATH = "src/game/gradius/graphics/vic_viper.png";
-	private static final double ANIMATION_DURATION_MS = 125.0;
+public class ProjectileAvatar extends AnimationAvatar {
 
-	private BufferedImage spriteSheet;
-	private BufferedImage[] frames;
-	private double time;
-	private int frameIndex;
+	private static final String SPRITE_SHEET = "src/game/gradius/graphics/vic_viper.png";
 
 	public ProjectileAvatar(Entity entity) {
-		super(entity, 1, 1);
-	}
-
-
-	public void initImages(Graphics g) {
-		spriteSheet = g.load(SPRITE_PATH);
-
-		frames = new BufferedImage[] {
-			spriteSheet.getSubimage(126, 121, 10, 5),
-			spriteSheet.getSubimage(137, 121, 10, 5),
-		};
-
-		time = 0.0;
-		frameIndex = 0;
+		super(entity, SPRITE_SHEET, 1, 1);
 	}
 
 	@Override
-	public void updateAnimation(double delta_t) {
-		if (frames == null || frames.length == 0) {
-			return;
-		}
-
-		time += delta_t;
-
-		while (time >= ANIMATION_DURATION_MS) {
-			time -= ANIMATION_DURATION_MS;
-			frameIndex = (frameIndex + 1) % frames.length;
+	public void initImage(Graphics g) {
+		if (entity() instanceof Projectile projectile && projectile.isBlueOrb()) {
+			initBlueOrbImage(g);
+		} else {
+			initLaserImage(g);
 		}
 	}
 
+	private void initLaserImage(Graphics g) {
+		this.initImage(g,
+				new ImageSpriteRect[] {
+						new ImageSpriteRect(126, 121, 10, 5),
+						new ImageSpriteRect(137, 121, 10, 5)
+				});
+	}
 
-	@Override
-	public void paint(Graphics g) {
-		if (spriteSheet == null || frames == null) {
-			initImages(g);
-		}
-
-		if (dead() || entity().center() == null) {
-			return;
-		}
-
-		BufferedImage img = frames[frameIndex];
-
-		int width = Math.max(1, this.cmToPixel(entity().size().x()));
-		int height = Math.max(1, this.cmToPixel(entity().size().y()));
-
-		int xCenter = this.cmToPixel(entity().center().x());
-		int yCenter = this.cmToPixel(entity().center().y());
-
-		int xTopLeft = xCenter - width / 2;
-		int yTopLeft = yCenter - height / 2;
-
-		g.drawImage(img, xTopLeft, yTopLeft, width, height);
+	private void initBlueOrbImage(Graphics g) {
+		this.initImage(g,
+				new ImageSpriteRect[] {
+						new ImageSpriteRect(89, 93, 10, 8),
+						new ImageSpriteRect(105, 92, 14, 10),
+						new ImageSpriteRect(124, 91, 16, 12),
+				});
 	}
 }

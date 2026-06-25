@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.entity.Entity;
+import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
 import engine.geometry.ISU.Vector;
 import engine.move.Model;
@@ -86,7 +87,16 @@ public class CompositeGALStunt extends GALStunt {
 		setLinearSpeed(targetDirection);
 	}
 	
-	
+	@Override
+	protected void collision(Entity other) {
+	    if (other != null
+	            && other.category() == Category.Power
+	            && entity instanceof PowerReceiver receiver) {
+	        receiver.activatePower();
+	    }
+
+	    super.collision(other);
+	}
 
 	@Override
 	public boolean startThrowing(Direction direction, double intensity) {
@@ -95,8 +105,13 @@ public class CompositeGALStunt extends GALStunt {
 		}
 		double current_time = System.currentTimeMillis();
 		elapsed = current_time - last_time;
-		if(elapsed > expected_time) {
+		if (elapsed > expected_time) {
 			projectileSpawner().spawnFrom(entity, direction, intensity);
+			for (Entity subEntity : subEntities) {
+				if (!subEntity.dead()) {
+					projectileSpawner().spawnFrom(subEntity, direction, intensity);
+				}
+			}
 			last_time = current_time;
 		}
 		return true;

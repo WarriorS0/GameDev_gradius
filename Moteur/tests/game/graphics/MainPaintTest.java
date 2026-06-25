@@ -16,8 +16,10 @@ import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
+import engine.graphics.BackgroundView;
 import engine.graphics.View;
 import engine.graphics.avatars.AnimationAvatar;
+import engine.graphics.hud.Anchor;
 import engine.graphics.hud.FollowerLabel;
 import engine.graphics.hud.HealthBar;
 import engine.graphics.hud.Hud;
@@ -31,6 +33,7 @@ import gal.parser.Parser;
 import game.Game;
 import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
+import game.gradius.entity.Enemy;
 import game.gradius.entity.Ship;
 import game.gradius.entity.Power;
 import game.gradius.entity.Obstacle;
@@ -38,7 +41,7 @@ import game.gradius.graphics.ObstacleAvatar;
 import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.BigTile;
 import game.gradius.graphics.CannonAvatar;
-import game.gradius.graphics.MapView;
+import game.gradius.graphics.EnemyAvatar;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.graphics.TileAvatar;
 import game.gradius.spawn.ProjectileSpawner;
@@ -169,13 +172,21 @@ public class MainPaintTest implements Runnable {
 		BigTile tile=new BigTile(10,(int)model.viewPort().height_cm());
 		TileAvatar tav=new TileAvatar(tile,model.viewPort());
 		
+
+		Enemy enemy = new Enemy();
+
+
 		// D'abord ajouter les entities au model
 		model.add(ship);
 		model.add(topCannon);
 		model.add(bottomCannon);
 		model.add(power);
 		model.add(obstacle);
+
 		model.add(tile);
+
+		model.add(enemy);
+
 
 		// Ensuite seulement créer le bot / stunt GAL
 		GALBot shipBot = new GALBot(ship);
@@ -201,7 +212,11 @@ public class MainPaintTest implements Runnable {
 		view.add(new CannonAvatar(bottomCannon));
 		view.add(new PowerAvatar(power));
 		view.add(new ObstacleAvatar(obstacle));
+
 		view.add(tav);
+
+		view.add(new EnemyAvatar(enemy));
+
 
 		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
 		shipStunt.setProjectileSpawner(projectileSpawner);
@@ -210,23 +225,25 @@ public class MainPaintTest implements Runnable {
 				game.isu.new Coord(ship.center().x() + 3 * game.cmPerCell, ship.center().y() - 2 * game.cmPerCell),
 				game.isu.new Vector(30.0, 0.0));
 
+
 		MapView mapView = new MapView(canvas,model,tav,model.viewPort());
 		view.setBackground(mapView::paint);
+		BackgroundView bgView = new BackgroundView("src/game/gradius/graphics/map_gradius.png", 317, 204, 200, 200);
+		view.setBackground(bgView::paint); // on doit utiliser un method reference operator sinon ça marche pas
+
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
-		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight() - 20), 20, ship);
+		HealthBar health = new HealthBar(ship, Anchor.BOTTOM_RIGHT, new PixelCoordinate(-50,-50), 16, Colors.white, Colors.blue );
 		health.setVisibility(true);
 		hud.add(health);
 
-		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), Colors.white, ship, 0,
-				-25);
-		flShipDebugBehavior.setView(view);
+		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), ship, new PixelCoordinate(0,-25),
+				Colors.white);
 		flShipDebugBehavior.setVisibility(false);
 		hud.add(flShipDebugBehavior);
-		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), Colors.white, ship, 0, 20);
-		flShipDebugMoves.setView(view);
+		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), ship, new PixelCoordinate(0,20), Colors.white);
 		flShipDebugMoves.setVisibility(false);
 		hud.add(flShipDebugMoves);
 
@@ -283,8 +300,7 @@ public class MainPaintTest implements Runnable {
 				g.setColor(Colors.black);
 				g.fillRect(0, 0, windowWidth, windowHeight);
 
-				view.setCanvasArea(0, 0, windowWidth, windowHeight);
-				view.paint(g);
+				view.paint(canvas, g);
 
 				fpsC.countFrame();
 

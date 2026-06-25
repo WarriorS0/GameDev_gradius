@@ -15,7 +15,7 @@ public class Enemy extends Entity{
 		setStep(isu.new Dimension(cell, cell));
 		category(Category.Adversary);
 
-		place(grid.new Position(5, grid.height() / 2));
+		place(grid.new Position(50, grid.height() / 2));
 	}
 
 	@Override

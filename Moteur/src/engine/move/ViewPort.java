@@ -41,8 +41,6 @@ public class ViewPort {
 		FREE, FOLLOW, RAIL
 	}
 
-	private final ISU isu;
-
 	private double originX_cm;
 	private double originY_cm;
 
@@ -82,13 +80,6 @@ public class ViewPort {
 	 * @throws IllegalArgumentException if width or height is not positive
 	 */
 	public ViewPort(double originX_cm, double originY_cm, double width_cm, double height_cm) {
-		Game game = Game.game();
-
-		if (game == null) {
-			throw new IllegalStateException("No current Game instance");
-		}
-
-		this.isu = game.isu;
 		this.mode = Mode.FREE;
 		this.followed = null;
 		this.railSpeedX_cm = 0;
@@ -291,11 +282,34 @@ public class ViewPort {
 	}
 
 	public boolean isVisible(double x, double y) {
+		return inRange(x, originX_cm, width_cm, Game.game().torusOnXaxis, worldWidth())
+				&& inRange(y, originY_cm, height_cm, Game.game().torusOnYaxis, worldHeight());
+	}
 
-		double ex = isu.euclideanX(originX_cm, x);
-		double ey = isu.euclideanY(originY_cm, y);
+	/**
+	 * Tells whether a coordinate falls within the view port on one axis.
+	 *
+	 * On a toric axis the test must use the forward distance from the origin modulo
+	 * the world period, not a distance centered on the origin: the view port may be
+	 * larger than half the world (e.g. full height), in which case a centered
+	 * unfolding would wrongly fold the far half of the view port back to the other
+	 * side and report it as outside.
+	 *
+	 * @param value   the coordinate to test, in cm
+	 * @param origin  the view port origin on this axis, in cm
+	 * @param size    the view port size on this axis, in cm
+	 * @param onTorus whether this axis wraps
+	 * @param period  the world size on this axis, in cm (the toric period)
+	 * @return true if value lies within [origin, origin + size] on this axis
+	 */
+	private static boolean inRange(double value, double origin, double size, boolean onTorus, double period) {
+		if (!onTorus) {
+			return value >= origin && value <= origin + size;
+		}
 
-		return ex >= originX_cm && ex <= originX_cm + width_cm && ey >= originY_cm && ey <= originY_cm + height_cm;
+		// Forward distance from origin, wrapped into [0, period).
+		double delta = ((value - origin) % period + period) % period;
+		return delta <= size;
 	}
 
 	// =========================

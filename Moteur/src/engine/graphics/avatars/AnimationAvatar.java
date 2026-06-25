@@ -26,6 +26,10 @@ public abstract class AnimationAvatar extends RessourceAvatar {
 	}
 
 	protected void initImage(Graphics g, ImageSpriteRect[] framesArray) {
+		if (hasBeenInitialized)
+			return;
+		hasBeenInitialized = true;
+
 		if (LOGGING && INFO) {
 			logger.log(Level.INFO, "Init animation avatar");
 		}
