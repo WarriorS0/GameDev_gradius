@@ -6,57 +6,54 @@ import oop.graphics.Color;
 import oop.graphics.Font;
 import oop.graphics.Graphics;
 
-public class Label implements HudElement {
+public class Label implements ILabel {
 
-	public final static String DEFAULT_FONT_NAME;
-	public final static int DEFAULT_FONT_SIZE;
-	public final static int DEFAULT_FONT_STYLE;
-
-	static {
-		DEFAULT_FONT_NAME = "Monospaced";
-		DEFAULT_FONT_SIZE = 12;
-		DEFAULT_FONT_STYLE = Font.PLAIN;
-	}
-
-	protected Supplier<String> text;
+	private Supplier<String> text;
 	private boolean visible;
 
 	private String fontName;
 	private int fontStyle;
 	private int fontSize;
 
+	private boolean mustBeDeleted;
+
 	public boolean centeredText;
 
 	/**
 	 * pixel coordinate
 	 */
-	protected PixelCoordinate pc;
+	protected PixelCoordinate position;
+	protected PixelCoordinate offset;
 
 	public Color color;
 
-	public Label(String text, PixelCoordinate pc, Color color, boolean centeredText) {
-		this(text, pc, true, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
+	public Label(String text, PixelCoordinate position, Color color, boolean centeredText) {
+		this(text, position, true, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
 	}
 
-	public Label(Supplier<String> text, PixelCoordinate pc, Color color, boolean centeredText) {
-		this(text, pc, true, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE, color, centeredText);
+	public Label(Supplier<String> text, PixelCoordinate position, Color color, boolean centeredText) {
+		this(text, position, new PixelCoordinate(0, 0), true, DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE,
+				color, centeredText);
 	}
 
-	public Label(String text, PixelCoordinate pc, boolean visible, String fontName, int fontSize, int fontStyle,
+	public Label(String text, PixelCoordinate position, boolean visible, String fontName, int fontSize, int fontStyle,
 			Color color, boolean centeredText) {
-		this(() -> text, pc, visible, fontName, fontSize, fontStyle, color, centeredText);
+		this(() -> text, position, new PixelCoordinate(0, 0), visible, fontName, fontSize, fontStyle, color,
+				centeredText);
 	}
 
-	public Label(Supplier<String> text, PixelCoordinate pc, boolean visible, String fontName, int fontSize,
-			int fontStyle, Color color, boolean centeredText) {
+	public Label(Supplier<String> text, PixelCoordinate position, PixelCoordinate offset, boolean visible,
+			String fontName, int fontSize, int fontStyle, Color color, boolean centeredText) {
 		this.text = text;
-		this.pc = pc;
+		this.position = position;
 		this.visible = visible;
 		this.fontName = fontName;
 		this.fontSize = fontSize;
 		this.fontStyle = fontStyle;
 		this.color = color;
 		this.centeredText = centeredText;
+		this.mustBeDeleted = false;
+		this.offset = offset;
 	}
 
 	@Override
@@ -67,7 +64,7 @@ public class Label implements HudElement {
 		g.setFont(f);
 
 		String text = this.text.get();
-		g.drawString(text, pc.x - ((centeredText) ? f.getWidth(text) / 2 : 0), pc.y);
+		g.drawString(text, position.x - ((centeredText) ? f.getWidth(text) / 2 : 0), position.y);
 	}
 
 	@Override
@@ -80,22 +77,49 @@ public class Label implements HudElement {
 		this.visible = shown;
 	}
 
+	@Override
 	public void changeFont(String name, int style, int size) {
 		this.fontName = name;
 		this.fontStyle = style;
 		this.fontSize = size;
 	}
 
+	@Override
 	public String getFontName() {
 		return fontName;
 	}
 
+	@Override
 	public int getFontStyle() {
 		return fontStyle;
 	}
 
+	@Override
 	public int getFontSize() {
 		return fontSize;
 	}
 
+	@Override
+	public void update(int canvasWidth, int canvasHeigh) {
+		// pas besoin de maj la position d'un label immobile
+	}
+
+	@Override
+	public boolean mustBeDeleted() {
+		return mustBeDeleted;
+	}
+
+	public void delete() {
+		mustBeDeleted = true;
+	}
+
+	@Override
+	public void set(Supplier<String> newText) {
+		this.text = newText;
+	}
+
+	@Override
+	public PixelCoordinate offset() {
+		return offset;
+	}
 }

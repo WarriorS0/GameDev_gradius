@@ -19,6 +19,7 @@ import engine.graphics.FpsManager;
 import engine.graphics.BackgroundView;
 import engine.graphics.View;
 import engine.graphics.avatars.AnimationAvatar;
+import engine.graphics.hud.Anchor;
 import engine.graphics.hud.FollowerLabel;
 import engine.graphics.hud.HealthBar;
 import engine.graphics.hud.Hud;
@@ -213,17 +214,15 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
-		HealthBar health = new HealthBar(new PixelCoordinate(0, canvas.getHeight() - 20), 20, ship);
+		HealthBar health = new HealthBar(ship, Anchor.BOTTOM_RIGHT, new PixelCoordinate(-50,-50), 16, Colors.white, Colors.blue );
 		health.setVisibility(true);
 		hud.add(health);
 
-		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), Colors.white, ship, 0,
-				-25);
-		flShipDebugBehavior.setView(view);
+		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), ship, new PixelCoordinate(0,-25),
+				Colors.white);
 		flShipDebugBehavior.setVisibility(false);
 		hud.add(flShipDebugBehavior);
-		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), Colors.white, ship, 0, 20);
-		flShipDebugMoves.setView(view);
+		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), ship, new PixelCoordinate(0,20), Colors.white);
 		flShipDebugMoves.setVisibility(false);
 		hud.add(flShipDebugMoves);
 
@@ -280,8 +279,7 @@ public class MainPaintTest implements Runnable {
 				g.setColor(Colors.black);
 				g.fillRect(0, 0, windowWidth, windowHeight);
 
-				view.setCanvasArea(0, 0, windowWidth, windowHeight);
-				view.paint(g);
+				view.paint(canvas, g);
 
 				fpsC.countFrame();
 
