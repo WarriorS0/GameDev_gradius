@@ -73,18 +73,20 @@ public class Ticker implements Runnable {
 		this.task.post(this);
 		if (LOGGING && INFO)
 			logger.log(Level.INFO, "Started Ticker");
-		for (TickerListener l : listeners) {
-			l.starting();
-		}
+		if (this.listeners != null)
+			for (TickerListener l : listeners) {
+				l.starting();
+			}
 	}
 
 	public void stop() {
 		this.running = false;
 		if (LOGGING && INFO)
 			logger.log(Level.INFO, "Stopped Ticker");
-		for (TickerListener l : listeners) {
-			l.stopping();
-		}
+		if (this.listeners != null)
+			for (TickerListener l : listeners) {
+				l.stopping();
+			}
 	}
 
 	public boolean isRunning() {
