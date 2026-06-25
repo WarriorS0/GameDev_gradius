@@ -10,6 +10,8 @@ import engine.graphics.hud.Hud;
 import engine.graphics.hud.PixelCoordinate;
 import engine.move.ViewPort;
 import game.Game;
+import game.gradius.graphics.Bande;
+import game.gradius.graphics.Tile;
 import oop.graphics.Color;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
@@ -103,11 +105,13 @@ public class View {
 	public void setHUD(Hud hud) {
 		this.hud = hud;
 	}
-
+	
+	
 	public View(ViewPort vp) {
 		this.vp = Objects.requireNonNull(vp, "view port cannot be null");
 		this.avatars = new ArrayList<>();
 		this.lastTime = System.currentTimeMillis();
+		
 	}
 
 	/**

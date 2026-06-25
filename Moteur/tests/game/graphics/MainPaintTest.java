@@ -166,8 +166,9 @@ public class MainPaintTest implements Runnable {
 		Power power = new Power();
 		Obstacle obstacle = new Obstacle(30, 20);
 		
-		BigTile tile=new BigTile(20,(int)model.viewPort().height_cm());
-
+		BigTile tile=new BigTile(10,(int)model.viewPort().height_cm());
+		TileAvatar tav=new TileAvatar(tile,model.viewPort());
+		
 		// D'abord ajouter les entities au model
 		model.add(ship);
 		model.add(topCannon);
@@ -182,7 +183,7 @@ public class MainPaintTest implements Runnable {
 
 		CompositeGALStunt shipStunt = new CompositeGALStunt(model, ship, List.of(topCannon, bottomCannon));
 
-		shipStunt.setMaxLinearSpeed(70.0);
+		shipStunt.setMaxLinearSpeed(200.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 		shipStunt.setBaseLinearSpeed(10.0, 0.0);
 
@@ -200,7 +201,7 @@ public class MainPaintTest implements Runnable {
 		view.add(new CannonAvatar(bottomCannon));
 		view.add(new PowerAvatar(power));
 		view.add(new ObstacleAvatar(obstacle));
-		view.add(new TileAvatar(tile));
+		view.add(tav);
 
 		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
 		shipStunt.setProjectileSpawner(projectileSpawner);
@@ -209,7 +210,7 @@ public class MainPaintTest implements Runnable {
 				game.isu.new Coord(ship.center().x() + 3 * game.cmPerCell, ship.center().y() - 2 * game.cmPerCell),
 				game.isu.new Vector(30.0, 0.0));
 
-		MapView mapView = new MapView();
+		MapView mapView = new MapView(canvas,model,tav,model.viewPort());
 		view.setBackground(mapView::paint);
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);

@@ -13,12 +13,13 @@ public abstract class Tile extends Entity{
 	List<Bounding>b;
 	BufferedImage spritesheet;
 	int index=0;
+	int num_bande; //choix de la bande, voir TileAvatar pour correspondance
 	private int taille_x;
 	protected final int size_bande=10;
 	
 	public Tile(int max_x) {
 		super("Tile");
-		l=new ArrayList<Bande>();
+		//l=new ArrayList<Bande>();
 		b=new ArrayList<Bounding>();
 		this.taille_x=max_x;
 	}

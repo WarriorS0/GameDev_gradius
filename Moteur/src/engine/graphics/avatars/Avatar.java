@@ -13,6 +13,7 @@ public abstract class Avatar {
 	protected static final boolean LOGGING;
 	protected static final boolean INFO;
 	protected static Logger logger;
+	
 	static {
 		logger = LoggerManager.getLogger(Avatar.class.getName());
 		LOGGING = logger.getLevel() != Level.OFF;

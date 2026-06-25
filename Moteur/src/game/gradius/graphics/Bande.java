@@ -1,13 +1,13 @@
 package game.gradius.graphics;
 
 import engine.geometry.ISU;
-import engine.graphics.PixelCoordinate;
+import engine.graphics.hud.PixelCoordinate;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
 public class Bande {
 	PixelCoordinate coord;
-	boolean change;
+	boolean change,isInVP;
 	final int size_x=10;
 	BufferedImage img;
 	
