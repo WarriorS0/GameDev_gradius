@@ -22,6 +22,6 @@ public class Life extends GALCondition {
 			return false;
 		}
 
-		return e.bot().healthPercent() <= threshold;
+		return e.bot().life() <= threshold;
 	}
 }
