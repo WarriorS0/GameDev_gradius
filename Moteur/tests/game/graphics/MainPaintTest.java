@@ -19,6 +19,7 @@ import engine.graphics.FpsManager;
 import engine.graphics.HealthBar;
 import engine.graphics.Hud;
 import engine.graphics.Label;
+import engine.graphics.BackgroundView;
 import engine.graphics.AnimationAvatar;
 import engine.graphics.FollowerLabel;
 import engine.graphics.PixelCoordinate;
@@ -37,7 +38,6 @@ import game.gradius.entity.Obstacle;
 import game.gradius.graphics.ObstacleAvatar;
 import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
-import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.spawn.ProjectileSpawner;
 import oop.graphics.Canvas;
@@ -202,7 +202,7 @@ public class MainPaintTest implements Runnable {
 				game.isu.new Coord(ship.center().x() + 3 * game.cmPerCell, ship.center().y() - 2 * game.cmPerCell),
 				game.isu.new Vector(30.0, 0.0));
 
-		MapView mapView = new MapView();
+		BackgroundView mapView = new BackgroundView("src/game/gradius/graphics/map_gradius.png", 317, 204, 200, 200);
 		view.setBackground(mapView::paint);
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
