@@ -9,6 +9,7 @@ import engine.geometry.Grid;
 import engine.geometry.ISU;
 import engine.move.Model;
 import game.Game;
+import game.gradius.graphics.DragonHeadAvatar;
 import game.gradius.stunt.FollowerStunt;
 import game.gradius.stunt.FollowerStunt.MovementState;
 import game.gradius.stunt.LeaderStunt;
@@ -16,7 +17,7 @@ import game.gradius.stunt.LeaderStunt;
 public class Dragon extends Entity {
 	
 	private List<Entity> dragon_parts;
-	private final static int TICK_DELAY = 30;
+	private final static int TICK_DELAY = 15;
 	private final static Model model = Game.game().model;
 
 	public Dragon(int nb_segments) {

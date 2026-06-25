@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.controller.KeyManager;
+import engine.graphics.BackgroundView;
 import engine.graphics.FpsManager;
 import engine.graphics.View;
 import engine.graphics.avatars.AnimationAvatar;
@@ -16,7 +17,6 @@ import engine.move.Model;
 import engine.move.Ticker;
 import engine.move.ViewPort;
 import game.gradius.entity.Dragon;
-import game.gradius.graphics.MapView;
 import game.graphics.MainPaintTest;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
@@ -47,7 +47,7 @@ public class TestDemoDragon implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(30, 30);
+		Game game = new Game(256, 32);
 		Model model = game.model;
 		
 		Dragon dragon = new Dragon(6);
@@ -55,8 +55,8 @@ public class TestDemoDragon implements Runnable {
 		View view = game.view;
 		
 		
-		MapView mapView = new MapView();
-		view.setBackground(mapView::paint);
+		BackgroundView bgView = new BackgroundView("src/game/gradius/graphics/map_gradius.png", 317, 204, 200, 200);
+		view.setBackground(bgView::paint); // on doit utiliser un method reference operator sinon ça marche pas
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 		Hud hud = new Hud();
