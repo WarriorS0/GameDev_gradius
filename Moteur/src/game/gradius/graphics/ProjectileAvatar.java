@@ -1,7 +1,7 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.ShapeAvatar;
+import engine.graphics.avatars.ShapeAvatar;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 

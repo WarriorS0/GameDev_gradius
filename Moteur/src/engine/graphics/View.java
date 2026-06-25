@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 
 import engine.geometry.ISU;
+import engine.graphics.avatars.Avatar;
+import engine.graphics.hud.Hud;
+import engine.graphics.hud.PixelCoordinate;
 import engine.move.ViewPort;
 import game.Game;
 import oop.graphics.Color;
