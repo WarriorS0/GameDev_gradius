@@ -5,7 +5,7 @@ import engine.gal.arguments.Direction;
 
 public class Turn extends GALAction {
 
-	private final int angle_deg;
+	private final double angle_deg;
 
 	// 5 CONSTRUCTORS
 
@@ -13,7 +13,7 @@ public class Turn extends GALAction {
 	 * @param angle_deg in [-360,360]
 	 * @param intensity in [0,1]
 	 */
-	public Turn(int angle_deg, double intensity) {
+	public Turn(double angle_deg, double intensity) {
 		super(intensity);
 
 		if (angle_deg < -360 || angle_deg > 360) {
@@ -50,7 +50,7 @@ public class Turn extends GALAction {
 		return e.bot().stunt().startTurning(angle_deg, intensity);
 	}
 
-	public int angle() {
+	public double angle() {
 		return angle_deg;
 	}
 }
