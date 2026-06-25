@@ -172,13 +172,14 @@ public class View {
 	}
 
 	/**
-	* Facteur d'échelle uniforme (cm vers pixels de l'appareil) pour l'image actuelle. 
-	* La même échelle est appliquée aux deux axes ; la zone d'affichage est donc
-	* encadrée par des bandes noires (sans jamais être étirée) : elle est ajustée
-	* à l'intérieur de la zone utilisable, et l'espace restant forme des bandes noires. 
-	*
-	* @return l'échelle uniforme
-	*/
+	 * Facteur d'échelle uniforme (cm vers pixels de l'appareil) pour l'image
+	 * actuelle. La même échelle est appliquée aux deux axes ; la zone d'affichage
+	 * est donc encadrée par des bandes noires (sans jamais être étirée) : elle est
+	 * ajustée à l'intérieur de la zone utilisable, et l'espace restant forme des
+	 * bandes noires.
+	 *
+	 * @return l'échelle uniforme
+	 */
 	private double scale() {
 		double fitX = usableW() / renderWidth();
 		double fitY = usableH() / renderHeight();
@@ -200,11 +201,11 @@ public class View {
 	}
 
 	/**
-	* @return le rectangle à l'écran réellement occupé par la zone rendue, en
-	*         pixels {x, y, largeur, hauteur}. Le rendu est découpé selon ce rectangle
-	*         afin qu'aucun élément situé hors de la zone d'affichage ne déborde
-	*         sur les bandes noires. 
-	*/
+	 * @return le rectangle à l'écran réellement occupé par la zone rendue, en
+	 *         pixels {x, y, largeur, hauteur}. Le rendu est découpé selon ce
+	 *         rectangle afin qu'aucun élément situé hors de la zone d'affichage ne
+	 *         déborde sur les bandes noires.
+	 */
 	private int[] renderRectPx() {
 		double s = scale();
 		int x = (int) Math.round(offsetX());
@@ -215,17 +216,35 @@ public class View {
 	}
 
 	/**
-	* Projette une coordonnée du monde (en cm) en pixels d'écran, en utilisant la même étendue que
-	* celle de la scène actuellement rendue (la fenêtre d'affichage réelle ou la carte entière
-	* dans la vue d'ensemble de débogage). Sur un axe torique, le point est déplié autour de
-	* l'origine du rendu uniquement lorsque l'étendue correspond à une sous-fenêtre du monde ; 
-	* lorsque l'axe entier est affiché, la coordonnée brute se trouve déjà dans la plage valide
-	* et ne doit pas être dépliée. 
-	*
-	* @param worldPoint une coordonnée dans le monde, en cm (ne doit pas être nulle)
-	* @return la position à l'écran en pixels, ou null si le point se trouve en dehors de
-	*         l'étendue rendue (l'appelant doit alors ignorer le dessin)
-	*/
+	 * @return an list of lists of Avatar objects, sorted by z_order
+	 */
+	private List<List<Avatar>> getByZorder() {
+		List<List<Avatar>> res = new ArrayList<>();
+
+		for (int i = 0; i < Avatar.MAX_ZORDER; i++) {
+			res.add(new ArrayList<>());
+		}
+
+		for (Avatar avatar : avatars) {
+			res.get(avatar.z_order()).add(avatar);
+		}
+		return res;
+	}
+
+	/**
+	 * Projette une coordonnée du monde (en cm) en pixels d'écran, en utilisant la
+	 * même étendue que celle de la scène actuellement rendue (la fenêtre
+	 * d'affichage réelle ou la carte entière dans la vue d'ensemble de débogage).
+	 * Sur un axe torique, le point est déplié autour de l'origine du rendu
+	 * uniquement lorsque l'étendue correspond à une sous-fenêtre du monde ; lorsque
+	 * l'axe entier est affiché, la coordonnée brute se trouve déjà dans la plage
+	 * valide et ne doit pas être dépliée.
+	 *
+	 * @param worldPoint une coordonnée dans le monde, en cm (ne doit pas être
+	 *                   nulle)
+	 * @return la position à l'écran en pixels, ou null si le point se trouve en
+	 *         dehors de l'étendue rendue (l'appelant doit alors ignorer le dessin)
+	 */
 	public PixelCoordinate worldToScreen(ISU.Coord worldPoint) {
 		Objects.requireNonNull(worldPoint, "world point cannot be null");
 
@@ -262,8 +281,8 @@ public class View {
 	public void paint(Canvas c, Graphics g) {
 		Objects.requireNonNull(c, "canvas cannot be null");
 		Objects.requireNonNull(g, "graphics cannot be null");
-		
-		this.canvas=c;
+
+		this.canvas = c;
 
 		if (canvas.getWidth() <= 0 || canvas.getHeight() <= 0) {
 			throw new RuntimeException("canvas.getWidth() <= 0 || canvas.getHeight() <= 0");
@@ -337,7 +356,7 @@ public class View {
 
 		// hud is optionnal, on dessine uniquement si présent (càd non null)
 		if (hud != null) {
-			hud.draw(g,canvas.getWidth(),canvas.getHeight());
+			hud.draw(g, canvas.getWidth(), canvas.getHeight());
 		}
 	}
 
@@ -370,10 +389,13 @@ public class View {
 		long currentTime = System.currentTimeMillis();
 		double delta_t = (currentTime - lastTime) / 1000.0;
 		lastTime = currentTime;
-		for (Avatar avatar : avatars) {
-			avatar.initImage(g); //on init image 
-			avatar.updateAnimation(delta_t);
-			avatar.paint(g);
+		List<List<Avatar>> avatarsByZorder = this.getByZorder();
+		for (int i = 0; i < avatarsByZorder.size(); i++) {
+			for (Avatar avatar : avatarsByZorder.get(i)) {
+				avatar.initImage(g); // on init image
+				avatar.updateAnimation(delta_t);
+				avatar.paint(g);
+			}
 		}
 	}
 
