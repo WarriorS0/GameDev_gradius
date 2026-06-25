@@ -1,7 +1,7 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.SpriteAvatar;
+import engine.graphics.avatars.SpriteAvatar;
 import oop.graphics.Graphics;
 
 public class AvatarTerrain extends SpriteAvatar {

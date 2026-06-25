@@ -1,9 +1,10 @@
-package engine.graphics;
+package engine.graphics.hud;
 
 import java.util.function.Supplier;
 
 import engine.entity.Entity;
 import engine.geometry.ISU;
+import engine.graphics.View;
 import game.Game;
 import oop.graphics.Color;
 

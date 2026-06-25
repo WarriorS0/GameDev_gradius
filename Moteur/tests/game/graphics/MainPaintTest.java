@@ -16,14 +16,14 @@ import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
 import engine.graphics.FpsManager;
-import engine.graphics.HealthBar;
-import engine.graphics.Hud;
-import engine.graphics.Label;
 import engine.graphics.BackgroundView;
-import engine.graphics.AnimationAvatar;
-import engine.graphics.FollowerLabel;
-import engine.graphics.PixelCoordinate;
 import engine.graphics.View;
+import engine.graphics.avatars.AnimationAvatar;
+import engine.graphics.hud.FollowerLabel;
+import engine.graphics.hud.HealthBar;
+import engine.graphics.hud.Hud;
+import engine.graphics.hud.Label;
+import engine.graphics.hud.PixelCoordinate;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
@@ -123,7 +123,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
-		Game game = new Game(256, 48);
+		Game game = new Game(256, 32);
 		Model model = game.model;
 
 		// =========================
@@ -202,8 +202,8 @@ public class MainPaintTest implements Runnable {
 				game.isu.new Coord(ship.center().x() + 3 * game.cmPerCell, ship.center().y() - 2 * game.cmPerCell),
 				game.isu.new Vector(30.0, 0.0));
 
-		BackgroundView mapView = new BackgroundView("src/game/gradius/graphics/map_gradius.png", 317, 204, 200, 200);
-		view.setBackground(mapView::paint);
+		BackgroundView bgView = new BackgroundView("src/game/gradius/graphics/map_gradius.png", 317, 204, 200, 200);
+		view.setBackground(bgView::paint); // on doit utiliser un method reference operator sinon ça marche pas
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
