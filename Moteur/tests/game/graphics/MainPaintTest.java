@@ -326,7 +326,9 @@ public class MainPaintTest implements Runnable {
 		/*
 		 * Le Ticker se lance déjà dans son constructeur.
 		 */
-		new Ticker(model);
+		Ticker ticker = new Ticker(model);
+		ticker.start();
+		km.bind(VirtualKeyCodes.VK_P, () -> ticker.toggleRunning());
 	}
 
 	private void place(Entity entity, int x, int y) {
