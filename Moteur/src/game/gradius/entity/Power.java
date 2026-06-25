@@ -14,7 +14,7 @@ public class Power extends Entity {
 
 		double cell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(0.7 * cell, 0.7 * cell));
+		setSize(isu.new Dimension(2 * cell, 2 * cell));
 		setStep(isu.new Dimension(cell, cell));
 		category(Category.Power);
 

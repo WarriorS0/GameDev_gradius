@@ -176,7 +176,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	// TURN
 
 	@Override
-	public boolean startTurning(int angle_deg, double intensity) {
+	public boolean startTurning(double angle_deg, double intensity) {
 		if (intensity < 0.0 || intensity > 1.0) {
 			return false;
 		}

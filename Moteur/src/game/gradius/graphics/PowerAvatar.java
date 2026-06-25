@@ -1,35 +1,30 @@
 package game.gradius.graphics;
 
 import engine.entity.Entity;
-import engine.graphics.avatars.ShapeAvatar;
+import engine.graphics.avatars.AnimationAvatar;
 import oop.graphics.Graphics;
-import oop.graphics.Graphics.Colors;
 
-public class PowerAvatar extends ShapeAvatar {
+public class PowerAvatar extends AnimationAvatar {
+
+	private static final String SPRITE_SHEET = "src/game/gradius/graphics/vic_viper.png";
 
 	public PowerAvatar(Entity entity) {
-		super(entity,1,1);
+		super(entity, SPRITE_SHEET, 1, 1);
 	}
 
 	@Override
-	public void paint(Graphics g) {
-		if (dead() || entity().center() == null) {
-			return;
-		}
-
-		int width = Math.max(1, this.cmToPixel(entity().size().x()));
-		int height = Math.max(1, this.cmToPixel(entity().size().y()));
-
-		int xCenter = this.cmToPixel(entity().center().x());
-		int yCenter = this.cmToPixel(entity().center().y());
-		
-		int xTopLeft = xCenter - width / 2;
-		int yTopLeft = yCenter - height / 2;
-
-		g.setColor(Colors.green);
-		g.fillRect(xTopLeft, yTopLeft, width, height);
-
-		g.setColor(Colors.white);
-		g.drawRect(xTopLeft, yTopLeft, width, height);
+	public void initImage(Graphics g) {
+		this.initImage(g,
+				new ImageSpriteRect[] {
+						new ImageSpriteRect(28, 149, 16, 16),
+						new ImageSpriteRect(47, 149, 16, 16),
+						new ImageSpriteRect(67, 150, 14, 14),
+						new ImageSpriteRect(86, 150, 14, 14),
+						new ImageSpriteRect(103, 151, 12, 12),
+						new ImageSpriteRect(119, 151, 12, 12),
+						new ImageSpriteRect(136, 152, 10, 10),
+						new ImageSpriteRect(152, 152, 10, 10),
+						new ImageSpriteRect(169, 153, 8, 8)
+				});
 	}
 }

@@ -29,7 +29,7 @@ public interface iAllGALActions {
 	 * @param angle_deg = the desired angle
 	 * @param intensity = in [0,1] ≃ % of the maximal angular speed
 	 */
-	boolean startTurning(int angle_deg, double intensity);
+	boolean startTurning(double angle_deg, double intensity);
 	
 	// THROW
 
