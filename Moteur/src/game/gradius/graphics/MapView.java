@@ -17,7 +17,7 @@ public class MapView {
 
 	public void initImages(Graphics g) {
 		BufferedImage sprite = g.load(SPRITE_PATH);
-		this.mapImage = sprite.getSubimage(733, 406, 500, 400);
+		this.mapImage = sprite.getSubimage(317, 204, 200, 200);
 		this.initialized = true;
 	}
 

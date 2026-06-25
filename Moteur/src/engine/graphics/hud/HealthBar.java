@@ -1,31 +1,37 @@
-package engine.graphics;
+package engine.graphics.hud;
+
+import java.util.function.Supplier;
 
 import engine.entity.Entity;
+import oop.graphics.Color;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
 
 public class HealthBar implements HudElement {
 
-	private int width, height, hp, totalhp;
+	private int x, y, width, height, hp, totalhp;
 	private boolean visible = false;
 	private PixelCoordinate coord;
 	private Entity entity;
 
 	private int scale;
-
-	public HealthBar(PixelCoordinate coord, int scale, Entity e) {
-
+	public HealthBar(PixelCoordinate coord, int scale,Entity e) {
+		
 		this.coord = coord;
-		this.hp = e.bot().healthPercent();
-		this.totalhp = e.bot().healthPercent();
+		this.width = width;
+		this.height = height;
+		this.hp = e.bot().life();
+		this.totalhp = e.bot().life();
 		this.entity = e;
 		this.scale = scale;
 	}
+	
+	
 
 	@Override
 	public void draw(Graphics g) {
-		// int hpwidth = 10;
-		hp = entity.bot().healthPercent();
+		//int hpwidth = 10;
+		hp = entity.bot().life();
 		g.setColor(Colors.white);
 		for (int i = 0; i < totalhp; i++) {
 			if (hp > i) {

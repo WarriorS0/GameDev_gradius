@@ -1,4 +1,4 @@
-package engine.graphics;
+package engine.graphics.avatars;
 
 import java.util.logging.Level;
 
