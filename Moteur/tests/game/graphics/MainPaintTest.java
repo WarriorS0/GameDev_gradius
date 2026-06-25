@@ -42,6 +42,7 @@ import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.BigTile;
 import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.EnemyAvatar;
+import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.graphics.TileAvatar;
 import game.gradius.spawn.ProjectileSpawner;

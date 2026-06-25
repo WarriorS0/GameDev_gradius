@@ -43,6 +43,7 @@ public class MapView {
 			int i = 0;
 			while ((bandes.size() < length) && (i < t.l.size())) {
 				bandes.add(t.l.get(i));
+				i++;
 			}
 			if (i == t.l.size()) {
 				int n2 = r.nextInt() % 5; // sans cela la prochaine tile générée serait la même que la dernière tile
