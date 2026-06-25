@@ -11,7 +11,7 @@ import engine.entity.Entity;
 import engine.gal.PowerReceiver;
 import engine.gal.arguments.Direction;
 
-public class ProjectileSpawner implements engine.gal.ThrowSpawner{
+public class ProjectileSpawner implements engine.gal.ThrowSpawner {
 
 	private final Model model;
 	private final View view;
@@ -48,7 +48,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 
 		return projectile;
 	}
-	
+
 	private boolean isPoweredSource(Entity source) {
 		if (source instanceof PowerReceiver receiver) {
 			return receiver.hasPower();
@@ -60,7 +60,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 
 		return false;
 	}
-	
+
 	@Override
 	public Projectile spawnFrom(Entity source, Direction direction, double intensity) {
 		if (source == null || source.center() == null) {
@@ -77,10 +77,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 
 		double cell = game.Game.game().cmPerCell;
 
-		ISU.Coord center = game.Game.game().isu.new Coord(
-				source.center().x() + 1.5 * cell,
-				source.center().y()
-		);
+		ISU.Coord center = game.Game.game().isu.new Coord(source.center().x() + 1.5 * cell, source.center().y());
 
 		double speedValue = 130.0 * intensity;
 		ISU.Vector speed;
@@ -95,9 +92,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 			speed = game.Game.game().isu.new Vector(speedValue, 0.0);
 		}
 
-		Projectile.Type type = isPoweredSource(source)
-				? Projectile.Type.BLUE_ORB
-				: Projectile.Type.LASER;
+		Projectile.Type type = isPoweredSource(source) ? Projectile.Type.BLUE_ORB : Projectile.Type.LASER;
 
 		return spawn(center, speed, type);
 	}

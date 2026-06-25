@@ -6,8 +6,8 @@ import engine.shape.Rect;
 import game.Game;
 
 public class Power extends Entity {
-	
-	//JUSTE POUR LE TEST DOIT ETRE FINI
+
+	// JUSTE POUR LE TEST DOIT ETRE FINI
 
 	public Power() {
 		super("Power");

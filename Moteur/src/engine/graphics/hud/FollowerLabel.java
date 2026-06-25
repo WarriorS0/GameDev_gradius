@@ -29,20 +29,21 @@ public class FollowerLabel extends Label implements IFollower {
 	}
 
 	public FollowerLabel(Supplier<String> text, Entity target, PixelCoordinate offset, Color color) {
-		this(text, target, offset, true, Label.DEFAULT_FONT_NAME, Label.DEFAULT_FONT_SIZE,
-				Label.DEFAULT_FONT_STYLE, color, true);
+		this(text, target, offset, true, Label.DEFAULT_FONT_NAME, Label.DEFAULT_FONT_SIZE, Label.DEFAULT_FONT_STYLE,
+				color, true);
 	}
 
-	public FollowerLabel(Supplier<String> text, Entity target, PixelCoordinate offset, boolean visible,
-			String fontName, int fontSize, int fontStyle, Color color, boolean centeredText) {
-		super(text, new PixelCoordinate(0, 0), new PixelCoordinate(0, 0), visible, fontName, fontSize, fontStyle, color, centeredText);
+	public FollowerLabel(Supplier<String> text, Entity target, PixelCoordinate offset, boolean visible, String fontName,
+			int fontSize, int fontStyle, Color color, boolean centeredText) {
+		super(text, new PixelCoordinate(0, 0), new PixelCoordinate(0, 0), visible, fontName, fontSize, fontStyle, color,
+				centeredText);
 		this.target = target;
 		this.offset = offset;
 		this.lastPos = new PixelCoordinate(0, 0);
 		this.mustBeDeleted = false;
 	}
-	
-	public static ISU.Coord center(ISU.Coord c){
+
+	public static ISU.Coord center(ISU.Coord c) {
 		return isu.new Coord(c.x() + cmPerCell / 2.0, c.y() + cmPerCell / 2.0);
 	}
 

@@ -5,5 +5,5 @@ import engine.gal.arguments.Direction;
 
 public interface ThrowSpawner {
 
-    Entity spawnFrom(Entity source, Direction direction, double intensity);
+	Entity spawnFrom(Entity source, Direction direction, double intensity);
 }

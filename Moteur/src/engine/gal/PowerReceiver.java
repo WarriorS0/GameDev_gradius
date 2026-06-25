@@ -1,6 +1,7 @@
 package engine.gal;
 
 public interface PowerReceiver {
-    void activatePower();
-    boolean hasPower();
+	void activatePower();
+
+	boolean hasPower();
 }

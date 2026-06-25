@@ -86,16 +86,14 @@ public class CompositeGALStunt extends GALStunt {
 		this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
 		setLinearSpeed(targetDirection);
 	}
-	
+
 	@Override
 	protected void collision(Entity other) {
-	    if (other != null
-	            && other.category() == Category.Power
-	            && entity instanceof PowerReceiver receiver) {
-	        receiver.activatePower();
-	    }
+		if (other != null && other.category() == Category.Power && entity instanceof PowerReceiver receiver) {
+			receiver.activatePower();
+		}
 
-	    super.collision(other);
+		super.collision(other);
 	}
 
 	@Override

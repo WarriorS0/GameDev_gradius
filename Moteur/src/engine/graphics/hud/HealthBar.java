@@ -21,7 +21,8 @@ public class HealthBar extends FollowerLabel implements IHealthBar, IAnchored {
 
 	public HealthBar(Entity entity, Anchor anchor, PixelCoordinate offset, int sizeOfOneHp, Color colorText,
 			Color colorPts) {
-		this(sizeOfOneHp, true, new PixelCoordinate(0, 0), offset, entity, anchor, TYPE.ANCHORED, colorText, colorPts, true);
+		this(sizeOfOneHp, true, new PixelCoordinate(0, 0), offset, entity, anchor, TYPE.ANCHORED, colorText, colorPts,
+				true);
 	}
 
 	public HealthBar(Entity entity, PixelCoordinate position, PixelCoordinate offset, int sizeOfOneHp, Color colorText,
@@ -71,8 +72,8 @@ public class HealthBar extends FollowerLabel implements IHealthBar, IAnchored {
 		hp = target.bot().life(); // we don't put the bot in a local var because bot can be switch around mid game
 		switch (this.type) {
 		case ANCHORED: {
-			this.position.x = anchor.calculateX(canvasWidth)+offset.x;
-			this.position.y = anchor.calculateY(canvasHeigh)+offset.y;
+			this.position.x = anchor.calculateX(canvasWidth) + offset.x;
+			this.position.y = anchor.calculateY(canvasHeigh) + offset.y;
 			return;
 		}
 		case FOLLOWING: {

@@ -8,40 +8,40 @@ import engine.entity.Entity;
 
 public class SequenceAction implements iGALAction {
 
-    private final List<iGALAction> actions;
+	private final List<iGALAction> actions;
 
-    public SequenceAction(List<iGALAction> actions) {
-        if (actions == null) {
-            throw new IllegalArgumentException("actions cannot be null");
-        }
+	public SequenceAction(List<iGALAction> actions) {
+		if (actions == null) {
+			throw new IllegalArgumentException("actions cannot be null");
+		}
 
-        if (actions.isEmpty()) {
-            throw new IllegalArgumentException("actions cannot be empty");
-        }
+		if (actions.isEmpty()) {
+			throw new IllegalArgumentException("actions cannot be empty");
+		}
 
-        this.actions = new ArrayList<>();
+		this.actions = new ArrayList<>();
 
-        for (iGALAction action : actions) {
-            if (action == null) {
-                throw new IllegalArgumentException("action cannot be null");
-            }
+		for (iGALAction action : actions) {
+			if (action == null) {
+				throw new IllegalArgumentException("action cannot be null");
+			}
 
-            this.actions.add(action);
-        }
-    }
+			this.actions.add(action);
+		}
+	}
 
-    @Override
-    public boolean exec(Entity e) {
-        for (iGALAction action : actions) {
-            if (!action.exec(e)) {
-                return false;
-            }
-        }
+	@Override
+	public boolean exec(Entity e) {
+		for (iGALAction action : actions) {
+			if (!action.exec(e)) {
+				return false;
+			}
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    public List<iGALAction> actions() {
-        return Collections.unmodifiableList(actions);
-    }
+	public List<iGALAction> actions() {
+		return Collections.unmodifiableList(actions);
+	}
 }

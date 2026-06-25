@@ -20,8 +20,8 @@ package gal.ast;
 
 public abstract class Expression extends Node {
 
-  abstract Object accept(iVisitor visitor);
+	abstract Object accept(iVisitor visitor);
 
-  public abstract String toString();
+	public abstract String toString();
 
 }

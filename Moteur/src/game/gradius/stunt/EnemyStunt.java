@@ -12,8 +12,6 @@ import game.Game;
 
 public class EnemyStunt extends Stunt {
 
-	
-
 	private static Logger logger = LoggerManager.getLogger(BasicStunt.class.getName());
 
 	private static final double DEFAULT_SPEED = 20.0;
@@ -73,11 +71,11 @@ public class EnemyStunt extends Stunt {
 
 		return normalized;
 	}
-	
+
 	@Override
 	protected void tick(double d) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

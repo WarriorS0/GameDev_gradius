@@ -89,7 +89,6 @@ public class Variable extends Parameter {
 			return sb.toString();
 	}
 
-
 	// VISITOR
 
 	@Override

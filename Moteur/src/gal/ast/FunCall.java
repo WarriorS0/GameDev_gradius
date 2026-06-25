@@ -33,8 +33,7 @@ public class FunCall extends Expression {
 	}
 
 	/**
-	 * @param percent
-	 *                is used by probabilistic action
+	 * @param percent is used by probabilistic action
 	 */
 
 	public FunCall(int percent, String name, List<Parameter> parameters) {
@@ -54,11 +53,11 @@ public class FunCall extends Expression {
 
 	public String percent() {
 		switch (percent) {
-			case 100:
-			case NO_PERCENT:
-				return "";
-			default:
-				return percent + "%";
+		case 100:
+		case NO_PERCENT:
+			return "";
+		default:
+			return percent + "%";
 		}
 	}
 

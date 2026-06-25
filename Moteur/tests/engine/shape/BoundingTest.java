@@ -81,8 +81,6 @@ class BoundingTest {
 		});
 	}
 
-
-
 	@Test
 	void boundingBoxesReturnsOneBoxPerShape() {
 		Bounding bounding = new Bounding();

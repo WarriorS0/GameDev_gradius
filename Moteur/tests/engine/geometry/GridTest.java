@@ -45,10 +45,7 @@ class GridTest {
 	}
 
 	private void assertPositionEquals(int expectedXCell, int expectedYCell, Grid.Position actual) {
-		assertAll(
-			() -> assertEquals(expectedXCell, actual.x()),
-			() -> assertEquals(expectedYCell, actual.y())
-		);
+		assertAll(() -> assertEquals(expectedXCell, actual.x()), () -> assertEquals(expectedYCell, actual.y()));
 	}
 
 	private int wrapCell(int value, int perimeterInCells) {
@@ -72,10 +69,7 @@ class GridTest {
 	void everyValidPositionShouldHaveCell() {
 		for (int yCell = 0; yCell < HEIGHT_NCELL; yCell++) {
 			for (int xCell = 0; xCell < WIDTH_NCELL; xCell++) {
-				assertNotNull(
-					grid.cellAt(pos(xCell, yCell)),
-					"Missing cell at (" + xCell + "," + yCell + ")"
-				);
+				assertNotNull(grid.cellAt(pos(xCell, yCell)), "Missing cell at (" + xCell + "," + yCell + ")");
 			}
 		}
 	}
@@ -301,10 +295,8 @@ class GridTest {
 		ISU.Coord topLeft = p.toISUCoord();
 		ISU.Coord center = p.toISUCoordCentered();
 
-		double expectedDistance = Math.sqrt(
-			(cmPerCell / 2.0) * (cmPerCell / 2.0)
-			+ (cmPerCell / 2.0) * (cmPerCell / 2.0)
-		);
+		double expectedDistance = Math
+				.sqrt((cmPerCell / 2.0) * (cmPerCell / 2.0) + (cmPerCell / 2.0) * (cmPerCell / 2.0));
 
 		assertEquals(expectedDistance, topLeft.distanceTo(center), EPS);
 	}
@@ -312,13 +304,8 @@ class GridTest {
 	@Test
 	@DisplayName("Wrapped grid positions should match a reference modulo formula in cells")
 	void wrappedPositionsShouldMatchReferenceModuloFormulaInCells() {
-		int[][] samples = {
-			{0, 0},
-			{WIDTH_NCELL, HEIGHT_NCELL},
-			{WIDTH_NCELL + 1, HEIGHT_NCELL + 2},
-			{-1, -1},
-			{-WIDTH_NCELL - 3, -HEIGHT_NCELL - 4}
-		};
+		int[][] samples = { { 0, 0 }, { WIDTH_NCELL, HEIGHT_NCELL }, { WIDTH_NCELL + 1, HEIGHT_NCELL + 2 }, { -1, -1 },
+				{ -WIDTH_NCELL - 3, -HEIGHT_NCELL - 4 } };
 
 		for (int[] sample : samples) {
 			int xCell = sample[0];
@@ -326,11 +313,7 @@ class GridTest {
 
 			Grid.Position p = pos(xCell, yCell);
 
-			assertPositionEquals(
-				wrapCell(xCell, WIDTH_NCELL),
-				wrapCell(yCell, HEIGHT_NCELL),
-				p
-			);
+			assertPositionEquals(wrapCell(xCell, WIDTH_NCELL), wrapCell(yCell, HEIGHT_NCELL), p);
 		}
 	}
 }

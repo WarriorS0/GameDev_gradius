@@ -214,15 +214,17 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
-		HealthBar health = new HealthBar(ship, Anchor.BOTTOM_RIGHT, new PixelCoordinate(-50,-50), 16, Colors.white, Colors.blue );
+		HealthBar health = new HealthBar(ship, Anchor.BOTTOM_RIGHT, new PixelCoordinate(-50, -50), 16, Colors.white,
+				Colors.blue);
 		health.setVisibility(true);
 		hud.add(health);
 
-		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), ship, new PixelCoordinate(0,-25),
-				Colors.white);
+		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), ship,
+				new PixelCoordinate(0, -25), Colors.white);
 		flShipDebugBehavior.setVisibility(false);
 		hud.add(flShipDebugBehavior);
-		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), ship, new PixelCoordinate(0,20), Colors.white);
+		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), ship, new PixelCoordinate(0, 20),
+				Colors.white);
 		flShipDebugMoves.setVisibility(false);
 		hud.add(flShipDebugMoves);
 

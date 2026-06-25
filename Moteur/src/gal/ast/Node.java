@@ -28,9 +28,8 @@ public abstract class Node {
 	}
 
 	/**
-	 * La terminologie Wikipédia distingue les noms de méthodes
-	 * - le visitor visit(node)
-	 * - le noeud accept(visitor)
+	 * La terminologie Wikipédia distingue les noms de méthodes - le visitor
+	 * visit(node) - le noeud accept(visitor)
 	 */
 
 	abstract Object accept(iVisitor visitor);

@@ -21,109 +21,108 @@ import java.util.List;
 
 public interface iVisitor {
 
-  public Object visit(Category cat);
+	public Object visit(Category cat);
 
-  public Object visit(Direction dir);
-  
-  public Object visit(IntPercent per);
-  
-  public Object visit(IntDegree deg);
+	public Object visit(Direction dir);
 
-  public Object visit(Key key);
+	public Object visit(IntPercent per);
 
-  public Object visit(IntValue v);
+	public Object visit(IntDegree deg);
 
-  public Object visit(Underscore u);
- 
-  public Object visit(Variable v);
-  
+	public Object visit(Key key);
 
-  // FUNCALL
+	public Object visit(IntValue v);
 
-  public void enter(FunCall funcall);
+	public Object visit(Underscore u);
 
-  public void visit(FunCall funcall);
+	public Object visit(Variable v);
 
-  public void exit(FunCall funcall);
+	// FUNCALL
 
-  public Object build(FunCall funcall, List<Object> parameters);
+	public void enter(FunCall funcall);
 
-  // BINOP
+	public void visit(FunCall funcall);
 
-  public void enter(BinaryOp binop);
+	public void exit(FunCall funcall);
 
-  public void visit(BinaryOp binop);
+	public Object build(FunCall funcall, List<Object> parameters);
 
-  public void exit(BinaryOp binop);
+	// BINOP
 
-  public Object build(BinaryOp binop, Object left, Object right);
+	public void enter(BinaryOp binop);
 
-  // UNOP
+	public void visit(BinaryOp binop);
 
-  public void enter(UnaryOp unop);
+	public void exit(BinaryOp binop);
 
-  public void exit(UnaryOp unop);
+	public Object build(BinaryOp binop, Object left, Object right);
 
-  public Object build(UnaryOp unop, Object expression);
+	// UNOP
 
-  // STATE
+	public void enter(UnaryOp unop);
 
-  public Object visit(State state);
+	public void exit(UnaryOp unop);
 
-  // MODE
+	public Object build(UnaryOp unop, Object expression);
 
-  public void enter(Mode mode);
+	// STATE
 
-  public void visit(Mode mode);
+	public Object visit(State state);
 
-  public void exit(Mode mode);
+	// MODE
 
-  public Object build(Mode mode, Object source_state, Object behaviour);
+	public void enter(Mode mode);
 
-  // BEHAVIOUR
+	public void visit(Mode mode);
 
-  public Object visit(Behaviour behaviour, List<Object> transitions);
+	public void exit(Mode mode);
 
-  // CONDITION
+	public Object build(Mode mode, Object source_state, Object behaviour);
 
-  public void enter(Condition condition);
+	// BEHAVIOUR
 
-  public void exit(Condition condition);
+	public Object visit(Behaviour behaviour, List<Object> transitions);
 
-  public Object build(Condition condition, Object expression);
+	// CONDITION
 
-  // ACTION
+	public void enter(Condition condition);
 
-  public void enter(Actions action);
+	public void exit(Condition condition);
 
-  public void visit(Actions action);
+	public Object build(Condition condition, Object expression);
 
-  public void exit(Actions action);
+	// ACTION
 
-  public Object build(Actions action, String operator, List<Object> funcalls);
+	public void enter(Actions action);
 
-  // TRANSITION
+	public void visit(Actions action);
 
-  public void enter(Transition transition);
+	public void exit(Actions action);
 
-  public void exit(Transition transition);
+	public Object build(Actions action, String operator, List<Object> funcalls);
 
-  public Object build(Transition transition, Object condition, Object action, Object target_state);
+	// TRANSITION
 
-  // AUTOMATON
+	public void enter(Transition transition);
 
-  public void enter(Automaton automaton);
+	public void exit(Transition transition);
 
-  public void exit(Automaton automaton);
+	public Object build(Transition transition, Object condition, Object action, Object target_state);
 
-  public Object build(Automaton automaton, Object initial_state, List<Object> modes);
+	// AUTOMATON
 
-  // AST
+	public void enter(Automaton automaton);
 
-  public void enter(AST ast);
+	public void exit(Automaton automaton);
 
-  public void exit(AST ast);
+	public Object build(Automaton automaton, Object initial_state, List<Object> modes);
 
-  public Object build(AST ast, List<Object> automata);
+	// AST
+
+	public void enter(AST ast);
+
+	public void exit(AST ast);
+
+	public Object build(AST ast, List<Object> automata);
 
 }

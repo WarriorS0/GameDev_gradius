@@ -22,10 +22,6 @@ public class Obstacle extends Entity {
 	protected void setBounding() {
 		clearBounding();
 
-		addBounding(new Rect(
-			center(),
-			size(),
-			orientation()
-		));
+		addBounding(new Rect(center(), size(), orientation()));
 	}
 }

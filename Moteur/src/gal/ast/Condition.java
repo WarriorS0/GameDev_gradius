@@ -19,31 +19,31 @@ package gal.ast;
 
 public class Condition extends Node {
 
-  public Condition(Expression expression) {
-    this.expression = expression;
-  }
+	public Condition(Expression expression) {
+		this.expression = expression;
+	}
 
-  // FIELD
+	// FIELD
 
-  private Expression expression;
+	private Expression expression;
 
-  // REQUIRED BY INTERFACE Visitable
+	// REQUIRED BY INTERFACE Visitable
 
-  Object accept(iVisitor visitor) {
-    visitor.enter(this);
-    Object o = expression.accept(visitor);
-    visitor.exit(this);
-    return visitor.build(this, o);
-  }
-  
-  // GETTER
-  public Expression expression() {
-	  return expression;
-  }
+	Object accept(iVisitor visitor) {
+		visitor.enter(this);
+		Object o = expression.accept(visitor);
+		visitor.exit(this);
+		return visitor.build(this, o);
+	}
 
-  // EXPORT
+	// GETTER
+	public Expression expression() {
+		return expression;
+	}
 
-  public String toString() {
-    return expression.toString();
-  }
+	// EXPORT
+
+	public String toString() {
+		return expression.toString();
+	}
 }

@@ -17,7 +17,7 @@ public class ProjectileStunt extends Stunt {
 	@Override
 	protected void collision(Entity entity) {
 		this.entity.kill();
-		if(entity instanceof Enemy) {
+		if (entity instanceof Enemy) {
 			entity.kill();
 		}
 	}
@@ -25,8 +25,8 @@ public class ProjectileStunt extends Stunt {
 	@Override
 	protected void collision(List<Entity> entities) {
 		this.entity.kill();
-		for(Entity en : entities) {
-			if(en instanceof Enemy) {
+		for (Entity en : entities) {
+			if (en instanceof Enemy) {
 				en.kill();
 			}
 		}

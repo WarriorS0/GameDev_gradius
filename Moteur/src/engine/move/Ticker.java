@@ -1,6 +1,5 @@
 package engine.move;
 
-
 import oop.tasks.Task;
 import oop.tasks.Runtime;
 import oop.tasks.Runnable;
@@ -54,7 +53,7 @@ public class Ticker implements Runnable {
 
 	/**
 	 * 
-	 * À ne pas utiliser dans le jeu final. C'est du test 
+	 * À ne pas utiliser dans le jeu final. C'est du test
 	 */
 	public void test() {
 		while (running) {

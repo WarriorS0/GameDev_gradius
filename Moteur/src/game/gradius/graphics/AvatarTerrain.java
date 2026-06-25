@@ -11,7 +11,7 @@ public class AvatarTerrain extends SpriteAvatar {
 	}
 
 	public AvatarTerrain(Entity entity) {
-		super(entity, "src/game/graphics/pacman_sprite.png",1,1);
+		super(entity, "src/game/graphics/pacman_sprite.png", 1, 1);
 	}
 
 	@Override

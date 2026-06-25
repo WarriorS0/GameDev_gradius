@@ -27,7 +27,7 @@ public class Cannon extends Entity {
 	public CannonSlot slot() {
 		return slot;
 	}
-	
+
 	public void attachTo(Ship owner) {
 		if (owner == null) {
 			throw new IllegalArgumentException("owner cannot be null");
