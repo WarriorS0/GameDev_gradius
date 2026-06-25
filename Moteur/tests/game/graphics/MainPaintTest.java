@@ -32,12 +32,14 @@ import gal.parser.Parser;
 import game.Game;
 import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
+import game.gradius.entity.Enemy;
 import game.gradius.entity.Ship;
 import game.gradius.entity.Power;
 import game.gradius.entity.Obstacle;
 import game.gradius.graphics.ObstacleAvatar;
 import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
+import game.gradius.graphics.EnemyAvatar;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.spawn.ProjectileSpawner;
 import oop.graphics.Canvas;
@@ -162,6 +164,7 @@ public class MainPaintTest implements Runnable {
 
 		Power power = new Power();
 		Obstacle obstacle = new Obstacle(30, 20);
+		Enemy enemy = new Enemy();
 
 		// D'abord ajouter les entities au model
 		model.add(ship);
@@ -169,6 +172,7 @@ public class MainPaintTest implements Runnable {
 		model.add(bottomCannon);
 		model.add(power);
 		model.add(obstacle);
+		model.add(enemy);
 
 		// Ensuite seulement créer le bot / stunt GAL
 		GALBot shipBot = new GALBot(ship);
@@ -194,6 +198,7 @@ public class MainPaintTest implements Runnable {
 		view.add(new CannonAvatar(bottomCannon));
 		view.add(new PowerAvatar(power));
 		view.add(new ObstacleAvatar(obstacle));
+		view.add(new EnemyAvatar(enemy));
 
 		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
 		shipStunt.setProjectileSpawner(projectileSpawner);

@@ -85,8 +85,6 @@ public class CompositeGALStunt extends GALStunt {
 		this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
 		setLinearSpeed(targetDirection);
 	}
-	
-	
 
 	@Override
 	public boolean startThrowing(Direction direction, double intensity) {
@@ -95,8 +93,13 @@ public class CompositeGALStunt extends GALStunt {
 		}
 		double current_time = System.currentTimeMillis();
 		elapsed = current_time - last_time;
-		if(elapsed > expected_time) {
+		if (elapsed > expected_time) {
 			projectileSpawner().spawnFrom(entity, direction, intensity);
+			for (Entity subEntity : subEntities) {
+				if (!subEntity.dead()) {
+					projectileSpawner().spawnFrom(subEntity, direction, intensity);
+				}
+			}
 			last_time = current_time;
 		}
 		return true;
