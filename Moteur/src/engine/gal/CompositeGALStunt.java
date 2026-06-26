@@ -17,7 +17,19 @@ public class CompositeGALStunt extends GALStunt {
 	private double elapsed;
 	private double last_time;
 	private static double expected_time = 200;
-
+	
+	private static oop.utils.SoundPlayer laserPlayer;
+	static {
+	    try {
+	        // Ajustez le chemin vers votre fichier laser.wav
+	        laserPlayer = new oop.utils.SoundPlayer(new java.io.File("src/game/gradius/entity/laser.wav"));
+	        laserPlayer.volume(-10F);
+	    } catch (Exception e) {
+	        System.err.println("Erreur chargement son laser : " + e.getMessage());
+	    }
+	}
+	
+	
 	public CompositeGALStunt(Model model, Entity mainEntity, List<Entity> subEntities) {
 		super(model, mainEntity);
 
@@ -104,6 +116,10 @@ public class CompositeGALStunt extends GALStunt {
 		double current_time = System.currentTimeMillis();
 		elapsed = current_time - last_time;
 		if (elapsed > expected_time) {
+			
+			if (laserPlayer != null) {
+	            laserPlayer.play(1);
+	        }
 			projectileSpawner().spawnFrom(entity, direction, intensity);
 			for (Entity subEntity : subEntities) {
 				if (!subEntity.dead()) {
