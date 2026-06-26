@@ -16,6 +16,9 @@ public class Ship extends Entity implements PowerReceiver {
 	private final List<Cannon> cannons = new ArrayList<>();
 	private boolean powered;
 	
+	private static final double POWER_DURATION_S = 5.0;
+	private double powerRemainingS;
+	
 	private static final double DEATH_ANIMATION_DURATION_S = 0.6;
 	
 	private boolean deathAnimationPlaying;
@@ -87,6 +90,9 @@ public class Ship extends Entity implements PowerReceiver {
 		if (dead() || deathAnimationPlaying) {
 			return;
 		}
+		
+		powered = false;
+		powerRemainingS = 0.0;
 
 		deathAnimationPlaying = true;
 		deathAnimationElapsedS = 0.0;
@@ -151,11 +157,25 @@ public class Ship extends Entity implements PowerReceiver {
 	@Override
 	public void activatePower() {
 		this.powered = true;
+		this.powerRemainingS = POWER_DURATION_S;
 	}
-
+	
 	@Override
 	public boolean hasPower() {
 		return powered;
+	}
+	
+	public void tickPower(double elapsed_s) {
+		if (!powered) {
+			return;
+		}
+
+		powerRemainingS -= elapsed_s;
+
+		if (powerRemainingS <= 0.0) {
+			powered = false;
+			powerRemainingS = 0.0;
+		}
 	}
 	
 	

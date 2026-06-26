@@ -19,11 +19,15 @@ public class ShipStunt extends CompositeGALStunt {
 
 	@Override
 	public void tick(double elapsed_s) {
-		if (entity instanceof Ship ship && ship.deathAnimationPlaying()) {
-			entity.setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
-			entity.setAngularSpeed(0.0);
-			ship.tickDeathAnimation(elapsed_s);
-			return;
+		if (entity instanceof Ship ship) {
+			ship.tickPower(elapsed_s);
+
+			if (ship.deathAnimationPlaying()) {
+				entity.setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
+				entity.setAngularSpeed(0.0);
+				ship.tickDeathAnimation(elapsed_s);
+				return;
+			}
 		}
 
 		super.tick(elapsed_s);
