@@ -1,25 +1,50 @@
 package game.gradius.graphics;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Random;
 
 import engine.gal.arguments.Category;
 import engine.graphics.View;
 import engine.move.Model;
+import engine.move.Model.TickSystem;
+import engine.move.ViewPort;
 import game.Game;
 
 /**
- * Generates the tunnel terrain: a random sequence of {@link Tile} obstacles laid
- * edge to edge across the whole world width, against both the top and bottom
- * edges (so the playfield is a horizontal tunnel).
+ * Builds the tunnel terrain as a random sequence of {@link Tile} obstacles along
+ * the top and bottom world edges.
  *
- * Each tile's height comes from its kind (proportional to the sprite, never
- * stretched), so a tile is glued flush to its world edge and extends inward by
- * its own height. Tiles never cross the toric seam in Y.
- *
- * Built once at initialization; the world looping on X, the player loops over
- * the same terrain (dynamic recycling can be added later).
+ * Two modes, selected by {@link #MODE}:
+ * <ul>
+ * <li>ALL_AT_ONCE: the whole world width is filled once at {@link #generate()};
+ * the player loops over the same terrain (the world is a torus on X).</li>
+ * <li>STREAMING: terrain is produced just ahead of the advancing view port and
+ * removed once it has scrolled out behind, registered as a per-frame system so
+ * it follows the camera. Gives the illusion of endless fresh terrain.</li>
+ * </ul>
  */
-public class TerrainGenerator {
+public class TerrainGenerator implements TickSystem{
+
+	public enum Mode {
+		ALL_AT_ONCE, STREAMING
+	}
+
+	/**
+	 * Generation mode. Switch here between full upfront generation and streaming.
+	 */
+	public static final Mode MODE = Mode.STREAMING;
+
+	/**
+	 * How far ahead of the view port's right edge terrain is generated, in cm.
+	 * A margin beyond the view port avoids popping at the edge.
+	 */
+	public static final double LOOKAHEAD_CM = 30.0;
+
+	/**
+	 * How far behind the view port's left edge a tile is kept before removal, cm.
+	 */
+	public static final double KEEP_BEHIND_CM = 20.0;
 
 	private static final TerrainKind[] KINDS = { TerrainKind.BIG, TerrainKind.MEDIUM_1, TerrainKind.MEDIUM_2,
 			TerrainKind.MEDIUM_3, TerrainKind.FLAT };
@@ -27,6 +52,30 @@ public class TerrainGenerator {
 	private final Model model;
 	private final View view;
 	private final Random random;
+
+	/**
+	 * A live tile with the absolute (unwrapped) X span it was generated at, so we
+	 * can decide when it has scrolled out behind the camera.
+	 */
+	private static final class Live {
+		final Tile tile;
+		final TileAvatar avatar;
+		@SuppressWarnings("unused")
+		final double absLeft, absRight;
+
+		Live(Tile tile, TileAvatar avatar, double absLeft, double absRight) {
+			this.tile = tile;
+			this.avatar = avatar;
+			this.absLeft = absLeft;
+			this.absRight = absRight;
+		}
+	}
+
+	// Streaming state, per row.
+	private final Deque<Live> topTiles = new ArrayDeque<>();
+	private final Deque<Live> bottomTiles = new ArrayDeque<>();
+	private double topCursorAbs = 0.0; // absolute X up to which the top row is generated
+	private double bottomCursorAbs = 0.0;
 
 	public TerrainGenerator(Model model, View view) {
 		this(model, view, new Random());
@@ -43,47 +92,143 @@ public class TerrainGenerator {
 	}
 
 	/**
-	 * Builds the whole tunnel: a random row of tiles along the top edge and one
-	 * along the bottom edge, each covering the full world width.
+	 * Sets up the terrain according to the MODE. In ALL_AT_ONCE it fills the
+	 * world immediately; in STREAMING it seeds the visible span and registers a
+	 * per-frame system on the model.
 	 */
 	public void generate() {
-		// Terrain ignores terrain: decor tiles never test collisions against each
-		// other, only against the gameplay entities (ship, projectiles).
+		// Terrain ignores terrain for collisions.
 		Category.setInteraction(Category.Obstacle, Category.Obstacle, false);
 
+		if (MODE == Mode.ALL_AT_ONCE) {
+			Game game = Game.game();
+			fillWholeRow(game.width_cm, game.height_cm, true);
+			fillWholeRow(game.width_cm, game.height_cm, false);
+			return;
+		}
+
+		model.addTickSystem(this);
+	}
+
+	// =========================
+	// ALL_AT_ONCE
+	// =========================
+
+	private void fillWholeRow(double worldW, double worldH, boolean topRow) {
+		double cursor = 0.0;
+		while (cursor < worldW) {
+			TerrainKind kind = KINDS[random.nextInt(KINDS.length)];
+			spawnTile(kind, cursor, worldH, topRow);
+			cursor += kind.width_cm;
+		}
+	}
+
+	// =========================
+	// STREAMING
+	// =========================
+
+	/**
+	 * Per-frame: extend each row ahead of the view port and drop tiles behind it.
+	 *
+	 * @param delta_t elapsed time (unused; generation is position-driven)
+	 */
+	private void update(double delta_t) {
+		ViewPort vp = model.viewPort();
+		if (vp == null) {
+			return;
+		}
+
 		Game game = Game.game();
-		fillRow(game.width_cm, game.height_cm, true); // top
-		fillRow(game.width_cm, game.height_cm, false); // bottom
+		double worldH = game.height_cm;
+
+		// The view port origin is wrapped into [0, worldW). To drive absolute
+		// cursors we track how far the camera has travelled; on a torus the rail
+		// origin wraps, so we follow the rightmost visible absolute X by keeping
+		// the cursor ahead of the wrapped origin within one period.
+		double vpLeftAbs = alignAhead(vp.originX(), topCursorAbs, game.width_cm);
+		double vpRightAbs = vpLeftAbs + vp.width_cm();
+
+		extendRow(topTiles, true, vpRightAbs, worldH);
+		extendRow(bottomTiles, false, vpRightAbs, worldH);
+
+		double cutoff = vpLeftAbs - KEEP_BEHIND_CM;
+		dropBehind(topTiles, cutoff);
+		dropBehind(bottomTiles, cutoff);
 	}
 
 	/**
-	 * Lays a random sequence of tiles left to right until the world width is
-	 * covered, glued to one edge.
-	 *
-	 * @param worldW world width to cover, in cm
-	 * @param worldH world height, in cm
-	 * @param topRow true to glue to the top edge, false for the bottom edge
+	 * Returns the absolute X of the wrapped origin, chosen in the period closest
+	 * to (and not far behind) the current cursor, so absolute cursors keep
+	 * increasing as the camera loops around the torus.
 	 */
-	private void fillRow(double worldW, double worldH, boolean topRow) {
-		double cursor = 0.0;
+	private double alignAhead(double wrappedOrigin, double cursorAbs, double worldW) {
+		// Candidate absolute positions equivalent to wrappedOrigin: ... + k*worldW.
+		// Pick the one nearest to cursorAbs.
+		double k = Math.floor((cursorAbs - wrappedOrigin) / worldW + 0.5);
+		return wrappedOrigin + k * worldW;
+	}
 
-		while (cursor < worldW) {
+	private void extendRow(Deque<Live> row, boolean topRow, double vpRightAbs, double worldH) {
+		double cursor = topRow ? topCursorAbs : bottomCursorAbs;
+
+		while (cursor < vpRightAbs + LOOKAHEAD_CM) {
 			TerrainKind kind = KINDS[random.nextInt(KINDS.length)];
-
-			Tile tile = new Tile(kind, topRow);
-
-			double h = kind.height_cm();
-			double centerX = cursor + kind.width_cm / 2.0;
-			// Glue flush to the edge: the tile occupies [0, h] (top) or
-			// [worldH - h, worldH] (bottom), fully on its own side of the torus.
-			double centerY = topRow ? (h / 2.0) : (worldH - h / 2.0);
-
-			tile.place(Game.game().isu.new Coord(centerX, centerY));
-
-			model.add(tile);
-			view.add(new TileAvatar(tile, model.viewPort()));
-
+			Live live = spawnTileAbs(kind, cursor, worldH, topRow);
+			row.addLast(live);
 			cursor += kind.width_cm;
 		}
+
+		if (topRow) {
+			topCursorAbs = cursor;
+		} else {
+			bottomCursorAbs = cursor;
+		}
+	}
+
+	private void dropBehind(Deque<Live> row, double cutoffAbs) {
+		while (!row.isEmpty() && row.peekFirst().absRight < cutoffAbs) {
+			Live live = row.pollFirst();
+			model.remove(live.tile);
+			view.remove(live.avatar);
+		}
+	}
+
+	// =========================
+	// Spawning
+	// =========================
+
+	/** Spawn for ALL_AT_ONCE (absolute == wrapped, world covered exactly once). */
+	private void spawnTile(TerrainKind kind, double leftCm, double worldH, boolean topRow) {
+		double h = kind.height_cm();
+		double centerX = leftCm + kind.width_cm / 2.0;
+		double centerY = topRow ? h / 2.0 : worldH - h / 2.0;
+
+		Tile tile = new Tile(kind, topRow);
+		tile.place(Game.game().isu.new Coord(centerX, centerY));
+		model.add(tile);
+		view.add(new TileAvatar(tile, model.viewPort()));
+	}
+
+	/** Spawn for STREAMING: place at wrapped X but track absolute span. */
+	private Live spawnTileAbs(TerrainKind kind, double leftAbs, double worldH, boolean topRow) {
+		double h = kind.height_cm();
+		double worldW = Game.game().width_cm;
+
+		double centerXAbs = leftAbs + kind.width_cm / 2.0;
+		double centerXWrapped = ((centerXAbs % worldW) + worldW) % worldW;
+		double centerY = topRow ? h / 2.0 : worldH - h / 2.0;
+
+		Tile tile = new Tile(kind, topRow);
+		tile.place(Game.game().isu.new Coord(centerXWrapped, centerY));
+		model.add(tile);
+		TileAvatar avatar = new TileAvatar(tile, model.viewPort());
+		view.add(avatar);
+
+		return new Live(tile, avatar, leftAbs, leftAbs + kind.width_cm);
+	}
+
+	@Override
+	public void tick(double delta_t) {
+		this.update(delta_t);
 	}
 }
