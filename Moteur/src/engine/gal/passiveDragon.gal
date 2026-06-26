@@ -1,0 +1,27 @@
+PassiveDragon(Patrolling) {
+* (Patrolling)
+| Struck(Projectile) ? Hit(1) :(LifeCheck)
+| MyDir(N) ? 92% Move(F,3) / Orient(NNW) / Orient(NNE):(Patrolling) 
+| MyDir(NNE) ? 92% Move(F,3) / Orient(N) / Orient(NE)  :(Patrolling) 
+| MyDir(NE) ? 92% Move(F,3) / Orient(NNE) / Orient(ENE) :(Patrolling)
+| MyDir(ENE) ? 92% Move(F,3) / Orient(NE) / Orient(E) :(Patrolling) 
+| MyDir(E) ? 92% Move(F,3) / Orient(ENE) / Orient(ESE) :(Patrolling) 
+| MyDir(ESE) ? 92% Move(F,3) / Orient(E) / Orient(SE) :(Patrolling) 
+| MyDir(SE) ? 92% Move(F,3) / Orient(ESE) / Orient(SSE) :(Patrolling)
+| MyDir(SSE) ? 92% Move(F,3) / Orient(SE) / Orient(S) :(Patrolling) 
+| MyDir(S) ? 92% Move(F,3) / Orient(SSE) / Orient(SSW) :(Patrolling) 
+| MyDir(SSW) ? 92% Move(F,3) / Orient(S) / Orient(SW) :(Patrolling)
+| MyDir(SW) ? 92% Move(F,3) / Orient(SSW) / Orient(WSW) :(Patrolling) 
+| MyDir(WSW) ? 92% Move(F,3) / Orient(SW) / Orient(W) :(Patrolling) 
+| MyDir(W) ? 92% Move(F,3) / Orient(WSW) / Orient(WNW) :(Patrolling) 
+| MyDir(WNW) ? 92% Move(F,3) / Orient(W) / Orient(NW) :(Patrolling) 
+| MyDir(NW) ? 92% Move(F,3) / Orient(WNW) / Orient(NNW) :(Patrolling) 
+| MyDir(NNW) ? 92% Move(F,3) / Orient(NW) / Orient(N) :(Patrolling)
+
+* (LifeCheck)
+| Life(0) ? Explode :(Dead)
+| True ? :(Patrolling)
+
+* (Dead)
+| True ? Rest :(Dead)
+}

@@ -213,7 +213,7 @@ public class ISU {
 
 		// FACTORY
 
-		ISU.Vector mkVectorToward(Coord target) {
+		public ISU.Vector mkVectorToward(Coord target) {
 			return new Vector(target.x_cm - this.x_cm, target.y_cm - this.y_cm);
 		}
 
@@ -336,7 +336,7 @@ public class ISU {
 			this.y_cm += v.y_cm;
 		}
 
-		void scale(double factor) {
+		public void scale(double factor) {
 			this.x_cm *= factor;
 			this.y_cm *= factor;
 		}
