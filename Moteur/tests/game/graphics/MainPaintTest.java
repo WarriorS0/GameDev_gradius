@@ -10,7 +10,6 @@ import engine.controller.Controller;
 import engine.controller.KeyManager;
 import engine.controller.MouseManager;
 import engine.entity.Entity;
-import engine.gal.CompositeGALStunt;
 import engine.gal.GALBot;
 import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
@@ -45,6 +44,7 @@ import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.EnemyAvatar;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.spawn.ProjectileSpawner;
+import game.gradius.stunt.ShipStunt;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
@@ -181,7 +181,7 @@ public class MainPaintTest implements Runnable {
 		GALBot shipBot = new GALBot(ship);
 		ship.bot(shipBot);
 
-		CompositeGALStunt shipStunt = new CompositeGALStunt(model, ship, List.of(topCannon, bottomCannon));
+		ShipStunt shipStunt = new ShipStunt(model, ship, List.of(topCannon, bottomCannon));
 
 		shipStunt.setMaxLinearSpeed(70.0);
 		shipStunt.setMaxAngularSpeed(0.0);
