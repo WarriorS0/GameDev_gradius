@@ -187,7 +187,7 @@ public class MainPaintTest implements Runnable {
 		shipStunt.setMaxAngularSpeed(0.0);
 		shipStunt.setBaseLinearSpeed(10.0, 0.0);
 
-		Automaton shipAutomaton = loadAutomaton("src/engine/gal/ship_fixed.gal", "Ship");
+		Automaton shipAutomaton = loadAutomaton("src/game/gradius/gal/ship.gal", "Ship");
 		shipBot.set(shipAutomaton);
 
 		// =========================
