@@ -64,14 +64,16 @@ public class Dragon extends Entity {
 		headAvatar.set_z_order(Avatar.MAX_ZORDER-1);
 		dragon_parts.add(head);
 		LinkedList<MovementState> leaderHistory = headStunt.getHistory();
+		Entity previousPart = head;
 		for(int i=0; i<nb_segments; i++) {
 			DragonBody body = new DragonBody();
-			FollowerStunt bodyStunt = new FollowerStunt(model, body, leaderHistory, TICK_DELAY);
+			FollowerStunt bodyStunt = new FollowerStunt(model, body, previousPart, leaderHistory, TICK_DELAY);
 			model.add(body, bodyStunt);
 			DragonBodyAvatar bodyAvatar = new DragonBodyAvatar(body);
 			bodyAvatar.set_z_order(Avatar.MAX_ZORDER-i-2);
 			dragon_parts.add(body);
 			
+			previousPart = body;
 			leaderHistory = bodyStunt.getMyHistory();
 		}
 		//headStunt.setAngularSpeed(45);
@@ -99,6 +101,10 @@ public class Dragon extends Entity {
 		for(Entity part: dragon_parts) {
 			part.place(pos);
 		}
+	}
+	
+	public void killDragon() {
+	    dragon_parts.get(0).kill();
 	}
 
 	@Override

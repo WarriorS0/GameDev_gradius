@@ -4,32 +4,35 @@ import engine.entity.Entity;
 import engine.geometry.ISU;
 import engine.graphics.avatars.AnimationAvatar;
 import engine.graphics.avatars.ShapeAvatar;
-import engine.graphics.avatars.SpriteAvatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
 //DragonBodyAvatar devrait avoir sa propre classe qui implémente RessourceAvatar
 public class DragonBodyAvatar extends ShapeAvatar {
-	
+
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vulture_dragon.png";
-	private static final double DEATH_ANIMATION_DURATION_MS = 130.0;
+	private static final int DEATH_FRAMES = 5;
+	private static final double DEATH_FRAME_DURATION_S = 0.13;
 	private BufferedImage sprites;
 	private BufferedImage[] orientations;
 	private BufferedImage[] death_animation;
-	private boolean deathAnimationFinished;
+	private boolean deathStarted = false;
+	private boolean deathAnimationFinished = false;
+	private double deathTimer = 0.0;
+	private int deathFrameIndex = 0;
 	private BufferedImage current;
-	
+
 	public DragonBodyAvatar(Entity entity) {
-		super(entity, 1,1);
+		super(entity, 1, 1);
 		Game.game().view.add(this);
 	}
-	
+
 	@Override
 	public void initImage(Graphics g) {
 		sprites = g.load(SPRITE_PATH);
 		orientations = new BufferedImage[16];
-		orientations[0] = sprites.getSubimage(1, 101,33, 33);
+		orientations[0] = sprites.getSubimage(1, 101, 33, 33);
 		orientations[1] = sprites.getSubimage(35, 101, 33, 33);
 		orientations[2] = sprites.getSubimage(69, 101, 33, 33);
 		orientations[3] = sprites.getSubimage(103, 101, 33, 33);
@@ -45,8 +48,15 @@ public class DragonBodyAvatar extends ShapeAvatar {
 		orientations[13] = sprites.getSubimage(171, 135, 33, 33);
 		orientations[14] = sprites.getSubimage(205, 135, 33, 33);
 		orientations[15] = sprites.getSubimage(239, 135, 33, 33);
+
+		death_animation = new BufferedImage[5];
+		death_animation[0] = sprites.getSubimage(99, 169, 48, 48);
+		death_animation[1] = sprites.getSubimage(148, 169, 48, 48);
+		death_animation[2] = sprites.getSubimage(197, 169, 48, 48);
+		death_animation[3] = sprites.getSubimage(246, 169, 48, 48);
+		death_animation[4] = sprites.getSubimage(295, 169, 48, 48);
 	}
-	
+
 	private double normalizeAngle(double angle) {
 		double normalized = angle % 360.0;
 
@@ -56,46 +66,60 @@ public class DragonBodyAvatar extends ShapeAvatar {
 
 		return normalized;
 	}
-	
+
 	private int getOrientation(double orientation) {
 		double angle = normalizeAngle(orientation);
-		if(angle >= 11.25 && angle < 33.75)
+		if (angle >= 11.25 && angle < 33.75)
 			return 1;
-		if(angle >= 33.75 && angle < 56.25)
+		if (angle >= 33.75 && angle < 56.25)
 			return 2;
-		if(angle >= 56.25 && angle < 78.75)
+		if (angle >= 56.25 && angle < 78.75)
 			return 3;
-		if(angle >= 78.75 && angle < 101.25)
+		if (angle >= 78.75 && angle < 101.25)
 			return 4;
-		if(angle >= 101.25 && angle < 123.75)
+		if (angle >= 101.25 && angle < 123.75)
 			return 5;
-		if(angle >= 123.75 && angle < 146.25)
+		if (angle >= 123.75 && angle < 146.25)
 			return 6;
-		if(angle >= 146.25 && angle < 168.75)
+		if (angle >= 146.25 && angle < 168.75)
 			return 7;
-		if(angle >= 168.75 && angle < 191.25)
+		if (angle >= 168.75 && angle < 191.25)
 			return 8;
-		if(angle >= 191.25 && angle < 213.75)
+		if (angle >= 191.25 && angle < 213.75)
 			return 9;
-		if(angle >= 213.75 && angle < 236.25)
+		if (angle >= 213.75 && angle < 236.25)
 			return 10;
-		if(angle >= 236.25 && angle < 258.75)
+		if (angle >= 236.25 && angle < 258.75)
 			return 11;
-		if(angle >= 258.75 && angle < 281.25)
+		if (angle >= 258.75 && angle < 281.25)
 			return 12;
-		if(angle >= 281.25 && angle < 303.75)
+		if (angle >= 281.25 && angle < 303.75)
 			return 13;
-		if(angle >= 303.75 && angle < 326.25)
+		if (angle >= 303.75 && angle < 326.25)
 			return 14;
-		if(angle >= 326.25 && angle < 348.75)
+		if (angle >= 326.25 && angle < 348.75)
 			return 15;
 		return 0;
 	}
 
 	@Override
 	public void updateAnimation(double delta_t) {
-		// TODO Auto-generated method stub
-		
+		if (!dead() || deathAnimationFinished)
+			return;
+
+		if (!deathStarted)
+			deathStarted = true;
+
+		deathTimer += delta_t;
+		while (deathTimer >= DEATH_FRAME_DURATION_S) {
+			deathTimer -= DEATH_FRAME_DURATION_S;
+			deathFrameIndex++;
+			if (deathFrameIndex >= DEATH_FRAMES) {
+				deathFrameIndex = DEATH_FRAMES - 1;
+				deathAnimationFinished = true;
+				return;
+			}
+		}
 	}
 
 	@Override
@@ -106,15 +130,20 @@ public class DragonBodyAvatar extends ShapeAvatar {
 		if (entity().center() == null) {
 			return;
 		}
-		
-		if (dead() && deathAnimationFinished) {
+
+		if (deathAnimationFinished) {
 			return;
 		}
-		
-		if(AnimationAvatar.debugCollision)
+
+		if (AnimationAvatar.debugCollision)
 			super.paint(g);
-		
-		current = orientations[getOrientation(entity.orientation())];
+
+		if (dead()) {
+			current = death_animation[deathFrameIndex];
+		} else {
+			current = orientations[getOrientation(entity.orientation())];
+		}
+
 		ISU.Coord coord = entity().center();
 		ISU.Dimension size = entity().size();
 
@@ -128,5 +157,5 @@ public class DragonBodyAvatar extends ShapeAvatar {
 		int yTopLeft = yCenter - height / 2;
 
 		g.drawImage(current, xTopLeft, yTopLeft, width, height);
-		}
+	}
 }

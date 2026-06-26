@@ -3,7 +3,6 @@ package game.gradius.graphics;
 import engine.entity.Entity;
 import engine.geometry.ISU;
 import engine.graphics.avatars.AnimationAvatar;
-import engine.graphics.avatars.Avatar;
 import engine.graphics.avatars.ShapeAvatar;
 import game.Game;
 import oop.graphics.BufferedImage;
@@ -13,11 +12,15 @@ import oop.graphics.Graphics;
 public class DragonHeadAvatar extends ShapeAvatar {
 	
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vulture_dragon.png";
-	private static final double DEATH_ANIMATION_DURATION_MS = 130.0;
+	private static final int   DEATH_FRAMES        = 5;
+    private static final double DEATH_FRAME_DURATION_S = 0.13;
 	private BufferedImage sprites;
 	private BufferedImage[] orientations;
 	private BufferedImage[] death_animation;
-	private boolean deathAnimationFinished;
+	private boolean deathStarted          = false;
+    private boolean deathAnimationFinished = false;
+    private double  deathTimer            = 0.0;
+    private int     deathFrameIndex       = 0;
 	private BufferedImage current;
 	
 	public DragonHeadAvatar(Entity entity) {
@@ -45,6 +48,13 @@ public class DragonHeadAvatar extends ShapeAvatar {
 		orientations[13] = sprites.getSubimage(251, 51, 49, 49);
 		orientations[14] = sprites.getSubimage(301, 51, 49, 49);
 		orientations[15] = sprites.getSubimage(351, 51, 49, 49);
+		
+		death_animation = new BufferedImage[5];
+		death_animation[0] = sprites.getSubimage(99, 169, 48, 48);
+		death_animation[1] = sprites.getSubimage(148, 169, 48, 48);
+		death_animation[2] = sprites.getSubimage(197, 169, 48, 48);
+		death_animation[3] = sprites.getSubimage(246, 169, 48, 48);	
+		death_animation[4] = sprites.getSubimage(295, 169, 48, 48);
 	}
 	
 	private double normalizeAngle(double angle) {
@@ -94,8 +104,20 @@ public class DragonHeadAvatar extends ShapeAvatar {
 
 	@Override
 	public void updateAnimation(double delta_t) {
-		// TODO Auto-generated method stub
-		
+		if (!dead() || deathAnimationFinished) return;
+		 
+        if (!deathStarted) deathStarted = true;
+ 
+        deathTimer += delta_t;
+        while (deathTimer >= DEATH_FRAME_DURATION_S) {
+            deathTimer -= DEATH_FRAME_DURATION_S;
+            deathFrameIndex++;
+            if (deathFrameIndex >= DEATH_FRAMES) {
+                deathFrameIndex       = DEATH_FRAMES - 1;
+                deathAnimationFinished = true;
+                return;
+            }
+        }
 	}
 
 	@Override
@@ -107,14 +129,19 @@ public class DragonHeadAvatar extends ShapeAvatar {
 			return;
 		}
 		
-		if (dead() && deathAnimationFinished) {
+		if (deathAnimationFinished) {
 			return;
 		}
 		
 		if(AnimationAvatar.debugCollision)
 			super.paint(g);
 		
-		current = orientations[getOrientation(entity.orientation())];
+		if (dead()) {
+			current = death_animation[deathFrameIndex];
+		} else {
+			current = orientations[getOrientation(entity.orientation())];
+		}
+		
 		ISU.Coord coord = entity().center();
 		ISU.Dimension size = entity().size();
 

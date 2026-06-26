@@ -21,12 +21,15 @@ public class FollowerStunt extends Stunt {
 	    }
 	}
 	
+	private final Entity leaderEntity; 
 	private final LinkedList<MovementState> leaderHistory;
 	private final LinkedList<MovementState> myHistory = new LinkedList<>();
 	private final int tickDelay;
+	private int deathCountdown = -1;  
 
-	public FollowerStunt(Model model, Entity entity, LinkedList<MovementState> leaderHistory, int tickDelay) {
+	public FollowerStunt(Model model, Entity entity, Entity leaderEntity, LinkedList<MovementState> leaderHistory, int tickDelay) {
 		super(model, entity);
+		this.leaderEntity = leaderEntity;
 		this.leaderHistory = leaderHistory;
         this.tickDelay = tickDelay;
 	}
@@ -47,6 +50,23 @@ public class FollowerStunt extends Stunt {
 
 	@Override
 	protected void tick(double d) {
+		// Provoque la mort en chaîne de chaque partie du dragon (selon l'état du leader)
+		if (leaderEntity.dead() && deathCountdown < 0) {
+			deathCountdown = tickDelay;
+		}
+ 
+		if (deathCountdown >= 0) {
+			setLinearSpeed(Game.game().isu.new Vector(0, 0));
+			myHistory.addLast(new MovementState(entity.center().mkCopy(), entity.orientation()));
+			if (deathCountdown == 0) {
+				entity.kill();
+				return;
+			}
+			deathCountdown--;
+			return;
+		}
+		
+		// Mouvement suivant le leader
 		myHistory.addLast(new MovementState(entity.center().mkCopy(), entity.orientation()));
 		
 		if(leaderHistory.size() > tickDelay) {
