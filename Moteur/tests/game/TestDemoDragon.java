@@ -10,6 +10,7 @@ import engine.graphics.BackgroundView;
 import engine.graphics.FpsManager;
 import engine.graphics.View;
 import engine.graphics.avatars.AnimationAvatar;
+import engine.graphics.hud.FollowerLabel;
 import engine.graphics.hud.Hud;
 import engine.graphics.hud.Label;
 import engine.graphics.hud.PixelCoordinate;
@@ -61,6 +62,15 @@ public class TestDemoDragon implements Runnable {
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 		Hud hud = new Hud();
+		
+		FollowerLabel dragonDebugBehavior = new FollowerLabel(() -> dragon.getHead().debugInfoBehavior(), dragon.getHead(),
+				new PixelCoordinate(0, -25), Colors.white);
+		dragonDebugBehavior.setVisibility(false);
+		hud.add(dragonDebugBehavior);
+		FollowerLabel dragonDebugMoves = new FollowerLabel(() -> dragon.getHead().debugInfoMove(), dragon.getHead(), new PixelCoordinate(0, 20),
+				Colors.white);
+		dragonDebugMoves.setVisibility(false);
+		hud.add(dragonDebugMoves);
 		
 		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode.",
 				new PixelCoordinate(6, 12), Colors.white, false);
@@ -122,6 +132,8 @@ public class TestDemoDragon implements Runnable {
 			labelFPS.setVisibility(showDebugValues);
 			labelPaintTime.setVisibility(showDebugValues);
 			labelTickTime.setVisibility(showDebugValues);
+			dragonDebugBehavior.setVisibility(showDebugValues);
+			dragonDebugMoves.setVisibility(showDebugValues);
 			AnimationAvatar.debugCollision = showDebugValues;
 		});
 		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());

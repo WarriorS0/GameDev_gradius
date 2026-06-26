@@ -2,12 +2,15 @@ package game.gradius.graphics;
 
 import engine.entity.Entity;
 import engine.geometry.ISU;
+import engine.graphics.avatars.AnimationAvatar;
 import engine.graphics.avatars.Avatar;
+import engine.graphics.avatars.ShapeAvatar;
 import game.Game;
 import oop.graphics.BufferedImage;
 import oop.graphics.Graphics;
 
-public class DragonHeadAvatar extends Avatar {
+// DragonHeadAvatar devrait avoir sa propre classe qui implémente RessourceAvatar
+public class DragonHeadAvatar extends ShapeAvatar {
 	
 	private static final String SPRITE_PATH = "src/game/gradius/graphics/vulture_dragon.png";
 	private static final double DEATH_ANIMATION_DURATION_MS = 130.0;
@@ -18,7 +21,7 @@ public class DragonHeadAvatar extends Avatar {
 	private BufferedImage current;
 	
 	public DragonHeadAvatar(Entity entity) {
-		super(entity);
+		super(entity, 1, 1);
 		Game.game().view.add(this);
 	}
 	
@@ -108,12 +111,22 @@ public class DragonHeadAvatar extends Avatar {
 			return;
 		}
 		
-		current = orientations[getOrientation(entity.orientation())];
-		Game game = Game.game();
-		int pixelPerCm = game.pixelPerCm;
-		ISU.Dimension size = entity.size();
-		ISU.Coord center = entity.center();
+		if(AnimationAvatar.debugCollision)
+			super.paint(g);
 		
-		g.drawImage(current, (int) (center.x() - size.x()/2 * pixelPerCm), (int) (center.y() - size.y()/2 * pixelPerCm), (int) (size.x() * pixelPerCm), (int) (size.y() * pixelPerCm));
-	}
+		current = orientations[getOrientation(entity.orientation())];
+		ISU.Coord coord = entity().center();
+		ISU.Dimension size = entity().size();
+
+		int width = Math.max(1, this.cmToPixel(size.x()));
+		int height = Math.max(1, this.cmToPixel(size.y()));
+
+		int xCenter = this.cmToPixel(coord.x());
+		int yCenter = this.cmToPixel(coord.y());
+
+		int xTopLeft = xCenter - width / 2;
+		int yTopLeft = yCenter - height / 2;
+
+		g.drawImage(current, xTopLeft, yTopLeft, width, height);
+		}
 }
