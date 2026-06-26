@@ -36,10 +36,10 @@ public class Circle extends Shape {
 
 	@Override
 	public SimpleBox boundingBox() {
-		double minX = center.x()-this.radius;
-		double maxX = center.x()+this.radius;
-		double minY = center.y()-this.radius;
-		double maxY = center.y()+this.radius;
+		double minX = center.x() - this.radius;
+		double maxX = center.x() + this.radius;
+		double minY = center.y() - this.radius;
+		double maxY = center.y() + this.radius;
 		return new SimpleBox(minX, maxX, minY, maxY);
 	}
 

@@ -27,7 +27,6 @@ public class Ast2Gal implements iVisitor {
 
 	public Ast2Gal() {
 		clear();
-
 	}
 
 	// EXPORT

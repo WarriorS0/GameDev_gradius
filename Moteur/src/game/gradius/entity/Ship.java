@@ -11,8 +11,8 @@ import java.util.List;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 
-public class Ship extends Entity implements PowerReceiver{
-	
+public class Ship extends Entity implements PowerReceiver {
+
 	private final List<Cannon> cannons = new ArrayList<>();
 	private boolean powered;
 
@@ -34,7 +34,7 @@ public class Ship extends Entity implements PowerReceiver{
 
 		addBounding(new Rect(center(), size(), orientation()));
 	}
-	
+
 	public void attachCannon(Cannon cannon) {
 		if (cannon == null) {
 			throw new IllegalArgumentException("cannon cannot be null");
@@ -46,6 +46,7 @@ public class Ship extends Entity implements PowerReceiver{
 			cannon.placeRelativeTo(this);
 		}
 	}
+
 	public List<Cannon> cannons() {
 		return Collections.unmodifiableList(cannons);
 	}
@@ -57,9 +58,9 @@ public class Ship extends Entity implements PowerReceiver{
 			}
 		}
 	}
-	
+
 	// LIFE
-	
+
 	@Override
 	public void kill() {
 		if (dead()) {
@@ -74,9 +75,9 @@ public class Ship extends Entity implements PowerReceiver{
 			}
 		}
 	}
-	
-	//MOVEMENT
-	
+
+	// MOVEMENT
+
 	@Override
 	public void place(Grid.Position position) {
 		super.place(position);
@@ -102,12 +103,12 @@ public class Ship extends Entity implements PowerReceiver{
 	}
 
 	@Override
-    public void activatePower() {
-        this.powered = true;
-    }
+	public void activatePower() {
+		this.powered = true;
+	}
 
-    @Override
-    public boolean hasPower() {
-        return powered;
-    }
+	@Override
+	public boolean hasPower() {
+		return powered;
+	}
 }

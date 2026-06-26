@@ -1,7 +1,7 @@
 package engine.graphics.hud;
 
 public interface IHealthBar {
-	
+
 	public int getCurrentHP();
 
 	public int getTotalHP();

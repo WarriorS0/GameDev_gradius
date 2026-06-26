@@ -10,8 +10,7 @@ import game.Game;
 public class Projectile extends Entity {
 
 	public enum Type {
-		LASER,
-		BLUE_ORB
+		LASER, BLUE_ORB
 	}
 
 	private static final double ORB_MIN_DIAMETER_IN_CELL = 0.7;

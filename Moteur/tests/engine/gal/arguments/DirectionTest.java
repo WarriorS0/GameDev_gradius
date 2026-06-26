@@ -40,7 +40,7 @@ class DirectionTest {
 	void relativeDirectionHasNoAbsoluteAngle() {
 		assertThrows(IllegalStateException.class, () -> Direction.F.toAngle());
 	}
-	
+
 	@Test
 	void diagonalDirectionsAreCanonical() {
 		assertSame(Direction.NE, Direction.canonical("NE"));

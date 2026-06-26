@@ -57,7 +57,7 @@ public class AtStep extends GALCondition {
 
 		if (category == Category.Void) {
 			return containsNoOtherEntity(targetCell, e);
-			//If the entity occupies multiple cells
+			// If the entity occupies multiple cells
 		}
 
 		for (Entity entity : targetCell.entities()) {

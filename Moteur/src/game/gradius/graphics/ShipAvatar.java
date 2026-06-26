@@ -7,9 +7,8 @@ import oop.graphics.Graphics;
 public class ShipAvatar extends AnimationAvatar {
 
 	public ShipAvatar(Entity entity) {
-		super(entity, "src/game/gradius/graphics/vic_viper.png",1,1);
+		super(entity, "src/game/gradius/graphics/vic_viper.png", 1, 1);
 	}
-
 
 	@Override
 	public void initImage(Graphics g) {

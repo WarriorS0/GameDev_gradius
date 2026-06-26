@@ -58,7 +58,7 @@ public abstract class Entity {
 
 		this.hitbox = new Bounding();
 		this.occupied = new HashSet<>();
-		
+
 		this.linearSpeed = isu.new Vector(0, 0);
 		this.angularSpeed = 0;
 	}
@@ -120,11 +120,11 @@ public abstract class Entity {
 		setBounding();
 		deploy();
 	}
-	
+
 	public void setLinearSpeed(ISU.Vector linearSpeed) {
 		this.linearSpeed = linearSpeed;
 	}
-	
+
 	public void setAngularSpeed(double angularSpeed) {
 		this.angularSpeed = angularSpeed;
 	}
@@ -171,11 +171,11 @@ public abstract class Entity {
 	public boolean dead() {
 		return !alive;
 	}
-	
-	public ISU.Vector linearSpeed(){
+
+	public ISU.Vector linearSpeed() {
 		return this.linearSpeed;
 	}
-	
+
 	public double angularSpeed() {
 		return this.angularSpeed;
 	}
@@ -231,12 +231,12 @@ public abstract class Entity {
 
 		return angle;
 	}
-	
-	public void forceOrientation(double angleDegree) {
-	    this.orientation_degree = normalizeAngle(angleDegree);
 
-	    setBounding();
-	    deploy();
+	public void forceOrientation(double angleDegree) {
+		this.orientation_degree = normalizeAngle(angleDegree);
+
+		setBounding();
+		deploy();
 	}
 
 	// =========================
@@ -420,7 +420,7 @@ public abstract class Entity {
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	public String debugInfoBehavior() {
 		StringBuilder sb = new StringBuilder();
 		if (this.bot != null && bot.state() != null) {
@@ -429,7 +429,7 @@ public abstract class Entity {
 //			sb.append(" | Action:");
 //			sb.append(this.bot.state().mode());
 		}
-		
+
 		return sb.toString();
 	}
 

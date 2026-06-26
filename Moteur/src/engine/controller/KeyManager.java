@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import engine.logs.LoggerManager;
 import oop.graphics.Canvas;
 import oop.graphics.VirtualKeyCodes;
+import oop.tasks.Runnable;
 
 public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 
@@ -62,11 +63,11 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 	/**
 	 * Binds a key code to an action run once per press.
 	 *
-	 * @param keyCode the virtual key code (see VirtualKeyCodes)
-	 * @param action  the action to run when the key is pressed
+	 * @param keyCode     the virtual key code (see VirtualKeyCodes)
+	 * @param toogleDebug the action to run when the key is pressed
 	 */
-	public void bind(int keyCode, Runnable action) {
-		bindings.put(keyCode, action);
+	public void bind(int keyCode, Runnable toogleDebug) {
+		bindings.put(keyCode, toogleDebug);
 	}
 
 	/**
@@ -93,7 +94,11 @@ public class KeyManager implements Canvas.KeyListener, VirtualKeyCodes {
 		if (!wasDown) {
 			Runnable action = bindings.get(keyCode);
 			if (action != null)
-				action.run();
+				try {
+					action.run();
+				} catch (Exception e) {
+					logger.severe(e.getMessage());
+				}
 		}
 	}
 

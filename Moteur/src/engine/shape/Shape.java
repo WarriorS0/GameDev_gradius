@@ -14,9 +14,7 @@ abstract class Shape implements iShape {
 	Shape(ISU.Coord center) {
 		this.center = center;
 		isu = this.center.isu();
-		
+
 	}
-	
-	
 
 }

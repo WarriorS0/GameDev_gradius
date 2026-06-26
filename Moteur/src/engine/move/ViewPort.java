@@ -34,6 +34,17 @@ import game.Game;
  */
 public class ViewPort {
 
+	private static final Game GAME;
+	private static final ISU ISU;
+	private static final boolean TORUS_X_AXIS;
+	private static final boolean TORUS_Y_AXIS;
+	static {
+		GAME = Game.game();
+		ISU = GAME.isu;
+		TORUS_X_AXIS = GAME.torusOnXaxis;
+		TORUS_Y_AXIS = GAME.torusOnYaxis;
+	}
+
 	/**
 	 * Comportement du viewmport, cad de la caméra
 	 */
@@ -224,14 +235,14 @@ public class ViewPort {
 	 * remains entirely inside the world.
 	 */
 	private double clampOriginX(double x_cm) {
-		if (Game.game().torusOnXaxis) {
+		if (TORUS_X_AXIS) {
 			return wrap(x_cm, worldWidth());
 		}
 		return clampInside(x_cm, worldWidth(), width_cm);
 	}
 
 	private double clampOriginY(double y_cm) {
-		if (Game.game().torusOnYaxis) {
+		if (TORUS_Y_AXIS) {
 			return wrap(y_cm, worldHeight());
 		}
 		return clampInside(y_cm, worldHeight(), height_cm);
@@ -282,8 +293,59 @@ public class ViewPort {
 	}
 
 	public boolean isVisible(double x, double y) {
-		return inRange(x, originX_cm, width_cm, Game.game().torusOnXaxis, worldWidth())
-				&& inRange(y, originY_cm, height_cm, Game.game().torusOnYaxis, worldHeight());
+		return inRange(x, originX_cm, width_cm, TORUS_X_AXIS, worldWidth())
+				&& inRange(y, originY_cm, height_cm, TORUS_Y_AXIS, worldHeight());
+	}
+
+	/**
+	 * Hard-clamps an entity so its center stays inside the view port rectangle,
+	 * acting as walls on the view port edges. Game-specific behaviour: a game that
+	 * does not want this simply never calls it.
+	 *
+	 * The clamp is toric-correct: the entity offset from the origin is measured
+	 * modulo the world period, then limited to [0, size]; the result is mapped back
+	 * to an absolute world coordinate and the entity is moved there.
+	 *
+	 * @param e the entity to confine (must be placed)
+	 */
+	public void confine(Entity e) {
+		if (e == null || e.center() == null) {
+			return;
+		}
+
+		ISU.Coord c = e.center();
+
+		double nx = clampAxis(c.x(), originX_cm, width_cm, TORUS_X_AXIS, worldWidth());
+		double ny = clampAxis(c.y(), originY_cm, height_cm, TORUS_Y_AXIS, worldHeight());
+
+		if (nx != c.x() || ny != c.y()) {
+			// translate by the correction so the entity ends exactly on the clamp.
+			e.translate(ISU.new Vector(nx - c.x(), ny - c.y()));
+		}
+	}
+
+	/**
+	 * Clamps one coordinate inside [origin, origin + size] on one axis. On a toric
+	 * axis the forward distance from the origin (modulo the world period) is what
+	 * gets limited, so the clamp is correct even when the view port is larger than
+	 * half the world.
+	 *
+	 * @return the clamped absolute coordinate, in cm
+	 */
+	private static double clampAxis(double value, double origin, double size, boolean onTorus, double period) {
+		if (!onTorus) {
+			return Math.max(origin, Math.min(value, origin + size));
+		}
+
+		double delta = ((value - origin) % period + period) % period; // [0, period)
+
+		if (delta <= size) {
+			return value; // already inside
+		}
+
+		// Outside: snap to the nearer edge (0 or size) of the view port.
+		double clampedDelta = (delta - size < period - delta) ? size : 0.0;
+		return origin + clampedDelta;
 	}
 
 	/**
@@ -353,7 +415,7 @@ public class ViewPort {
 	 * @return Game.game().width_cm
 	 */
 	private static double worldWidth() {
-		return Game.game().width_cm;
+		return GAME.width_cm;
 	}
 
 	/**
@@ -361,6 +423,6 @@ public class ViewPort {
 	 * @return Game.game().height_cm
 	 */
 	private static double worldHeight() {
-		return Game.game().height_cm;
+		return GAME.height_cm;
 	}
 }

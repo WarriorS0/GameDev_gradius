@@ -48,8 +48,9 @@ public class ShapeAvatar extends Avatar {
 
 	@Override
 	public void initImage(Graphics g) {
-		if(hasBeenInitialized) return;
-		hasBeenInitialized=true;
+		if (hasBeenInitialized)
+			return;
+		hasBeenInitialized = true;
 		if (LOGGING && INFO) {
 			logger.log(Level.INFO, "Init shape avatar");
 		}

@@ -19,18 +19,18 @@ package gal.ast;
 
 public class Key extends Parameter {
 
-  public Terminal terminal;
+	public Terminal terminal;
 
-  public Key(Terminal t) {
-    terminal = t;
-  }
+	public Key(Terminal t) {
+		terminal = t;
+	}
 
-  public String toString() {
-    return terminal.content;
-  }
+	public String toString() {
+		return terminal.content;
+	}
 
-  Object accept(iVisitor visitor) {
-    return visitor.visit(this);
-  }
+	Object accept(iVisitor visitor) {
+		return visitor.visit(this);
+	}
 
 }

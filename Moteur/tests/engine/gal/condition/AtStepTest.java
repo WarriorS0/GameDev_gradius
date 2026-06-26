@@ -2,7 +2,6 @@ package engine.gal.condition;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +13,9 @@ import game.gradius.entity.Ship;
 
 class AtStepTest {
 
-	//private Game game;
+	// private Game game;
 	private Ship ship;
-	private int x,y;
+	private int x, y;
 
 	@BeforeEach
 	void setup() {
@@ -30,7 +29,7 @@ class AtStepTest {
 
 	@Test
 	void atStepDetectsObstacleEast() {
-		Obstacle obstacle = new Obstacle(x+1,y);
+		Obstacle obstacle = new Obstacle(x + 1, y);
 		obstacle.category(Category.Obstacle);
 
 		AtStep condition = new AtStep(Direction.E, Category.Obstacle, 1);
@@ -50,7 +49,7 @@ class AtStepTest {
 
 	@Test
 	void atStepForwardUsesEntityOrientation() {
-		Obstacle obstacle = new Obstacle(x+1, y);
+		Obstacle obstacle = new Obstacle(x + 1, y);
 		obstacle.category(Category.Obstacle);
 
 		// Pacman orientation initiale = 0°, donc Forward = East
@@ -68,7 +67,7 @@ class AtStepTest {
 
 	@Test
 	void atStepVoidIsFalseWhenThereIsAnotherEntity() {
-		Obstacle obstacle = new Obstacle(x+1, y);
+		Obstacle obstacle = new Obstacle(x + 1, y);
 		obstacle.category(Category.Obstacle);
 
 		AtStep condition = new AtStep(Direction.E, Category.Void, 1);

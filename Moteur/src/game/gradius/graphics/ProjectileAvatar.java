@@ -24,18 +24,11 @@ public class ProjectileAvatar extends AnimationAvatar {
 
 	private void initLaserImage(Graphics g) {
 		this.initImage(g,
-				new ImageSpriteRect[] {
-						new ImageSpriteRect(126, 121, 10, 5),
-						new ImageSpriteRect(137, 121, 10, 5)
-				});
+				new ImageSpriteRect[] { new ImageSpriteRect(126, 121, 10, 5), new ImageSpriteRect(137, 121, 10, 5) });
 	}
 
 	private void initBlueOrbImage(Graphics g) {
-		this.initImage(g,
-				new ImageSpriteRect[] {
-						new ImageSpriteRect(89, 93, 10, 8),
-						new ImageSpriteRect(105, 92, 14, 10),
-						new ImageSpriteRect(124, 91, 16, 12),
-				});
+		this.initImage(g, new ImageSpriteRect[] { new ImageSpriteRect(89, 93, 10, 8),
+				new ImageSpriteRect(105, 92, 14, 10), new ImageSpriteRect(124, 91, 16, 12), });
 	}
 }

@@ -9,7 +9,7 @@ import engine.geometry.ISU;
 import game.Game;
 
 class CircleTest {
-	
+
 	private static final int WIDTH_NCELL = 100;
 	private static final int HEIGHT_NCELL = 100;
 
@@ -27,11 +27,7 @@ class CircleTest {
 	}
 
 	private Rect rect(double x, double y, double width, double height, int angleDegree) {
-		return new Rect(
-			isu.new Coord(x, y),
-			isu.new Dimension(width, height),
-			angleDegree
-		);
+		return new Rect(isu.new Coord(x, y), isu.new Dimension(width, height), angleDegree);
 	}
 
 	// =========================

@@ -10,7 +10,6 @@ import engine.controller.Controller;
 import engine.controller.KeyManager;
 import engine.controller.MouseManager;
 import engine.entity.Entity;
-import engine.gal.CompositeGALStunt;
 import engine.gal.GALBot;
 import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
@@ -20,6 +19,7 @@ import engine.graphics.BackgroundView;
 import engine.graphics.View;
 import engine.graphics.avatars.AnimationAvatar;
 import engine.graphics.hud.Anchor;
+import engine.graphics.hud.AnchoredLabel;
 import engine.graphics.hud.FollowerLabel;
 import engine.graphics.hud.HealthBar;
 import engine.graphics.hud.Hud;
@@ -28,6 +28,7 @@ import engine.graphics.hud.PixelCoordinate;
 import engine.logs.LoggerManager;
 import engine.move.Model;
 import engine.move.Ticker;
+import engine.move.Ticker.TickerListener;
 import gal.ast.AST;
 import gal.parser.Parser;
 import game.Game;
@@ -46,6 +47,7 @@ import game.gradius.graphics.MapView;
 import game.gradius.graphics.ShipAvatar;
 import game.gradius.graphics.TileAvatar;
 import game.gradius.spawn.ProjectileSpawner;
+import game.gradius.stunt.ShipStunt;
 import oop.graphics.Canvas;
 import oop.graphics.Graphics;
 import oop.graphics.Graphics.Colors;
@@ -193,7 +195,7 @@ public class MainPaintTest implements Runnable {
 		GALBot shipBot = new GALBot(ship);
 		ship.bot(shipBot);
 
-		CompositeGALStunt shipStunt = new CompositeGALStunt(model, ship, List.of(topCannon, bottomCannon));
+		ShipStunt shipStunt = new ShipStunt(model, ship, List.of(topCannon, bottomCannon));
 
 		shipStunt.setMaxLinearSpeed(200.0);
 		shipStunt.setMaxAngularSpeed(0.0);
@@ -236,15 +238,17 @@ public class MainPaintTest implements Runnable {
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 
 		Hud hud = new Hud();
-		HealthBar health = new HealthBar(ship, Anchor.BOTTOM_RIGHT, new PixelCoordinate(-50,-50), 16, Colors.white, Colors.blue );
+		HealthBar health = new HealthBar(ship, Anchor.BOTTOM_RIGHT, new PixelCoordinate(-50, -50), 16, Colors.white,
+				Colors.blue);
 		health.setVisibility(true);
 		hud.add(health);
 
-		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), ship, new PixelCoordinate(0,-25),
-				Colors.white);
+		FollowerLabel flShipDebugBehavior = new FollowerLabel(() -> ship.debugInfoBehavior(), ship,
+				new PixelCoordinate(0, -25), Colors.white);
 		flShipDebugBehavior.setVisibility(false);
 		hud.add(flShipDebugBehavior);
-		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), ship, new PixelCoordinate(0,20), Colors.white);
+		FollowerLabel flShipDebugMoves = new FollowerLabel(() -> ship.debugInfoMove(), ship, new PixelCoordinate(0, 20),
+				Colors.white);
 		flShipDebugMoves.setVisibility(false);
 		hud.add(flShipDebugMoves);
 
@@ -256,11 +260,10 @@ public class MainPaintTest implements Runnable {
 //		fbBottomCannon.setView(view);
 //		hud.add(fbBottomCannon);
 
-		Label labelDebug = new Label(() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode.",
+		Label labelDebug = new Label(
+				() -> "'TAB' to toggle debug mode. 'V' to toggle viewport debug mode. 'P' to pause the game.",
 				new PixelCoordinate(6, 12), Colors.white, false);
 		hud.add(labelDebug);
-		StringBuilder sb = new StringBuilder();
-		sb.append("FPS");
 		Label labelFPS = new Label(
 				() -> String.format(" FPS %s { min: %s; avg: %s ; max: %s (from the last %ds) } ",
 						fpsC.getFormattedFps(), fpsC.getFormattedMinFps(), fpsC.getFormattedAvgFps(),
@@ -282,6 +285,11 @@ public class MainPaintTest implements Runnable {
 				new PixelCoordinate(12, 48), Colors.white, false);
 		labelTickTime.setVisibility(false);
 		hud.add(labelTickTime);
+
+		AnchoredLabel labelPause = new AnchoredLabel(() -> "|| GAME IS PAUSED !", Anchor.CENTER,
+				new PixelCoordinate(0, 0), Colors.white, true);
+		labelPause.setVisibility(false);
+		hud.add(labelPause);
 
 		view.setHUD(hud);
 
@@ -317,24 +325,38 @@ public class MainPaintTest implements Runnable {
 			}
 		});
 
+		Runnable toogleDebug = new Runnable() {
+
+			@Override
+			public void run() throws Exception {
+				showDebugValues = !showDebugValues;
+				labelFPS.setVisibility(showDebugValues);
+				labelPaintTime.setVisibility(showDebugValues);
+				labelTickTime.setVisibility(showDebugValues);
+				flShipDebugMoves.setVisibility(showDebugValues);
+				flShipDebugBehavior.setVisibility(showDebugValues);
+				AnimationAvatar.debugCollision = showDebugValues;
+			}
+
+		};
+
 		// Le KeyManager capte le clavier, mais il faut aussi lui donner
 		// un Controller relié au stunt du vaisseau.
 		KeyManager km = new KeyManager();
 
 		// Appuyer sur tab fait apparaître/disparaître le label de fps.
-		km.bind(VirtualKeyCodes.VK_TAB, () -> {
-			showDebugValues = !showDebugValues;
-			labelFPS.setVisibility(showDebugValues);
-			labelPaintTime.setVisibility(showDebugValues);
-			labelTickTime.setVisibility(showDebugValues);
-			flShipDebugMoves.setVisibility(showDebugValues);
-			flShipDebugBehavior.setVisibility(showDebugValues);
-			AnimationAvatar.debugCollision = showDebugValues;
-		});
+		km.bind(VirtualKeyCodes.VK_TAB, toogleDebug);
 
 		MouseManager mm = new MouseManager();
 		// Cliquer sur le bouton du millieu de la souris print un msg dans la console.
-		mm.bind(MouseManager.BNO_MIDDLE_BUTTON_MOUSE, () -> System.out.print("MIDDLE BUTTON MOUSE CLICKED TEST!"));
+		mm.bind(MouseManager.BNO_MIDDLE_BUTTON_MOUSE, () -> {
+			try {
+				toogleDebug.run();
+				view.setDebugViewPort(showDebugValues);
+			} catch (Exception e) {
+				logger.severe(e.getMessage());
+			}
+		});
 
 		canvas.set(km);
 		canvas.set(mm);
@@ -346,7 +368,26 @@ public class MainPaintTest implements Runnable {
 		/*
 		 * Le Ticker se lance déjà dans son constructeur.
 		 */
-		new Ticker(model);
+		Ticker ticker = new Ticker(model);
+		ticker.start();
+		km.bind(VirtualKeyCodes.VK_P, () -> ticker.toggleRunning());
+
+		/**
+		 * Qu'est ce qu'on fait à la pause et au redémarrage.
+		 * 
+		 * Exemple : Afficher/Cacher un label
+		 */
+		ticker.addListener(new TickerListener() {
+			@Override
+			public void starting() {
+				labelPause.setVisibility(false);
+			}
+
+			@Override
+			public void stopping() {
+				labelPause.setVisibility(true);
+			}
+		});
 	}
 
 	private void place(Entity entity, int x, int y) {

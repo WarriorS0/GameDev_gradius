@@ -23,18 +23,11 @@ public class RectTest {
 	}
 
 	private Rect rect(double x, double y, double width, double height, int angle) {
-		return new Rect(
-				isu.new Coord(x, y),
-				isu.new Dimension(width, height),
-				angle
-		);
+		return new Rect(isu.new Coord(x, y), isu.new Dimension(width, height), angle);
 	}
 
 	private Circle circle(double x, double y, double radius) {
-		return new Circle(
-				isu.new Coord(x, y),
-				radius
-		);
+		return new Circle(isu.new Coord(x, y), radius);
 	}
 
 	// =========================
@@ -235,11 +228,11 @@ public class RectTest {
 
 	@Test
 	void circleTouchingRectEdgeIntersects() {
-	    Rect r = rect(50, 50, 10, 10, 0);
-	    Circle c = circle(56, 50, 1);
+		Rect r = rect(50, 50, 10, 10, 0);
+		Circle c = circle(56, 50, 1);
 
-	    assertTrue(r.intersects(c));
-	    assertTrue(c.intersects(r));
+		assertTrue(r.intersects(c));
+		assertTrue(c.intersects(r));
 	}
 
 	@Test

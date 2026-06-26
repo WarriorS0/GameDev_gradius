@@ -16,7 +16,6 @@ import engine.gal.actions.Explode;
 import engine.gal.actions.Throw;
 import engine.gal.actions.SequenceAction;
 
-
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
 import engine.gal.condition.AtStep;
@@ -104,7 +103,8 @@ public class AST2Aut {
 
 			case "atstep":
 				if (call.parameters.size() != 3) {
-					throw new IllegalArgumentException("AtStep condition requires 3 parameters: direction, category, step");
+					throw new IllegalArgumentException(
+							"AtStep condition requires 3 parameters: direction, category, step");
 				}
 
 				String dirParam = call.parameters.get(0).toString();
@@ -129,7 +129,7 @@ public class AST2Aut {
 					return new KeyCondition(keyName);
 				}
 				throw new IllegalArgumentException("Key condition requires 1 parameter");
-				
+
 			case "struck":
 				if (call.parameters.size() >= 1) {
 					Category category = Category.canonical(call.parameters.get(0).toString());
@@ -148,7 +148,7 @@ public class AST2Aut {
 				}
 
 				throw new IllegalArgumentException("Life condition requires 1 parameter");
-				
+
 			case "timer":
 				return new Timer();
 			default:
@@ -181,27 +181,27 @@ public class AST2Aut {
 
 		throw new UnsupportedOperationException("Unsupported GAL expression type: " + expr.getClass().getName());
 	}
-	
+
 	private iGALAction convertAction(gal.ast.Actions astAction) {
-	    if (astAction == null || astAction.actions.isEmpty()) {
-	        return GALAction.NOTHING;
-	    }
+		if (astAction == null || astAction.actions.isEmpty()) {
+			return GALAction.NOTHING;
+		}
 
-	    List<iGALAction> actions = new ArrayList<>();
+		List<iGALAction> actions = new ArrayList<>();
 
-	    for (gal.ast.FunCall call : astAction.actions) {
-	        actions.add(convertSingleAction(call));
-	    }
+		for (gal.ast.FunCall call : astAction.actions) {
+			actions.add(convertSingleAction(call));
+		}
 
-	    if (actions.size() == 1) {
-	        return actions.get(0);
-	    }
+		if (actions.size() == 1) {
+			return actions.get(0);
+		}
 
-	    return new SequenceAction(actions);
+		return new SequenceAction(actions);
 	}
 
 	private iGALAction convertSingleAction(gal.ast.FunCall call) {
-		
+
 		String actionName = call.name;
 
 		if (actionName == null) {
