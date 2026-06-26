@@ -36,7 +36,7 @@ public abstract class Avatar {
 		return z_order;
 	}
 
-	protected void set_z_order(int z_order) {
+	public void set_z_order(int z_order) {
 		if (z_order > MAX_ZORDER)
 			throw new IllegalArgumentException("The maximum Z_order is " + MAX_ZORDER);
 		if (z_order < MIN_ZORDER)

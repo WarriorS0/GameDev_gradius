@@ -1,8 +1,0 @@
-Ship(Alive) {
-	* (Alive)
-	| Key(FU) ? Move(N) :(Alive)
-	| Key(FD) ? Move(S) :(Alive)
-	| Key(FL) ? Move(W) :(Alive)
-	| Key(FR) ? Move(E) :(Alive)
-	| True ? :(Alive)
-}

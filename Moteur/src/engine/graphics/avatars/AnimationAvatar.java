@@ -10,15 +10,15 @@ import oop.graphics.Graphics;
 public abstract class AnimationAvatar extends RessourceAvatar {
 
 	private static double DEFAULT_FRAME_DURATION_S; // attention c'est des secondes
-	private double frameDurationS; // attention c'est des secondes
+	protected double frameDurationS; // attention c'est des secondes
 
 	static {
 		DEFAULT_FRAME_DURATION_S = 0.1;
 	}
 
-	private BufferedImage[] frames;
-	private double time;
-	private int frameIndex;
+	protected BufferedImage[] frames;
+	protected double time;
+	protected int frameIndex;
 
 	protected AnimationAvatar(Entity entity, String imagePath, int multX, int multY) {
 		super(entity, imagePath, multX, multY);

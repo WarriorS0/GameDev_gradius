@@ -68,13 +68,13 @@ public class Direction {
 		register(SE, "SE", "SouthEast", "Southeast");
 		register(SW, "SW", "SouthWest", "Southwest");
 		register(NNE, "NNE", "NorthNorthEast", "Northnortheast");
-		register(ENE, "NNE", "EastNorthEast", "Eastnortheast");
-		register(ESE, "NNE", "EastSouthEast", "Eastsoutheast");
-		register(SSE, "NNE", "SouthSouthEast", "Southsoutheast");
-		register(SSW, "NNE", "SouthSouthWest", "Southsouthwest");
-		register(WSW, "NNE", "WestSouthWest", "Westsouthwest");
-		register(WNW, "NNE", "WestNorthWest", "Westnorthwest");
-		register(NNW, "NNE", "NorthNorthWest", "Northnorthwest");
+		register(ENE, "ENE", "EastNorthEast", "Eastnortheast");
+		register(ESE, "ESE", "EastSouthEast", "Eastsoutheast");
+		register(SSE, "SSE", "SouthSouthEast", "Southsoutheast");
+		register(SSW, "SSW", "SouthSouthWest", "Southsouthwest");
+		register(WSW, "WSW", "WestSouthWest", "Westsouthwest");
+		register(WNW, "WNW", "WestNorthWest", "Westnorthwest");
+		register(NNW, "NNW", "NorthNorthWest", "Northnorthwest");
 	}
 
 	private static void register(Direction direction, String... names) {
