@@ -198,7 +198,6 @@ public class AST2Aut {
 
 		List<gal.ast.FunCall> calls = astAction.actions;
 
-		// Sequential operator (";") — keep existing behaviour
 		if (";".equals(astAction.operator)) {
 			List<iGALAction> actions = new ArrayList<>();
 			for (gal.ast.FunCall call : calls) {
@@ -206,8 +205,7 @@ public class AST2Aut {
 			}
 			return actions.size() == 1 ? actions.get(0) : new SequenceAction(actions);
 		}
-
-		// Probabilistic operator ("/")
+		
 		int explicitTotal = 0;
 		int noPercentCount = 0;
 		for (gal.ast.FunCall call : calls) {
