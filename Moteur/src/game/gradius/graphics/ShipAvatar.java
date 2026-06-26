@@ -33,8 +33,8 @@ public class ShipAvatar extends AnimationAvatar {
 		aliveFrames = frames;
 
 		deathFrames = new BufferedImage[] {
-				image.getSubimage(145, 93, 14, 14),
-				image.getSubimage(163, 91, 24, 18)
+				image.getSubimage(143, 91, 16, 14),
+				image.getSubimage(161, 91, 18, 14)
 		};
 	}
 
