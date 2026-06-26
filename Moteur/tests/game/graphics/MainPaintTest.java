@@ -84,8 +84,8 @@ public class MainPaintTest implements Runnable {
 		// property file on top of this
 		SHOULD_DO_PAINT_PROFILING_LOGGING = false;
 
-		WIDTH = 640;
-		HEIGHT = 640;
+		WIDTH = 1920;
+		HEIGHT = 1080;
 
 	}
 

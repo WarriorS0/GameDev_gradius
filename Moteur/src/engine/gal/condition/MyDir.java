@@ -3,16 +3,12 @@ package engine.gal.condition;
 import engine.entity.Entity;
 import engine.gal.arguments.Direction;
 
-public class MyDir implements iGALCondition {
+public class MyDir extends GALCondition {
 
     private static final double TOLERANCE = 11.25;
 
-    private final Direction direction;
-
     public MyDir(Direction direction) {
-        if (direction == null)
-            throw new IllegalArgumentException("direction cannot be null");
-        this.direction = direction;
+        super(direction, null);
     }
 
     @Override

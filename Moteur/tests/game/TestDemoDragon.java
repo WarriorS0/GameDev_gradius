@@ -33,8 +33,8 @@ public class TestDemoDragon implements Runnable {
 	private static final Logger logger = LoggerManager.getLogger(MainPaintTest.class.getName());
 	private static final int FPS = 30;
 	private static final boolean FPS_LOGGING = true;
-	public static final int WIDTH = 640;
-	public static final int HEIGHT = 640;
+	public static final int WIDTH = 1920;
+	public static final int HEIGHT = 1080;
 	private boolean showDebugValues = false;
 
 	public static void main(String[] args) throws Exception {
