@@ -57,7 +57,7 @@ public class Dragon extends Entity {
 		headStunt.setMaxLinearSpeed(40);
 		headStunt.setMaxAngularSpeed(45);
 		
-		Automaton dragonAutomaton = loadAutomaton("src/engine/gal/passiveDragon.gal", "PassiveDragon");
+		Automaton dragonAutomaton = loadAutomaton("src/game/gradius/gal/passiveDragon.gal", "PassiveDragon");
 		dragonBot.set(dragonAutomaton);
 		
 		DragonHeadAvatar headAvatar = new DragonHeadAvatar(head);
