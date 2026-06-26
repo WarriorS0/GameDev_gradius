@@ -43,6 +43,7 @@ import game.gradius.graphics.PowerAvatar;
 import game.gradius.graphics.CannonAvatar;
 import game.gradius.graphics.EnemyAvatar;
 import game.gradius.graphics.ShipAvatar;
+import game.gradius.graphics.TerrainGenerator;
 import game.gradius.spawn.ProjectileSpawner;
 import game.gradius.stunt.ShipStunt;
 import oop.graphics.Canvas;
@@ -128,6 +129,7 @@ public class MainPaintTest implements Runnable {
 		Task task = Runtime.task();
 		Canvas canvas = (Canvas) task.find("canvas");
 
+
 		Game game = new Game(256, 32);
 		Model model = game.model;
 
@@ -167,7 +169,13 @@ public class MainPaintTest implements Runnable {
 
 		Power power = new Power();
 		Obstacle obstacle = new Obstacle(30, 20);
+		
+//		BigTile tile=new BigTile(10,(int)model.viewPort().height_cm());
+//		TileAvatar tav=new TileAvatar(tile,model.viewPort());
+		
+
 		Enemy enemy = new Enemy();
+
 
 		// D'abord ajouter les entities au model
 		model.add(ship);
@@ -175,7 +183,9 @@ public class MainPaintTest implements Runnable {
 		model.add(bottomCannon);
 		model.add(power);
 		model.add(obstacle);
+
 		model.add(enemy);
+
 
 		// Ensuite seulement créer le bot / stunt GAL
 		GALBot shipBot = new GALBot(ship);
@@ -183,7 +193,7 @@ public class MainPaintTest implements Runnable {
 
 		ShipStunt shipStunt = new ShipStunt(model, ship, List.of(topCannon, bottomCannon));
 
-		shipStunt.setMaxLinearSpeed(70.0);
+		shipStunt.setMaxLinearSpeed(60.0);
 		shipStunt.setMaxAngularSpeed(0.0);
 		shipStunt.setBaseLinearSpeed(10.0, 0.0);
 
@@ -201,7 +211,13 @@ public class MainPaintTest implements Runnable {
 		view.add(new CannonAvatar(bottomCannon));
 		view.add(new PowerAvatar(power));
 		view.add(new ObstacleAvatar(obstacle));
+
+
 		view.add(new EnemyAvatar(enemy));
+		
+
+		TerrainGenerator terrain = new TerrainGenerator(model, view);
+		terrain.generate();   // ou new TerrainGenerator(model, view, seedFixe) pour reproductible
 
 		ProjectileSpawner projectileSpawner = new ProjectileSpawner(model, view);
 		shipStunt.setProjectileSpawner(projectileSpawner);
@@ -210,8 +226,12 @@ public class MainPaintTest implements Runnable {
 				game.isu.new Coord(ship.center().x() + 3 * game.cmPerCell, ship.center().y() - 2 * game.cmPerCell),
 				game.isu.new Vector(30.0, 0.0));
 
+
+		//MapView mapView = new MapView(canvas,model,tav,model.viewPort());
+		//view.setBackground(mapView::paint);
 		BackgroundView bgView = new BackgroundView("src/game/gradius/graphics/map_gradius.png", 317, 204, 200, 200);
 		view.setBackground(bgView::paint); // on doit utiliser un method reference operator sinon ça marche pas
+
 
 		FpsManager fpsC = new FpsManager(task, FPS, FPS_LOGGING);
 

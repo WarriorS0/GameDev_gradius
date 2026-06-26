@@ -29,7 +29,7 @@ public class Bot {
 		}
 
 		this.entity = entity;
-		this.life = 3;
+		this.life = 30;
 		this.timer_ms = 0.0;
 	}
 

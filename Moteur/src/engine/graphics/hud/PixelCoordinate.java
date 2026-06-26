@@ -3,8 +3,7 @@ package engine.graphics.hud;
 import java.util.Objects;
 
 public class PixelCoordinate {
-	int x;
-	int y;
+	public int x,y;
 
 	public PixelCoordinate(int x, int y) {
 		this.x = x;

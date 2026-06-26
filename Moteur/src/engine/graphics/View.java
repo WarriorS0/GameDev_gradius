@@ -102,11 +102,13 @@ public class View {
 	public void setHUD(Hud hud) {
 		this.hud = hud;
 	}
-
+	
+	
 	public View(ViewPort vp) {
 		this.vp = Objects.requireNonNull(vp, "view port cannot be null");
 		this.avatars = new ArrayList<>();
 		this.lastTime = System.currentTimeMillis();
+		
 	}
 
 	/**
