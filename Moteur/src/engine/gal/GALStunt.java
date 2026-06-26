@@ -267,5 +267,10 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	public boolean startThrowing(Direction direction, double intensity) {
 		return false;
 	}
+	
+	@Override
+	public boolean startDashing(Direction direction, double intensity) {
+		return false;
+	}
 
 }

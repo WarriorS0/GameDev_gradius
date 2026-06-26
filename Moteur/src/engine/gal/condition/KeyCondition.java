@@ -60,6 +60,8 @@ public class KeyCondition extends GALCondition implements VirtualKeyCodes {
 		case "ESC":
 		case "ESCAPE":
 			return VK_ESCAPE;
+		case "d":
+			return VK_D;
 
 		default:
 			return standardKeyCode(key);

@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Map;
+import java.util.Objects;
 
 import engine.entity.Entity;
 import engine.geometry.Grid;
@@ -54,6 +55,8 @@ public class Model {
 
 	private ViewPort viewPort;
 	private final Set<Entity> cullable = new HashSet<>();
+
+	private final Set<TickSystem> tickSystems = new HashSet<>();
 
 	// fields for tick time profiling
 	public final int NB_LAST_TICK_TIME_SAVED = 96;
@@ -209,6 +212,29 @@ public class Model {
 				}
 			}
 		}
+
+		// Per-frame game systems (e.g. streaming terrain generation), ticked after
+		// the camera has advanced so they can react to the new viewport position.
+		for (TickSystem system : tickSystems) {
+			system.tick(delta_t);
+		}
+	}
+
+	/**
+	 * A lightweight per-frame system driven by the model tick, run after entities
+	 * moved and the camera advanced.
+	 */
+	public interface TickSystem {
+		void tick(double delta_t);
+	}
+
+	/**
+	 * Registers a system ticked every frame.
+	 *
+	 * @param system the system to tick (must not be null)
+	 */
+	public void addTickSystem(TickSystem system) {
+		tickSystems.add(Objects.requireNonNull(system, "system cannot be null"));
 	}
 
 	// =========================
