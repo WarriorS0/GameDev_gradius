@@ -24,7 +24,7 @@ import game.gradius.stunt.LeaderStunt;
 public class Dragon extends Entity {
 	
 	private List<Entity> dragon_parts;
-	private final static int TICK_DELAY = 8;
+	private final static int TICK_DELAY = 10;
 	private final static Model model = Game.game().model;
 	
 	private Automaton loadAutomaton(String galFilePath, String automatonName) {
@@ -51,6 +51,7 @@ public class Dragon extends Entity {
 		DragonHead head = new DragonHead();
 		model.add(head);
 		GALBot dragonBot = new GALBot(head);
+		dragonBot.healthPercent(3);
 		head.bot(dragonBot);
 		LeaderStunt headStunt = new LeaderStunt(model, head);
 		model.add(head, headStunt);
@@ -103,7 +104,13 @@ public class Dragon extends Entity {
 		}
 	}
 	
-	public void killDragon() {
+	@Override
+	public void forceOrientation(double orientation) {
+		dragon_parts.get(0).forceOrientation(orientation);
+	}
+	
+	@Override
+	public void kill() {
 	    dragon_parts.get(0).kill();
 	}
 

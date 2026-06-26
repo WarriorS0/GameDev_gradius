@@ -14,6 +14,7 @@ import engine.gal.GALBot;
 import engine.gal.arguments.Category;
 import engine.gal.aut.AST2Aut;
 import engine.gal.aut.Automaton;
+import engine.geometry.Grid.Position;
 import engine.graphics.FpsManager;
 import engine.graphics.BackgroundView;
 import engine.graphics.View;
@@ -34,6 +35,7 @@ import gal.parser.Parser;
 import game.Game;
 import game.gradius.entity.Cannon;
 import game.gradius.entity.CannonSlot;
+import game.gradius.entity.Dragon;
 import game.gradius.entity.Enemy;
 import game.gradius.entity.Ship;
 import game.gradius.entity.Power;
@@ -158,6 +160,10 @@ public class MainPaintTest implements Runnable {
 
 		Ship ship = new Ship();
 		place(ship, 5, game.grid.height() / 2);
+		
+		Dragon dragon = new Dragon(6);
+		dragon.place(game.grid.new Position(ship.position().x()+50, ship.position().y()+10));
+		dragon.forceOrientation(270);
 
 		Cannon topCannon = new Cannon(CannonSlot.TOP);
 		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);

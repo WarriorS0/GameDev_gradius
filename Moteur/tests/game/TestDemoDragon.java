@@ -141,7 +141,7 @@ public class TestDemoDragon implements Runnable {
 			AnimationAvatar.debugCollision = showDebugValues;
 		});
 		km.bind(VirtualKeyCodes.VK_V, () -> view.toggleDebugViewPort());
-		km.bind(VirtualKeyCodes.VK_K, () -> dragon.killDragon());
+		km.bind(VirtualKeyCodes.VK_K, () -> dragon.kill());
 		Ticker ticker = new Ticker(model);
 		km.bind(VirtualKeyCodes.VK_P, () -> ticker.toggleRunning());
 		canvas.set(km);
