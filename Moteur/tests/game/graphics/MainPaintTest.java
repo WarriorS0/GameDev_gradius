@@ -161,9 +161,9 @@ public class MainPaintTest implements Runnable {
 		Ship ship = new Ship();
 		place(ship, 5, game.grid.height() / 2);
 		
-		Dragon dragon = new Dragon(6);
-		dragon.place(game.grid.new Position(ship.position().x()+50, ship.position().y()+10));
-		dragon.forceOrientation(270);
+		//Dragon dragon = new Dragon(6);
+		//dragon.place(game.grid.new Position(ship.position().x()+50, ship.position().y()+10));
+		//dragon.forceOrientation(270);
 
 		Cannon topCannon = new Cannon(CannonSlot.TOP);
 		Cannon bottomCannon = new Cannon(CannonSlot.BOTTOM);
