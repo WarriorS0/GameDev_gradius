@@ -13,14 +13,19 @@ import game.gradius.entity.Ship;
  */
 public class ShipStunt extends CompositeGALStunt {
 
+	private static final double NORMAL_SPEED_CM_PER_S = 20.0;
+	private static final double BOOSTED_SPEED_CM_PER_S = 80.0;
+
 	public ShipStunt(Model model, Entity mainEntity, List<Entity> subEntities) {
 		super(model, mainEntity, subEntities);
+		setMaxLinearSpeed(NORMAL_SPEED_CM_PER_S);
 	}
 
 	@Override
 	public void tick(double elapsed_s) {
 		if (entity instanceof Ship ship) {
 			ship.tickPower(elapsed_s);
+			updateSpeedPower(ship);
 
 			if (ship.deathAnimationPlaying()) {
 				entity.setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));
@@ -34,6 +39,14 @@ public class ShipStunt extends CompositeGALStunt {
 
 		if (model.viewPort() != null) {
 			model.viewPort().confine(entity);
+		}
+	}
+
+	private void updateSpeedPower(Ship ship) {
+		if (ship.hasSpeedPower()) {
+			setMaxLinearSpeed(BOOSTED_SPEED_CM_PER_S);
+		} else {
+			setMaxLinearSpeed(NORMAL_SPEED_CM_PER_S);
 		}
 	}
 }
