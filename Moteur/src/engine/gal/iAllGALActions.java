@@ -39,5 +39,7 @@ public interface iAllGALActions {
 	 * @param intensity in [0,1]
 	 */
 	boolean startThrowing(Direction direction, double intensity);
+	
+	boolean startDashing(Direction direction, double intensity);
 
 }

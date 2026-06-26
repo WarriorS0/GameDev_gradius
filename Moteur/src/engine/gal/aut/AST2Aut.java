@@ -17,6 +17,7 @@ import engine.gal.actions.Protect;
 import engine.gal.actions.Explode;
 import engine.gal.actions.Throw;
 import engine.gal.actions.SequenceAction;
+import engine.gal.actions.Dash;
 
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
@@ -335,6 +336,13 @@ public class AST2Aut {
 				return new Orient(dir);
 			}
 			throw new IllegalArgumentException("Orient requires 1 parameter");
+		case "dash":
+			if (call.parameters.size() >= 1) {
+				Direction direction = Direction.canonical(call.parameters.get(0).toString());
+				return new Dash(direction);
+			}
+
+			return new Dash();
 		default:
 			throw new IllegalArgumentException("Unsupported GAL action: " + actionName);
 		}
