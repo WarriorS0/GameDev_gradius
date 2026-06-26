@@ -51,7 +51,7 @@ public class Dragon extends Entity {
 		DragonHead head = new DragonHead();
 		model.add(head);
 		GALBot dragonBot = new GALBot(head);
-		dragonBot.healthPercent(3);
+		dragonBot.healthPercent(30);
 		head.bot(dragonBot);
 		LeaderStunt headStunt = new LeaderStunt(model, head);
 		model.add(head, headStunt);

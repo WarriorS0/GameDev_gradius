@@ -163,6 +163,7 @@ public class MainPaintTest implements Runnable {
 		Ship ship = new Ship();
 		place(ship, 5, game.grid.height() / 2);
 		
+		// SPAWN DRAGON
 		//Dragon dragon = new Dragon(6);
 		//dragon.place(game.grid.new Position(ship.position().x()+50, ship.position().y()+10));
 		//dragon.forceOrientation(270);

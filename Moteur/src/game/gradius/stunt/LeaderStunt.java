@@ -35,14 +35,12 @@ public class LeaderStunt extends GALStunt {
 
 	@Override
 	protected void collision(Entity entity) {
-		// TODO Auto-generated method stub
-		
+		super.collision(entity);
 	}
 
 	@Override
 	protected void collision(List<Entity> entities) {
-		// TODO Auto-generated method stub
-		
+		super.collision(entities);
 	}
 
 	@Override
