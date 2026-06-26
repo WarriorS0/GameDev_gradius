@@ -10,8 +10,6 @@ import engine.graphics.hud.Hud;
 import engine.graphics.hud.PixelCoordinate;
 import engine.move.ViewPort;
 import game.Game;
-import game.gradius.graphics.Bande;
-import game.gradius.graphics.Tile;
 import oop.graphics.Canvas;
 import oop.graphics.Color;
 import oop.graphics.Graphics;
