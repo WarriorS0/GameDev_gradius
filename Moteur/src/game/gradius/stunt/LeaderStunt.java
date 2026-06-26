@@ -4,13 +4,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import engine.entity.Entity;
+import engine.gal.GALStunt;
 import engine.geometry.ISU;
 import engine.move.Model;
 import engine.move.Stunt;
 import game.Game;
 import game.gradius.stunt.FollowerStunt.MovementState;
 
-public class LeaderStunt extends Stunt {
+public class LeaderStunt extends GALStunt {
 	
 	private final LinkedList<MovementState> history = new LinkedList<>();
 
@@ -45,8 +46,9 @@ public class LeaderStunt extends Stunt {
 	}
 
 	@Override
-	protected void tick(double d) {
+	public void tick(double elapsed_s) {
+		super.tick(elapsed_s);
 		history.addLast(new MovementState(entity.center().mkCopy(), entity.orientation()));
-		setSpeedFromOrientation(20);
+		//setSpeedFromOrientation(20);
 	}
 }

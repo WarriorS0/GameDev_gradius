@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import engine.controller.Controller;
 import engine.controller.KeyManager;
+import engine.gal.GALBot;
 import engine.graphics.BackgroundView;
 import engine.graphics.FpsManager;
 import engine.graphics.View;

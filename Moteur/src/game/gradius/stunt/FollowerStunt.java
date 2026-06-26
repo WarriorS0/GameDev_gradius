@@ -51,23 +51,18 @@ public class FollowerStunt extends Stunt {
 		
 		if(leaderHistory.size() > tickDelay) {
 			MovementState target = leaderHistory.getFirst();
-			
-			ISU.Vector speedVector = entity.center().mkVectorToward(target.position);
-			speedVector.scale(1/d);
-			setLinearSpeed(speedVector);
-			
-			double targetAngleRad = Math.atan2(speedVector.y(), speedVector.x());
-			double currentAngleRad = Math.toRadians(entity.orientation());
-			double diffAngleRad = targetAngleRad - currentAngleRad;
-			diffAngleRad = Math.atan2(Math.sin(diffAngleRad), Math.cos(diffAngleRad));
-			double angularSpeedRad = diffAngleRad / d;
-			double angularSpeedDeg = Math.toDegrees(angularSpeedRad);
-			this.setAngularSpeed(angularSpeedDeg);
-			
-			leaderHistory.removeFirst();
+	        
+	        ISU.Vector speedVector = entity.center().mkVectorToward(target.position);
+	        speedVector.scale(1/d);
+	        setLinearSpeed(speedVector);
+	        
+	        entity.forceOrientation(target.orientation);
+	        
+	        leaderHistory.removeFirst();
 		} else {
 			setLinearSpeed(Game.game().isu.new Vector(0, 0));
 			setAngularSpeed(0);
+		    entity.forceOrientation(entity.orientation());
 		}
 	}
 

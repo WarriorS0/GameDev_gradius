@@ -14,7 +14,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 	private double max_cmPer_s;
 	private double max_degPer_s;
 
-	private double action_ms;
+	protected double action_ms;
 
 	private boolean turning;
 	private double finalAngle;
@@ -98,7 +98,7 @@ public class GALStunt extends Stunt implements iAllGALActions {
 		}
 	}
 
-	private void finishAction() {
+	protected void finishAction() {
 		action_ms = 0.0;
 
 		setLinearSpeed(Game.game().isu.new Vector(0.0, 0.0));

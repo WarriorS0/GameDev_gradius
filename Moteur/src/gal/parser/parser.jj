@@ -133,6 +133,7 @@ TOKEN: {
   | "Throw" 
   | "Turn" 
   | "Wait"
+  | "Orient"
   // action with no semantics 
   | "Pop"
   | "Wizz" 
@@ -164,7 +165,7 @@ TOKEN: {
   | "South" | "S" 
   | "East"  | "E" 
   | "West"  | "W" 
-  | "NE" | "SE" | "SW" | "NW" 
+  | "NE" | "SE" | "SW" | "NW" | "NNE" | "ENE" | "ESE" | "SSE" | "SSW" | "WSW" | "WNW" | "NNW"
   | "Forward"  | "Front" | "F" 
   | "BackWard" | "Back"  | "B" 
   | "Left"     | "L" 
@@ -197,6 +198,7 @@ TOKEN: {
   | "PlayerA"   | "#"
   | "Power"     
   | "Stuff"    
+  | "Projectile"
   // categories with no semantics
   | "Qube"      | "Q" 
   | "Xics"      | "X" 
