@@ -394,7 +394,5 @@ public class ISU {
 			return "[" + df.format(x_cm) + "," + df.format(y_cm) + "]";
 		}
 
-		
-		
 	}
 }

@@ -5,7 +5,7 @@ import engine.gal.arguments.Category;
 import engine.shape.Rect;
 import game.Game;
 
-public class Enemy extends Entity{
+public class Enemy extends Entity {
 	public Enemy() {
 		super("Enemy");
 

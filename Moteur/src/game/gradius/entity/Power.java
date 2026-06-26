@@ -6,15 +6,15 @@ import engine.shape.Rect;
 import game.Game;
 
 public class Power extends Entity {
-	
-	//JUSTE POUR LE TEST DOIT ETRE FINI
+
+	// JUSTE POUR LE TEST DOIT ETRE FINI
 
 	public Power() {
 		super("Power");
 
 		double cell = Game.game().cmPerCell;
 
-		setSize(isu.new Dimension(0.7 * cell, 0.7 * cell));
+		setSize(isu.new Dimension(2 * cell, 2 * cell));
 		setStep(isu.new Dimension(cell, cell));
 		category(Category.Power);
 

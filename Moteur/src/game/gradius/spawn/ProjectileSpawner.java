@@ -3,13 +3,15 @@ package game.gradius.spawn;
 import engine.graphics.View;
 import engine.geometry.ISU;
 import engine.move.Model;
+import game.gradius.entity.Cannon;
 import game.gradius.entity.Projectile;
 import game.gradius.graphics.ProjectileAvatar;
 import game.gradius.stunt.ProjectileStunt;
 import engine.entity.Entity;
+import engine.gal.PowerReceiver;
 import engine.gal.arguments.Direction;
 
-public class ProjectileSpawner implements engine.gal.ThrowSpawner{
+public class ProjectileSpawner implements engine.gal.ThrowSpawner {
 
 	private final Model model;
 	private final View view;
@@ -28,7 +30,15 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 	}
 
 	public Projectile spawn(ISU.Coord center, ISU.Vector speed) {
-		Projectile projectile = new Projectile(center, speed);
+		return spawn(center, speed, Projectile.Type.LASER);
+	}
+
+	public Projectile spawn(ISU.Coord center, ISU.Vector speed, Projectile.Type type) {
+		if (type == null) {
+			throw new IllegalArgumentException("type cannot be null");
+		}
+
+		Projectile projectile = new Projectile(center, speed, type);
 
 		model.add(projectile);
 		model.setStunt(projectile, new ProjectileStunt(model, projectile));
@@ -38,7 +48,19 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 
 		return projectile;
 	}
-	
+
+	private boolean isPoweredSource(Entity source) {
+		if (source instanceof PowerReceiver receiver) {
+			return receiver.hasPower();
+		}
+
+		if (source instanceof Cannon cannon && cannon.owner() instanceof PowerReceiver receiver) {
+			return receiver.hasPower();
+		}
+
+		return false;
+	}
+
 	@Override
 	public Projectile spawnFrom(Entity source, Direction direction, double intensity) {
 		if (source == null || source.center() == null) {
@@ -55,10 +77,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 
 		double cell = game.Game.game().cmPerCell;
 
-		ISU.Coord center = game.Game.game().isu.new Coord(
-				source.center().x() + 1.5 * cell,
-				source.center().y()
-		);
+		ISU.Coord center = game.Game.game().isu.new Coord(source.center().x() + 1.5 * cell, source.center().y());
 
 		double speedValue = 130.0 * intensity;
 		ISU.Vector speed;
@@ -73,6 +92,8 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner{
 			speed = game.Game.game().isu.new Vector(speedValue, 0.0);
 		}
 
-		return spawn(center, speed);
+		Projectile.Type type = isPoweredSource(source) ? Projectile.Type.BLUE_ORB : Projectile.Type.LASER;
+
+		return spawn(center, speed, type);
 	}
 }

@@ -30,7 +30,7 @@ public interface iAllGALActions {
 	 * @param intensity = in [0,1] ≃ % of the maximal angular speed
 	 */
 	boolean startTurning(double angle_deg, double intensity);
-	
+
 	// THROW
 
 	/**

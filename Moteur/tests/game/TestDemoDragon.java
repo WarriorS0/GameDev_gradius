@@ -105,8 +105,7 @@ public class TestDemoDragon implements Runnable {
 				g.setColor(Colors.black);
 				g.fillRect(0, 0, windowWidth, windowHeight);
 
-				view.setCanvasArea(0, 0, windowWidth, windowHeight);
-				view.paint(g);
+				view.paint(canvas, g);
 				
 				fpsC.countFrame();
 			}

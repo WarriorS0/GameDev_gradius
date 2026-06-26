@@ -19,16 +19,16 @@ package gal.ast;
 
 public class IntPercent extends IntValue {
 
-  public IntPercent(int v) {
-	  super(v);
-  }
+	public IntPercent(int v) {
+		super(v);
+	}
 
-  public String toString() {
-    return Integer.toString(value) + "%";
-  }
+	public String toString() {
+		return Integer.toString(value) + "%";
+	}
 
-  Object accept(iVisitor visitor) {
-    return visitor.visit(this);
-  }
+	Object accept(iVisitor visitor) {
+		return visitor.visit(this);
+	}
 
 }

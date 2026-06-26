@@ -8,7 +8,7 @@ import oop.graphics.Graphics.Colors;
 public class ObstacleAvatar extends ShapeAvatar {
 
 	public ObstacleAvatar(Entity entity) {
-		super(entity,1,1);
+		super(entity, 1, 1);
 	}
 
 	@Override

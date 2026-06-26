@@ -1,6 +1,7 @@
 package game.gradius.entity;
 
 import engine.entity.Entity;
+import engine.gal.PowerReceiver;
 import engine.gal.arguments.Category;
 import engine.shape.Rect;
 import game.Game;
@@ -10,9 +11,10 @@ import java.util.List;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 
-public class Ship extends Entity {
-	
+public class Ship extends Entity implements PowerReceiver {
+
 	private final List<Cannon> cannons = new ArrayList<>();
+	private boolean powered;
 
 	public Ship() {
 		super("Ship");
@@ -32,7 +34,7 @@ public class Ship extends Entity {
 
 		addBounding(new Rect(center(), size(), orientation()));
 	}
-	
+
 	public void attachCannon(Cannon cannon) {
 		if (cannon == null) {
 			throw new IllegalArgumentException("cannon cannot be null");
@@ -40,6 +42,7 @@ public class Ship extends Entity {
 
 		if (!cannons.contains(cannon)) {
 			cannons.add(cannon);
+			cannon.attachTo(this);
 			cannon.placeRelativeTo(this);
 		}
 	}
@@ -55,9 +58,9 @@ public class Ship extends Entity {
 			}
 		}
 	}
-	
+
 	// LIFE
-	
+
 	@Override
 	public void kill() {
 		if (dead()) {
@@ -72,9 +75,9 @@ public class Ship extends Entity {
 			}
 		}
 	}
-	
-	//MOVEMENT
-	
+
+	// MOVEMENT
+
 	@Override
 	public void place(Grid.Position position) {
 		super.place(position);
@@ -97,5 +100,15 @@ public class Ship extends Entity {
 	public void translate(Grid.Vector v) {
 		super.translate(v);
 		syncCannons();
+	}
+
+	@Override
+	public void activatePower() {
+		this.powered = true;
+	}
+
+	@Override
+	public boolean hasPower() {
+		return powered;
 	}
 }

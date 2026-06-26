@@ -6,6 +6,7 @@ import engine.entity.Entity;
 import engine.move.Model;
 import engine.move.Stunt;
 import game.gradius.entity.Enemy;
+import game.gradius.entity.Projectile;
 
 public class ProjectileStunt extends Stunt {
 
@@ -16,7 +17,7 @@ public class ProjectileStunt extends Stunt {
 	@Override
 	protected void collision(Entity entity) {
 		this.entity.kill();
-		if(entity instanceof Enemy) {
+		if (entity instanceof Enemy) {
 			entity.kill();
 		}
 	}
@@ -24,8 +25,8 @@ public class ProjectileStunt extends Stunt {
 	@Override
 	protected void collision(List<Entity> entities) {
 		this.entity.kill();
-		for(Entity en : entities) {
-			if(en instanceof Enemy) {
+		for (Entity en : entities) {
+			if (en instanceof Enemy) {
 				en.kill();
 			}
 		}
@@ -33,6 +34,8 @@ public class ProjectileStunt extends Stunt {
 
 	@Override
 	protected void tick(double d) {
-		// Le projectile garde sa vitesse actuelle.
+		if (entity instanceof Projectile projectile) {
+			projectile.updatePowerAnimation();
+		}
 	}
 }

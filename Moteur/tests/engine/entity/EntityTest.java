@@ -124,19 +124,11 @@ class EntityTest {
 
 		ISU.Coord expectedCenter = position.toISUCoord();
 
-		assertEquals(
-			expectedCenter.x(),
-			entity.center().x(),
-			EPSILON,
-			"setPosition should update center.x from position.toISUCoord()."
-		);
+		assertEquals(expectedCenter.x(), entity.center().x(), EPSILON,
+				"setPosition should update center.x from position.toISUCoord().");
 
-		assertEquals(
-			expectedCenter.y(),
-			entity.center().y(),
-			EPSILON,
-			"setPosition should update center.y from position.toISUCoord()."
-		);
+		assertEquals(expectedCenter.y(), entity.center().y(), EPSILON,
+				"setPosition should update center.y from position.toISUCoord().");
 	}
 
 	@Test
@@ -150,17 +142,11 @@ class EntityTest {
 
 		Grid.Position expectedPosition = center.toGridPosition();
 
-		assertEquals(
-			expectedPosition.x(),
-			entity.position().x(),
-			"setCoord should update position.x from center.toGridPosition()."
-		);
+		assertEquals(expectedPosition.x(), entity.position().x(),
+				"setCoord should update position.x from center.toGridPosition().");
 
-		assertEquals(
-			expectedPosition.y(),
-			entity.position().y(),
-			"setCoord should update position.y from center.toGridPosition()."
-		);
+		assertEquals(expectedPosition.y(), entity.position().y(),
+				"setCoord should update position.y from center.toGridPosition().");
 	}
 
 	@Test
@@ -317,19 +303,11 @@ class EntityTest {
 
 		ISU.Coord expectedCenter = entity.position().toISUCoord();
 
-		assertEquals(
-			expectedCenter.x(),
-			entity.center().x(),
-			EPSILON,
-			"After grid translation, center.x should be synchronized."
-		);
+		assertEquals(expectedCenter.x(), entity.center().x(), EPSILON,
+				"After grid translation, center.x should be synchronized.");
 
-		assertEquals(
-			expectedCenter.y(),
-			entity.center().y(),
-			EPSILON,
-			"After grid translation, center.y should be synchronized."
-		);
+		assertEquals(expectedCenter.y(), entity.center().y(), EPSILON,
+				"After grid translation, center.y should be synchronized.");
 	}
 
 	@Test
@@ -373,49 +351,25 @@ class EntityTest {
 	void deployWithoutBoundingShouldOccupyNoCell() {
 		entity.deploy();
 
-		assertEquals(
-			0,
-			entity.occupied().size(),
-			"An entity with an empty hitbox should occupy no cell."
-		);
+		assertEquals(0, entity.occupied().size(), "An entity with an empty hitbox should occupy no cell.");
 	}
 
 	@Test
 	void deployShouldOccupyCellsCoveredByBoundingBox() {
 		double cell = Game.game().cmPerCell;
 
-		entity.addBounding(new FakeShape(
-			new FakeBox(
-				1.6 * cell,
-				4.4 * cell,
-				2.6 * cell,
-				4.4 * cell
-			),
-			false
-		));
+		entity.addBounding(new FakeShape(new FakeBox(1.6 * cell, 4.4 * cell, 2.6 * cell, 4.4 * cell), false));
 
 		entity.deploy();
 
-		assertEquals(
-			6,
-			entity.occupied().size(),
-			"Box should occupy x=2..4 and y=3..4, so 3 * 2 = 6 cells."
-		);
+		assertEquals(6, entity.occupied().size(), "Box should occupy x=2..4 and y=3..4, so 3 * 2 = 6 cells.");
 	}
 
 	@Test
 	void retractShouldClearOccupiedCells() {
 		double cell = Game.game().cmPerCell;
 
-		entity.addBounding(new FakeShape(
-			new FakeBox(
-				1.6 * cell,
-				4.4 * cell,
-				2.6 * cell,
-				4.4 * cell
-			),
-			false
-		));
+		entity.addBounding(new FakeShape(new FakeBox(1.6 * cell, 4.4 * cell, 2.6 * cell, 4.4 * cell), false));
 
 		entity.deploy();
 
@@ -423,10 +377,6 @@ class EntityTest {
 
 		entity.retract();
 
-		assertEquals(
-			0,
-			entity.occupied().size(),
-			"retract should clear the occupied cells set."
-		);
+		assertEquals(0, entity.occupied().size(), "retract should clear the occupied cells set.");
 	}
 }

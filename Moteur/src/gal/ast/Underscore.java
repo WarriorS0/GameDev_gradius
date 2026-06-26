@@ -19,15 +19,15 @@ package gal.ast;
 
 public class Underscore extends Parameter {
 
-  public Underscore() {
-    super();
-  }
+	public Underscore() {
+		super();
+	}
 
-  public String toString() {
-    return "_";
-  }
+	public String toString() {
+		return "_";
+	}
 
-  Object accept(iVisitor visitor) {
-    return visitor.visit(this);
-  }
+	Object accept(iVisitor visitor) {
+		return visitor.visit(this);
+	}
 }

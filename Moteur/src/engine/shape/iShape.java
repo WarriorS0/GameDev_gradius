@@ -1,6 +1,5 @@
 package engine.shape;
 
-
 public interface iShape {
 
 	boolean intersects(iShape shape);

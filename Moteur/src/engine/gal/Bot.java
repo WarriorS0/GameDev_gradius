@@ -18,7 +18,7 @@ public class Bot {
 	 * @apiNote 0 <= life <= 3
 	 */
 	private int life;
-	
+
 	private double timer_ms;
 
 	// CONSTRUCTOR
@@ -88,7 +88,7 @@ public class Bot {
 			throw new IllegalArgumentException("healthPercent must be in [0, 100]");
 		}
 
-		this.life= healthPercent;
+		this.life = healthPercent;
 	}
 
 	public Entity impactor() {
@@ -133,7 +133,7 @@ public class Bot {
 
 		return automaton.step(entity);
 	}
-	
+
 	// TIMER
 
 	public void startTimer(double duration_ms) {

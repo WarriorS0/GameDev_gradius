@@ -132,7 +132,7 @@ public class FpsManager {
 	public int getMaxFps() {
 		return maxFps;
 	}
-	
+
 	public String getFormattedFps() {
 		return dfFps.format(this.fps);
 	}

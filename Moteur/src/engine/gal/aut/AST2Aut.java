@@ -18,7 +18,6 @@ import engine.gal.actions.Explode;
 import engine.gal.actions.Throw;
 import engine.gal.actions.SequenceAction;
 
-
 import engine.gal.condition.GALCondition;
 import engine.gal.condition.iGALCondition;
 import engine.gal.condition.AtStep;
@@ -107,7 +106,8 @@ public class AST2Aut {
 
 			case "atstep":
 				if (call.parameters.size() != 3) {
-					throw new IllegalArgumentException("AtStep condition requires 3 parameters: direction, category, step");
+					throw new IllegalArgumentException(
+							"AtStep condition requires 3 parameters: direction, category, step");
 				}
 
 				String dirParam = call.parameters.get(0).toString();
@@ -132,7 +132,7 @@ public class AST2Aut {
 					return new KeyCondition(keyName);
 				}
 				throw new IllegalArgumentException("Key condition requires 1 parameter");
-				
+
 			case "struck":
 				if (call.parameters.size() >= 1) {
 					Category category = Category.canonical(call.parameters.get(0).toString());
@@ -151,15 +151,15 @@ public class AST2Aut {
 				}
 
 				throw new IllegalArgumentException("Life condition requires 1 parameter");
-				
+
 			case "timer":
 				return new Timer();
 			case "mydir":
 				if (call.parameters.size() >= 1) {
-			        Direction myDirParam = Direction.canonical(call.parameters.get(0).toString());
-			        return new MyDir(myDirParam);
-			    }
-			    throw new IllegalArgumentException("MyDir condition requires 1 parameter");
+					Direction myDirParam = Direction.canonical(call.parameters.get(0).toString());
+					return new MyDir(myDirParam);
+				}
+				throw new IllegalArgumentException("MyDir condition requires 1 parameter");
 			default:
 				throw new IllegalArgumentException("Unsupported GAL condition: " + condName);
 			}
@@ -190,62 +190,62 @@ public class AST2Aut {
 
 		throw new UnsupportedOperationException("Unsupported GAL expression type: " + expr.getClass().getName());
 	}
-	
+
 	private iGALAction convertAction(gal.ast.Actions astAction) {
-	    if (astAction == null || astAction.actions.isEmpty()) {
-	        return GALAction.NOTHING;
-	    }
+		if (astAction == null || astAction.actions.isEmpty()) {
+			return GALAction.NOTHING;
+		}
 
-	    List<gal.ast.FunCall> calls = astAction.actions;
+		List<gal.ast.FunCall> calls = astAction.actions;
 
-	    // Sequential operator (";") — keep existing behaviour
-	    if (";".equals(astAction.operator)) {
-	        List<iGALAction> actions = new ArrayList<>();
-	        for (gal.ast.FunCall call : calls) {
-	            actions.add(convertSingleAction(call));
-	        }
-	        return actions.size() == 1 ? actions.get(0) : new SequenceAction(actions);
-	    }
+		// Sequential operator (";") — keep existing behaviour
+		if (";".equals(astAction.operator)) {
+			List<iGALAction> actions = new ArrayList<>();
+			for (gal.ast.FunCall call : calls) {
+				actions.add(convertSingleAction(call));
+			}
+			return actions.size() == 1 ? actions.get(0) : new SequenceAction(actions);
+		}
 
-	    // Probabilistic operator ("/")
-	    int explicitTotal = 0;
-	    int noPercentCount = 0;
-	    for (gal.ast.FunCall call : calls) {
-	        if (call.percent == gal.ast.FunCall.NO_PERCENT) {
-	            noPercentCount++;
-	        } else {
-	            explicitTotal += call.percent;
-	        }
-	    }
+		// Probabilistic operator ("/")
+		int explicitTotal = 0;
+		int noPercentCount = 0;
+		for (gal.ast.FunCall call : calls) {
+			if (call.percent == gal.ast.FunCall.NO_PERCENT) {
+				noPercentCount++;
+			} else {
+				explicitTotal += call.percent;
+			}
+		}
 
-	    int remaining = 100 - explicitTotal;
-	    int quota    = (noPercentCount > 0) ? remaining / noPercentCount : 0;
-	    int leftover = (noPercentCount > 0) ? remaining % noPercentCount : 0;
+		int remaining = 100 - explicitTotal;
+		int quota = (noPercentCount > 0) ? remaining / noPercentCount : 0;
+		int leftover = (noPercentCount > 0) ? remaining % noPercentCount : 0;
 
-	    List<iGALAction> actions = new ArrayList<>();
-	    List<Integer>    weights  = new ArrayList<>();
-	    int leftoverGiven = 0;
+		List<iGALAction> actions = new ArrayList<>();
+		List<Integer> weights = new ArrayList<>();
+		int leftoverGiven = 0;
 
-	    for (gal.ast.FunCall call : calls) {
-	        actions.add(convertSingleAction(call));
-	        if (call.percent == gal.ast.FunCall.NO_PERCENT) {
-	            int w = quota + (leftoverGiven < leftover ? 1 : 0);
-	            leftoverGiven++;
-	            weights.add(w);
-	        } else {
-	            weights.add(call.percent);
-	        }
-	    }
+		for (gal.ast.FunCall call : calls) {
+			actions.add(convertSingleAction(call));
+			if (call.percent == gal.ast.FunCall.NO_PERCENT) {
+				int w = quota + (leftoverGiven < leftover ? 1 : 0);
+				leftoverGiven++;
+				weights.add(w);
+			} else {
+				weights.add(call.percent);
+			}
+		}
 
-	    if (actions.size() == 1) {
-	        return actions.get(0);
-	    }
+		if (actions.size() == 1) {
+			return actions.get(0);
+		}
 
-	    return new ProbabilisticAction(actions, weights);
+		return new ProbabilisticAction(actions, weights);
 	}
 
 	private iGALAction convertSingleAction(gal.ast.FunCall call) {
-		
+
 		String actionName = call.name;
 
 		if (actionName == null) {
@@ -330,11 +330,11 @@ public class AST2Aut {
 
 			return new Throw();
 		case "orient":
-		    if (call.parameters.size() >= 1) {
-		        Direction dir = Direction.canonical(call.parameters.get(0).toString());
-		        return new Orient(dir);
-		    }
-		    throw new IllegalArgumentException("Orient requires 1 parameter");
+			if (call.parameters.size() >= 1) {
+				Direction dir = Direction.canonical(call.parameters.get(0).toString());
+				return new Orient(dir);
+			}
+			throw new IllegalArgumentException("Orient requires 1 parameter");
 		default:
 			throw new IllegalArgumentException("Unsupported GAL action: " + actionName);
 		}

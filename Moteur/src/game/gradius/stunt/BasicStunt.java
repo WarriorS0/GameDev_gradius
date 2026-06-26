@@ -71,10 +71,10 @@ public class BasicStunt extends Stunt {
 
 		return normalized;
 	}
-	
+
 	@Override
 	protected void tick(double d) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

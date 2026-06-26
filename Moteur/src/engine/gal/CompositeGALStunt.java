@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import engine.entity.Entity;
+import engine.gal.arguments.Category;
 import engine.gal.arguments.Direction;
 import engine.geometry.ISU.Vector;
 import engine.move.Model;
@@ -84,6 +85,15 @@ public class CompositeGALStunt extends GALStunt {
 	public void setBaseLinearSpeed(double x_cmPer_s, double y_cmPer_s) {
 		this.baseLinearSpeed = game.Game.game().isu.new Vector(x_cmPer_s, y_cmPer_s);
 		setLinearSpeed(targetDirection);
+	}
+
+	@Override
+	protected void collision(Entity other) {
+		if (other != null && other.category() == Category.Power && entity instanceof PowerReceiver receiver) {
+			receiver.activatePower();
+		}
+
+		super.collision(other);
 	}
 
 	@Override

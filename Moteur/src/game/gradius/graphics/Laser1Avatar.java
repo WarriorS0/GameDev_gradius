@@ -7,9 +7,8 @@ import oop.graphics.Graphics;
 public class Laser1Avatar extends AnimationAvatar {
 
 	public Laser1Avatar(Entity entity) {
-		super(entity, "src/game/gradius/graphics/small_enemies.png",1,1);
+		super(entity, "src/game/gradius/graphics/small_enemies.png", 1, 1);
 	}
-
 
 	@Override
 	public void initImage(Graphics g) {

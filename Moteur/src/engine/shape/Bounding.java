@@ -90,7 +90,7 @@ public class Bounding {
 	public Iterable<iShape.Box> boundingBoxes() {
 		Set<iShape.Box> boxes = new HashSet<iShape.Box>();
 
-		for(iShape shape : boundings) {
+		for (iShape shape : boundings) {
 			boxes.add(new SimpleBox(shape.boundingBox()));
 		}
 

@@ -8,74 +8,58 @@ import engine.graphics.View;
 import game.Game;
 import oop.graphics.Color;
 
-/**
- * A label anchored to an entity in the world: it tracks the entity through the
- * camera so it stays above it on screen, whatever the view port does (follow,
- * rail, toric wrap). The label hides itself when the entity is dead or scrolls
- * out of the view port.
- */
-public class FollowerLabel extends Label {
+public class FollowerLabel extends Label implements IFollower {
 
-	private final static boolean FOLLOWING_LABEL_SHOULD_STAY = false;
+	protected static final double cmPerCell;
+	protected static final View view;
+	protected static final ISU isu;
+	static {
+		Game game = Game.game();
+		cmPerCell = game.cmPerCell;
+		view = game.view;
+		isu = game.isu;
+	}
 
 	protected Entity target;
+	protected boolean mustBeDeleted;
+	protected PixelCoordinate lastPos;
 
-	/**
-	 * Offset added in screen pixels, after projection (e.g. a few pixels up).
-	 */
-	protected PixelCoordinate offset;
-	private PixelCoordinate pos;
+	public FollowerLabel(String text, Entity target, PixelCoordinate offset, Color color) {
+		this(() -> text, target, offset, color);
+	}
 
-	/**
-	 * Half a cell in cm, used to anchor on the entity center.
-	 */
-	private final double cell;
+	public FollowerLabel(Supplier<String> text, Entity target, PixelCoordinate offset, Color color) {
+		this(text, target, offset, true, Label.DEFAULT_FONT_NAME, Label.DEFAULT_FONT_SIZE, Label.DEFAULT_FONT_STYLE,
+				color, true);
+	}
 
-	/**
-	 * The view providing the world -> screen projection. May be null until set, in
-	 * which case the label keeps its last screen position.
-	 */
-	private View view;
-
-	public FollowerLabel(Supplier<String> text, Color color, Entity target, int offX, int offY) {
-		super(text, new PixelCoordinate(0, 0), color, true);
+	public FollowerLabel(Supplier<String> text, Entity target, PixelCoordinate offset, boolean visible, String fontName,
+			int fontSize, int fontStyle, Color color, boolean centeredText) {
+		super(text, new PixelCoordinate(0, 0), new PixelCoordinate(0, 0), visible, fontName, fontSize, fontStyle, color,
+				centeredText);
 		this.target = target;
-		this.offset = new PixelCoordinate(offX, offY);
-		this.cell = Game.game().cmPerCell;
-		this.pos = new PixelCoordinate(0, 0);
+		this.offset = offset;
+		this.lastPos = new PixelCoordinate(0, 0);
+		this.mustBeDeleted = false;
 	}
 
-	/**
-	 * Binds the view used to project the target position. Call once after building
-	 * the view (e.g. right after view.setHUD(...)).
-	 *
-	 * @param view the view driving the projection
-	 */
-	public void setView(View view) {
-		this.view = view;
+	public static ISU.Coord center(ISU.Coord c) {
+		return isu.new Coord(c.x() + cmPerCell / 2.0, c.y() + cmPerCell / 2.0);
 	}
 
-	/**
-	 * Recomputes the screen position from the target's world coordinates, going
-	 * through the camera. Hides the label if the target is gone or off-screen.
-	 */
-	public void update() {
+	@Override
+	public void update(int canvasWidth, int canvasHeigh) {
 		if (target == null || target.dead()) {
 			// setVisibility(false); // label will be deleted if targe is dead.
 			// target shouldn't be null in the first place
+			this.mustBeDeleted = true;
 			return;
 		}
 
-		if (view == null) {
-			// No projection available yet: nothing reliable to draw.
-			// setVisibility(false); //no view shoudn't append
-			return;
-		}
-
-		// Anchor on the entity center (entities are placed by their top-left
+		// On vise le centre de l'entité (entities are placed by their top-left
 		// corner, so add half a cell to reach the middle).
-		Game game = Game.game();
-		ISU.Coord center = game.isu.new Coord(target.center().x() + cell / 2.0, target.center().y() + cell / 2.0);
+		ISU.Coord eCenter = target.center();
+		ISU.Coord center = center(eCenter);
 
 		PixelCoordinate screen = view.worldToScreen(center);
 
@@ -84,19 +68,14 @@ public class FollowerLabel extends Label {
 				// Target is outside the view port: do not draw.
 				// TODO DUE TO THE BUG WITH THE GAME SIZE, LABEL DON'T SHOW CORRECTLY
 				// NOT A LABEL BUG, it's a viewport bug
-				// setVisibility(false);
+				setVisibility(false);
 			}
 			return;
 		} else {
-			pos = screen;
+			lastPos = screen;
 		}
 
-		this.pc.x = pos.x + offset.x;
-		this.pc.y = pos.y + offset.y;
-	}
-
-	public static PixelCoordinate getPosFromCoordAndOffset(PixelCoordinate position, PixelCoordinate offset) {
-		return new PixelCoordinate(position.x + offset.x, position.y + offset.y);
+		this.position = IHudElement.getNewPositionFromCurrentPositionAndOffset(lastPos, offset);
 	}
 
 	/**
@@ -104,7 +83,18 @@ public class FollowerLabel extends Label {
 	 * 
 	 * @return true if target entity is still alive
 	 */
+	@Override
 	public boolean isTargetEntityStillAlive() {
 		return this.target.alive();
+	}
+
+	@Override
+	public boolean mustBeDeleted() {
+		return this.mustBeDeleted;
+	}
+
+	@Override
+	public Entity getTarget() {
+		return this.target;
 	}
 }

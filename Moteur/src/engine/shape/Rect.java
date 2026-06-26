@@ -276,22 +276,21 @@ public class Rect extends Shape {
 
 	@Override
 	public SimpleBox boundingBox() {
-		
-		ISU.Coord topLeft = isu.new Coord(center.x()-this.halfWidth, center.y() + this.halfHeight);
-		ISU.Coord topRight = isu.new Coord(center.x()+this.halfWidth, center.y() + this.halfHeight);
-		ISU.Coord downLeft = isu.new Coord(center.x()-this.halfWidth, center.y() - this.halfHeight);
-		ISU.Coord downRight = isu.new Coord(center.x()+this.halfWidth, center.y() - this.halfHeight);
+
+		ISU.Coord topLeft = isu.new Coord(center.x() - this.halfWidth, center.y() + this.halfHeight);
+		ISU.Coord topRight = isu.new Coord(center.x() + this.halfWidth, center.y() + this.halfHeight);
+		ISU.Coord downLeft = isu.new Coord(center.x() - this.halfWidth, center.y() - this.halfHeight);
+		ISU.Coord downRight = isu.new Coord(center.x() + this.halfWidth, center.y() - this.halfHeight);
 		topLeft.rotateAround(center, this.angle_degree);
 		topRight.rotateAround(center, this.angle_degree);
 		downLeft.rotateAround(center, this.angle_degree);
 		downRight.rotateAround(center, this.angle_degree);
-		
+
 		double minX = Math.min(Math.min(topLeft.x(), topRight.x()), Math.min(downLeft.x(), downRight.x()));
 		double maxX = Math.max(Math.max(topLeft.x(), topRight.x()), Math.max(downLeft.x(), downRight.x()));
 		double minY = Math.min(Math.min(topLeft.y(), topRight.y()), Math.min(downLeft.y(), downRight.y()));
 		double maxY = Math.max(Math.max(topLeft.y(), topRight.y()), Math.max(downLeft.y(), downRight.y()));
-		
-		
+
 		return new SimpleBox(minX, maxX, minY, maxY);
 	}
 }

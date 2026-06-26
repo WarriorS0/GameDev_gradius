@@ -47,7 +47,7 @@ public class Model {
 	public final List<Entity> entities;
 
 	private final Map<Entity, Stunt> stunts;
-	
+
 	private final Physics phy;
 
 	public double delta_t;
