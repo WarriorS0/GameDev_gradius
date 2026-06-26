@@ -15,6 +15,11 @@ public class Ship extends Entity implements PowerReceiver {
 
 	private final List<Cannon> cannons = new ArrayList<>();
 	private boolean powered;
+	
+	private static final double DEATH_ANIMATION_DURATION_S = 0.6;
+	
+	private boolean deathAnimationPlaying;
+	private double deathAnimationElapsedS;
 
 	public Ship() {
 		super("Ship");
@@ -63,17 +68,58 @@ public class Ship extends Entity implements PowerReceiver {
 
 	@Override
 	public void kill() {
-		if (dead()) {
+		startDeathAnimation();
+	}
+
+	public boolean deathAnimationPlaying() {
+		return deathAnimationPlaying;
+	}
+
+	public double deathAnimationProgress() {
+		if (!deathAnimationPlaying) {
+			return 0.0;
+		}
+
+		return Math.min(1.0, deathAnimationElapsedS / DEATH_ANIMATION_DURATION_S);
+	}
+
+	public void startDeathAnimation() {
+		if (dead() || deathAnimationPlaying) {
 			return;
 		}
 
-		super.kill();
+		deathAnimationPlaying = true;
+		deathAnimationElapsedS = 0.0;
+
+		setLinearSpeed(isu.new Vector(0.0, 0.0));
+		setAngularSpeed(0.0);
+
+		retract();
+		clearBounding();
+		category(Category.Void);
 
 		for (Cannon cannon : cannons) {
 			if (!cannon.dead()) {
 				cannon.kill();
 			}
 		}
+	}
+
+	public void tickDeathAnimation(double elapsed_s) {
+		if (!deathAnimationPlaying) {
+			return;
+		}
+
+		deathAnimationElapsedS += elapsed_s;
+
+		if (deathAnimationElapsedS >= DEATH_ANIMATION_DURATION_S) {
+			finishDeathAnimation();
+		}
+	}
+
+	private void finishDeathAnimation() {
+		deathAnimationPlaying = false;
+		super.kill();
 	}
 
 	// MOVEMENT
@@ -111,4 +157,6 @@ public class Ship extends Entity implements PowerReceiver {
 	public boolean hasPower() {
 		return powered;
 	}
+	
+	
 }
