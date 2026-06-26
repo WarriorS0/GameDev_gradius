@@ -7,8 +7,8 @@ import game.gradius.entity.Cannon;
 import game.gradius.entity.Projectile;
 import game.gradius.graphics.ProjectileAvatar;
 import game.gradius.stunt.ProjectileStunt;
+import game.gradius.entity.Ship;
 import engine.entity.Entity;
-import engine.gal.PowerReceiver;
 import engine.gal.arguments.Direction;
 
 public class ProjectileSpawner implements engine.gal.ThrowSpawner {
@@ -49,13 +49,13 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner {
 		return projectile;
 	}
 
-	private boolean isPoweredSource(Entity source) {
-		if (source instanceof PowerReceiver receiver) {
-			return receiver.hasPower();
+	private boolean hasShootPower(Entity source) {
+		if (source instanceof Ship ship) {
+			return ship.hasShootPower();
 		}
 
-		if (source instanceof Cannon cannon && cannon.owner() instanceof PowerReceiver receiver) {
-			return receiver.hasPower();
+		if (source instanceof Cannon cannon && cannon.owner() instanceof Ship ship) {
+			return ship.hasShootPower();
 		}
 
 		return false;
@@ -92,7 +92,7 @@ public class ProjectileSpawner implements engine.gal.ThrowSpawner {
 			speed = game.Game.game().isu.new Vector(speedValue, 0.0);
 		}
 
-		Projectile.Type type = isPoweredSource(source) ? Projectile.Type.BLUE_ORB : Projectile.Type.LASER;
+		Projectile.Type type = hasShootPower(source) ? Projectile.Type.BLUE_ORB : Projectile.Type.LASER;
 
 		return spawn(center, speed, type);
 	}

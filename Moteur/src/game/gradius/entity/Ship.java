@@ -8,19 +8,26 @@ import game.Game;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import engine.geometry.Grid;
 import engine.geometry.ISU;
 
 public class Ship extends Entity implements PowerReceiver {
 
-	private final List<Cannon> cannons = new ArrayList<>();
-	private boolean powered;
+	public enum PowerType {
+		NONE, SHOOT, SPEED
+	}
 	
+	private static final Random RANDOM = new Random();
+
+	private final List<Cannon> cannons = new ArrayList<>();
+	private PowerType currentPower = PowerType.NONE;
+
 	private static final double POWER_DURATION_S = 5.0;
 	private double powerRemainingS;
-	
+
 	private static final double DEATH_ANIMATION_DURATION_S = 0.6;
-	
+
 	private boolean deathAnimationPlaying;
 	private double deathAnimationElapsedS;
 
@@ -90,9 +97,8 @@ public class Ship extends Entity implements PowerReceiver {
 		if (dead() || deathAnimationPlaying) {
 			return;
 		}
-		
-		powered = false;
-		powerRemainingS = 0.0;
+
+		clearPower();
 
 		deathAnimationPlaying = true;
 		deathAnimationElapsedS = 0.0;
@@ -156,27 +162,50 @@ public class Ship extends Entity implements PowerReceiver {
 
 	@Override
 	public void activatePower() {
-		this.powered = true;
+		this.currentPower = randomPowerType();
 		this.powerRemainingS = POWER_DURATION_S;
 	}
-	
-	@Override
-	public boolean hasPower() {
-		return powered;
+
+	public boolean hasShootPower() {
+		return currentPower == PowerType.SHOOT;
 	}
-	
+
+	public boolean hasSpeedPower() {
+		return currentPower == PowerType.SPEED;
+	}
+
+	public PowerType currentPower() {
+		return currentPower;
+	}
+
 	public void tickPower(double elapsed_s) {
-		if (!powered) {
+		if (currentPower == PowerType.NONE) {
 			return;
 		}
 
 		powerRemainingS -= elapsed_s;
 
 		if (powerRemainingS <= 0.0) {
-			powered = false;
-			powerRemainingS = 0.0;
+			clearPower();
 		}
 	}
-	
-	
+
+	private PowerType randomPowerType() {
+		PowerType[] powers = PowerType.values();
+
+		int index = 1 + RANDOM.nextInt(powers.length - 1);
+
+		return powers[index];
+	}
+
+	private void clearPower() {
+		currentPower = PowerType.NONE;
+		powerRemainingS = 0.0;
+	}
+
+	@Override
+	public boolean hasPower() {
+		return currentPower != PowerType.NONE;
+	}
+
 }
