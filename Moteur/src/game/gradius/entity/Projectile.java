@@ -22,31 +22,21 @@ public class Projectile extends Entity {
 	private static final double ORB_GROWTH_RATIO = 0.08;
 	
 	
-	private static SoundPlayer laserPlayer;
-	static {
-		try {
-			// Le fichier laser.wav doit se trouver à la racine de votre projet
-			laserPlayer = new SoundPlayer(new File("src/game/gradius/entity/laser.wav"));
-			laserPlayer.volume(-10F);
-		} catch (IOException e) {
-			System.err.println("Impossible de charger le fichier audio du laser !");
-			e.printStackTrace();
-		}
-	}
 	
 	
-	private static SoundPlayer BlueOrbPlayer;
-	static {
-		try {
-			// Le fichier laser.wav doit se trouver à la racine de votre projet
-			BlueOrbPlayer = new SoundPlayer(new File("src/game/gradius/entity/blue_orb.wav"));
-			BlueOrbPlayer.volume(-10F);
-		} catch (IOException e) {
-			System.err.println("Impossible de charger le fichier audio du laser !");
-			e.printStackTrace();
-		}
-	}
 	
+//	private static SoundPlayer BlueOrbPlayer;
+//	static {
+//		try {
+//			// Le fichier laser.wav doit se trouver à la racine de votre projet
+//			BlueOrbPlayer = new SoundPlayer(new File("src/game/gradius/entity/blue_orb.wav"));
+//			BlueOrbPlayer.volume(-10F);
+//		} catch (IOException e) {
+//			System.err.println("Impossible de charger le fichier audio du laser !");
+//			e.printStackTrace();
+//		}
+//	}
+//	
 	private final Type type;
 	private final ISU.Coord spawnCenter;
 
@@ -79,12 +69,12 @@ public class Projectile extends Entity {
 		place(center);
 		setLinearSpeed(speed);
 		
-		if (type == Type.LASER && laserPlayer != null) {
-			laserPlayer.play(1); // Déclenche le son en arrière-plan immédiatement
-		}
-		if (type == Type.BLUE_ORB && BlueOrbPlayer != null) {
-			BlueOrbPlayer.play(1); // Déclenche le son en arrière-plan immédiatement
-		}
+//		if (type == Type.LASER && laserPlayer != null) {
+//			laserPlayer.play(1); // Déclenche le son en arrière-plan immédiatement
+//		}
+//		if (type == Type.BLUE_ORB && BlueOrbPlayer != null) {
+//			BlueOrbPlayer.play(1); // Déclenche le son en arrière-plan immédiatement
+//		}
 	}
 
 	public Type type() {
